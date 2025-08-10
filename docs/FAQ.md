@@ -16,4 +16,4 @@ New users can start with a free trial. Afterward, a subscription is required to 
 Ensure your browser supports Web MIDI and that you've granted permissions. Refresh the page or reconnect the controller and try again.
 
 ## Where can I get help?
-Check the troubleshooting section in the README or contact support at support@deeprabbit.app.
+Check the troubleshooting section in the README or contact support at support@deeprabbit.net.

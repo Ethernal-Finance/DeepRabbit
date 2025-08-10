@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "deeprabbit — AI-driven live music performance with MIDI control, stems, and style blending.",
   "author": "deeprabbit",
-  "homepage": "https://deeprabbit.app/",
+  "homepage": "https://deeprabbit.net/",
   "license": "Proprietary",
   "type": "module",
   "scripts": {
