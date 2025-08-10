@@ -28,9 +28,11 @@ Prerequisites: Node.js
 4. For the built-in subscription server set the following env vars and run `npm run server`:
    - `STRIPE_SECRET_KEY=sk_test_XXXX`
    - `STRIPE_PRICE_ID=price_XXXX`
+   - `STRIPE_WEBHOOK_SECRET=whsec_XXXX`
    - `SESSION_SECRET=change_me`
    - `RETURN_URL=https://your-app-url`
    - `ALLOWED_ORIGIN=http://localhost:5173`
+   - Webhooks flip a user's `subscribed` flag in your DB by matching on metadata or email. The `/subscription/verify` endpoint simply looks up that stored state and expects an `?email=` query parameter.
 5. Run: `npm run dev`
 
 ## User Guide
