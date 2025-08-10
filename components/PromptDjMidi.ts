@@ -201,6 +201,9 @@ export class PromptDjMidi extends LitElement {
     .daw-layout {
       display: flex;
       flex: 1;
+      height: calc(100vh - 70px); /* ensure fixed vertical space below header */
+      min-height: 0; /* allow children to shrink and enable inner scroll areas */
+      align-items: stretch; /* ensure children fill height */
       overflow: hidden;
       background: #0f0f0f;
     }
@@ -212,6 +215,9 @@ export class PromptDjMidi extends LitElement {
       border-right: 2px solid #2a2a2a;
       display: flex;
       flex-direction: column;
+      min-height: 0; /* critical for nested flex scroll */
+      height: 100%; /* take full height of layout */
+      flex: 0 0 300px; /* fix width in flex row */
       overflow: hidden;
       position: relative;
     }
@@ -232,6 +238,7 @@ export class PromptDjMidi extends LitElement {
       padding: 18px 25px;
       border-bottom: 2px solid #333;
       position: relative;
+      flex-shrink: 0; /* prevent header from stealing space */
     }
     
     .panel-header::after {
@@ -256,8 +263,11 @@ export class PromptDjMidi extends LitElement {
     }
     
     .style-list {
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0; /* ensure list can become scroll container */
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
       padding: 15px 0;
     }
     
@@ -346,6 +356,7 @@ export class PromptDjMidi extends LitElement {
       display: flex;
       flex-direction: column;
       background: #0f0f0f;
+      min-height: 0; /* enable inner scroll */
       overflow: hidden;
       position: relative;
     }
@@ -367,6 +378,7 @@ export class PromptDjMidi extends LitElement {
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-height: 0; /* enable grid-container to scroll */
       overflow: hidden;
     }
     
