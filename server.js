@@ -11,11 +11,12 @@ const sessionSecret = process.env.SESSION_SECRET || 'deeprabbit-session';
 const stripeSecret = process.env.STRIPE_SECRET_KEY || '';
 const priceId = process.env.STRIPE_PRICE_ID || '';
 const returnUrl = process.env.RETURN_URL || 'http://localhost:5173';
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 const stripe = stripeSecret ? new Stripe(stripeSecret, { apiVersion: '2024-06-20' }) : null;
+const subscriptions = new Map();
 
 app.use(morgan('combined'));
-app.use(express.json());
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(session({
   name: 'drsid',
@@ -29,55 +30,70 @@ app.use(session({
   }
 }));
 
-app.get('/subscription/status', async (req, res) => {
+// Stripe webhook to flip subscription state in our "DB"
+app.post('/stripe/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  if (!stripe) return res.status(500).send('Stripe not configured');
+  const sig = req.headers['stripe-signature'];
+  let event;
   try {
-    const sess = req.session;
-    if (sess.subscribed) {
-      return res.json({ subscribed: true });
-    }
-    if (stripe && sess.stripeCustomerId) {
-      try {
-        const subs = await stripe.subscriptions.list({
-          customer: sess.stripeCustomerId,
-          status: 'all',
-          limit: 1,
-        });
-        const active = subs.data.some(s => ['active', 'trialing'].includes(s.status));
-        sess.subscribed = active;
-        return res.json({ subscribed: active });
-      } catch (err) {
-        console.error('Stripe status check failed', err);
+    event = webhookSecret
+      ? stripe.webhooks.constructEvent(req.body, sig, webhookSecret)
+      : JSON.parse(req.body.toString());
+  } catch (err) {
+    console.error('Webhook error', err);
+    return res.status(400).send('Webhook error');
+  }
+
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        const email = session?.customer_details?.email || session?.metadata?.email;
+        if (email) subscriptions.set(email, true);
+        break;
       }
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted': {
+        const sub = event.data.object;
+        const email = sub?.customer_email || sub?.metadata?.email;
+        if (email) {
+          const active = ['active', 'trialing'].includes(sub.status);
+          subscriptions.set(email, active);
+        }
+        break;
+      }
+      default:
+        break;
     }
-    return res.json({ subscribed: false });
+  } catch (err) {
+    console.error('Webhook handler error', err);
+  }
+
+  res.json({ received: true });
+});
+
+// JSON parser for remaining routes
+app.use(express.json());
+
+app.get('/subscription/status', (req, res) => {
+  try {
+    const email = typeof req.query.email === 'string' ? req.query.email : undefined;
+    const subscribed = email ? !!subscriptions.get(email) : false;
+    res.json({ subscribed });
   } catch (err) {
     console.error('Status error', err);
     res.status(500).json({ error: 'Failed to determine subscription status' });
   }
 });
 
-app.get('/subscription/verify', async (req, res) => {
+app.get('/subscription/verify', (req, res) => {
   try {
-    if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
-    const sess = req.session;
-    const sessionId = sess.checkoutSessionId || req.query.session_id;
-    if (!sessionId) {
-      return res.status(400).json({ error: 'Missing session id' });
+    const email = typeof req.query.email === 'string' ? req.query.email : undefined;
+    if (!email) {
+      return res.status(400).json({ error: 'Missing email' });
     }
-    const checkout = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['subscription'] });
-    if (checkout.customer) {
-      sess.stripeCustomerId = checkout.customer as string;
-    }
-    let active = false;
-    const sub = checkout.subscription;
-    if (sub && typeof sub === 'object') {
-      active = ['active', 'trialing'].includes(sub.status);
-    } else if (typeof sub === 'string') {
-      const fetched = await stripe.subscriptions.retrieve(sub);
-      active = ['active', 'trialing'].includes(fetched.status);
-    }
-    sess.subscribed = active;
-    res.json({ subscribed: active });
+    const subscribed = !!subscriptions.get(email);
+    res.json({ subscribed });
   } catch (err) {
     console.error('Verify error', err);
     res.status(500).json({ error: 'Failed to verify subscription' });
