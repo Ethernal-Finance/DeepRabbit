@@ -38,7 +38,7 @@ export class OnboardingTutorial extends LitElement {
   @state() private step = 0;
 
   private steps = [
-    { title: 'Welcome to deeprabbit', text: 'Use the Tracks panel to choose styles for your performance.' },
+    { title: 'Welcome to deeprabbit', text: 'Use the Styles panel to choose styles for your performance.' },
     { title: 'Blend styles', text: 'Adjust the sliders in the grid and click “Click to learn” to map MIDI controls.' },
     { title: 'Manage instruments', text: 'Use the mixer panel to balance instrument layers and map their controls.' }
   ];

@@ -205,8 +205,8 @@ export class PromptDjMidi extends LitElement {
       background: #0f0f0f;
     }
     
-    /* Left Panel - Track List */
-    .track-panel {
+    /* Left Panel - Style List */
+    .style-panel {
       width: 300px;
       background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
       border-right: 2px solid #2a2a2a;
@@ -216,7 +216,7 @@ export class PromptDjMidi extends LitElement {
       position: relative;
     }
     
-    .track-panel::after {
+    .style-panel::after {
       content: '';
       position: absolute;
       top: 0;
@@ -255,13 +255,13 @@ export class PromptDjMidi extends LitElement {
       text-shadow: 0 0 10px rgba(41, 242, 198, 0.3);
     }
     
-    .track-list {
+    .style-list {
       flex: 1;
       overflow-y: auto;
       padding: 15px 0;
     }
     
-    .track-item {
+    .style-item {
       display: flex;
       align-items: center;
       padding: 15px 25px;
@@ -271,7 +271,7 @@ export class PromptDjMidi extends LitElement {
       position: relative;
     }
     
-    .track-item::before {
+    .style-item::before {
       content: '';
       position: absolute;
       left: 0;
@@ -282,26 +282,26 @@ export class PromptDjMidi extends LitElement {
       transition: all 0.2s ease;
     }
     
-    .track-item:hover {
+    .style-item:hover {
       background: linear-gradient(90deg, rgba(41, 242, 198, 0.1) 0%, transparent 100%);
       border-left: 3px solid #29F2C6;
     }
     
-    .track-item:hover::before {
+    .style-item:hover::before {
       background: #29F2C6;
       box-shadow: 0 0 10px rgba(41, 242, 198, 0.5);
     }
     
-    .track-item.filtered {
+    .style-item.filtered {
       opacity: 0.4;
       background: rgba(255, 0, 0, 0.1);
     }
-    .track-item.active {
+    .style-item.active {
       background: linear-gradient(90deg, rgba(41, 242, 198, 0.12) 0%, transparent 100%);
       border-left: 3px solid #29F2C6;
     }
     
-    .track-color {
+    .style-color {
       width: 14px;
       height: 14px;
       border-radius: 3px;
@@ -311,7 +311,7 @@ export class PromptDjMidi extends LitElement {
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .track-name {
+    .style-name {
       flex: 1;
       font-size: 12px;
       font-weight: 600;
@@ -320,7 +320,7 @@ export class PromptDjMidi extends LitElement {
       letter-spacing: 0.5px;
     }
     
-    .track-mute {
+    .style-mute {
       width: 24px;
       height: 24px;
       display: flex;
@@ -334,7 +334,7 @@ export class PromptDjMidi extends LitElement {
       font-size: 12px;
     }
     
-    .track-mute:hover {
+    .style-mute:hover {
       background: #444;
       border-color: #666;
       transform: scale(1.1);
@@ -598,7 +598,7 @@ export class PromptDjMidi extends LitElement {
     
     /* Responsive Design */
     @media (max-width: 1400px) {
-      .track-panel {
+      .style-panel {
         width: 260px;
       }
       
@@ -618,7 +618,7 @@ export class PromptDjMidi extends LitElement {
         flex-direction: column;
       }
       
-      .track-panel,
+      .style-panel,
       .mixer-panel {
         width: 100%;
         height: auto;
@@ -656,7 +656,7 @@ export class PromptDjMidi extends LitElement {
         padding: 10px;
       }
 
-      .track-panel,
+      .style-panel,
       .mixer-panel {
         max-height: 200px;
       }
@@ -683,7 +683,7 @@ export class PromptDjMidi extends LitElement {
   @state() private selectedOrder: string[] = [];
   private readonly SELECTED_ORDER_STORAGE_KEY = 'pdjmidi_selected_order';
   private readonly PROMPT_WEIGHTS_STORAGE_KEY = 'pdjmidi_prompt_weights';
-  private readonly TRACK_COUNT_STORAGE_KEY = 'pdjmidi_track_count';
+  private readonly STYLE_COUNT_STORAGE_KEY = 'pdjmidi_style_count';
 
   @property({ type: Boolean }) private showMidi = false;
   @property({ type: String }) public playbackState: PlaybackState = 'stopped';
@@ -815,7 +815,7 @@ export class PromptDjMidi extends LitElement {
     });
     // Load persisted prompt weights and selected order
     this.loadPromptWeights();
-    this.loadTrackCount?.();
+    this.loadStyleCount?.();
     this.loadSelectedOrder();
     if (this.selectedOrder.length === 0) {
       // Initialize selected prompts from current weights (up to MAX)
@@ -1145,11 +1145,11 @@ export class PromptDjMidi extends LitElement {
     }
   }
 
-  private toggleTrackSelected(promptId: string) {
+  private toggleStyleSelected(promptId: string) {
     const isSelected = this.selectedPromptIds.has(promptId);
     if (!isSelected) {
       if (this.selectedPromptIds.size >= this.maxSelectedPrompts) {
-        this.dispatchEvent(new CustomEvent('error', { detail: `You can select up to ${this.maxSelectedPrompts} prompts.` }));
+        this.dispatchEvent(new CustomEvent('error', { detail: `You can select up to ${this.maxSelectedPrompts} styles.` }));
         return;
       }
       // Append to order and set
@@ -1236,7 +1236,7 @@ export class PromptDjMidi extends LitElement {
     // For now, we keep CC learn only; note mapping could be implemented here later.
   }
 
-  private handleTrackCountChange(event: Event) {
+  private handleStyleSlotChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     const value = Number(select.value);
     if (![2,4,6,8,16].includes(value)) return;
@@ -1247,29 +1247,29 @@ export class PromptDjMidi extends LitElement {
       this.selectedPromptIds = new Set(this.selectedOrder);
       this.resetWeightsForNonDisplayedPrompts();
     }
-    this.saveTrackCount();
+    this.saveStyleCount();
   }
 
-  private saveTrackCount() {
-    try { localStorage.setItem(this.TRACK_COUNT_STORAGE_KEY, String(this.maxSelectedPrompts)); } catch {}
+  private saveStyleCount() {
+    try { localStorage.setItem(this.STYLE_COUNT_STORAGE_KEY, String(this.maxSelectedPrompts)); } catch {}
   }
 
-  private loadTrackCount() {
+  private loadStyleCount() {
     try {
-      const raw = localStorage.getItem(this.TRACK_COUNT_STORAGE_KEY);
+      const raw = localStorage.getItem(this.STYLE_COUNT_STORAGE_KEY);
       if (!raw) return;
       const n = Number(raw);
       if ([2,4,6,8,16].includes(n)) this.maxSelectedPrompts = n;
     } catch {}
   }
 
-  private toggleTrackMute(trackId: string) {
-    // TODO: Implement track muting
-    console.log('Toggle mute for track:', trackId);
+  private toggleStyleMute(styleId: string) {
+    // TODO: Implement style muting
+    console.log('Toggle mute for style:', styleId);
   }
 
-  private isTrackMuted(trackId: string): boolean {
-    // TODO: Implement track mute state
+  private isStyleMuted(styleId: string): boolean {
+    // TODO: Implement style mute state
     return false;
   }
 
@@ -1339,8 +1339,8 @@ export class PromptDjMidi extends LitElement {
             <option value="0.25">Medium</option>
             <option value="0.4">Bold</option>
           </select>
-          <select class="midi-select" title="Track count" @change=${this.handleTrackCountChange} .value=${String(this.maxSelectedPrompts)}>
-            ${[2,4,6,8,16].map(n => html`<option value=${n}>${n} tracks</option>`)}
+          <select class="midi-select" title="Style slots" @change=${this.handleStyleSlotChange} .value=${String(this.maxSelectedPrompts)}>
+            ${[2,4,6,8,16].map(n => html`<option value=${n}>${n} styles</option>`)}
           </select>
           <button class="toolbar-btn ${this.showMidi ? 'active' : ''}" @click=${this.toggleShowMidi}>MIDI</button>
           ${this.showMidi ? html`
@@ -1359,13 +1359,13 @@ export class PromptDjMidi extends LitElement {
       <!-- Main DAW Layout -->
       <div class="daw-layout">
         <!-- Left Panel: Track List -->
-        <aside class="track-panel">
+        <aside class="style-panel">
           <div class="panel-header">
-            <h3>Tracks</h3>
+            <h3>Styles</h3>
             <input class="midi-select" style="width: 100%; margin-top: 8px;" type="text" placeholder="Search styles..." aria-label="Search styles" @input=${(e: Event) => { this.styleSearchQuery = (e.target as HTMLInputElement).value.toLowerCase(); }} .value=${this.styleSearchQuery} />
           </div>
-          <div class="track-list" role="listbox" aria-multiselectable="true">
-            ${this.renderTrackList()}
+          <div class="style-list" role="listbox" aria-multiselectable="true">
+            ${this.renderStyleList()}
           </div>
         </aside>
 
@@ -1524,23 +1524,23 @@ export class PromptDjMidi extends LitElement {
     });
   }
 
-  private renderTrackList() {
+  private renderStyleList() {
     const q = this.styleSearchQuery.trim();
     const items = [...this.prompts.values()].filter(p => !q || p.text.toLowerCase().includes(q));
     return items.map((prompt) => {
       const isFiltered = this.filteredPrompts.has(prompt.text);
       const isActive = this.selectedPromptIds.has(prompt.promptId);
-      return html`<div class="track-item ${isFiltered ? 'filtered' : ''} ${isActive ? 'active' : ''}"
+      return html`<div class="style-item ${isFiltered ? 'filtered' : ''} ${isActive ? 'active' : ''}"
         role="option"
         tabindex="0"
         aria-selected=${isActive}
-        aria-label="${isActive ? 'Deselect' : 'Select'} track ${prompt.text}"
-        @click=${() => this.toggleTrackSelected(prompt.promptId)}
-        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleTrackSelected(prompt.promptId); } }}>
-        <div class="track-color" style="background-color: ${prompt.color}"></div>
-        <div class="track-name">${prompt.text}</div>
-        <button type="button" class="track-mute" @click=${(e: Event) => { e.stopPropagation(); this.toggleTrackMute(prompt.promptId); }} aria-label="${this.isTrackMuted(prompt.promptId) ? 'Unmute' : 'Mute'} ${prompt.text}">
-          ${this.isTrackMuted(prompt.promptId) ? '🔇' : '🔊'}
+        aria-label="${isActive ? 'Deselect' : 'Select'} style ${prompt.text}"
+        @click=${() => this.toggleStyleSelected(prompt.promptId)}
+        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleStyleSelected(prompt.promptId); } }}>
+        <div class="style-color" style="background-color: ${prompt.color}"></div>
+        <div class="style-name">${prompt.text}</div>
+        <button type="button" class="style-mute" @click=${(e: Event) => { e.stopPropagation(); this.toggleStyleMute(prompt.promptId); }} aria-label="${this.isStyleMuted(prompt.promptId) ? 'Unmute style' : 'Mute style'} ${prompt.text}">
+          ${this.isStyleMuted(prompt.promptId) ? '🔇' : '🔊'}
         </button>
       </div>`;
     });
