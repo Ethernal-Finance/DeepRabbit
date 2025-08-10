@@ -369,6 +369,7 @@ export class WeightSlider extends LitElement {
     this.handlePointerMove = this.handlePointerMove.bind(this);
     this.handlePointerUp = this.handlePointerUp.bind(this);
     this.handleWheel = this.handleWheel.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   private handlePointerDown(e: PointerEvent) {
@@ -401,6 +402,17 @@ export class WeightSlider extends LitElement {
     const delta = e.deltaX || e.deltaY;
     const newValue = this.value + delta * -0.0025;
     this.setValue(Math.max(0, Math.min(2, newValue)));
+  }
+
+  private handleKeyDown(e: KeyboardEvent) {
+    let delta = 0;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') delta = 0.1;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') delta = -0.1;
+    if (delta !== 0) {
+      e.preventDefault();
+      const newValue = Math.max(0, Math.min(2, this.value + delta));
+      this.setValue(newValue);
+    }
   }
 
   private setValue(newValue: number) {
@@ -466,9 +478,16 @@ export class WeightSlider extends LitElement {
     });
 
     return html`
-      <div class="slider-container" 
+      <div class="slider-container"
+           role="slider"
+           tabindex="0"
+           aria-label="Style weight"
+           aria-valuemin="0"
+           aria-valuemax="2"
+           aria-valuenow=${this.value.toFixed(2)}
            @pointerdown=${this.handlePointerDown}
-           @wheel=${this.handleWheel}>
+           @wheel=${this.handleWheel}
+           @keydown=${this.handleKeyDown}>
         
         <div class="value-display">
           ${this.value.toFixed(2)}
