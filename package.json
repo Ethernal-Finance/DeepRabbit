@@ -1,0 +1,25 @@
+{
+  "name": "deeprabbit",
+  "private": true,
+  "version": "1.0.0",
+  "description": "deeprabbit — AI-driven live music performance with MIDI control, stems, and style blending.",
+  "author": "deeprabbit",
+  "homepage": "https://deeprabbit.app/",
+  "license": "Proprietary",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "lit": "^3.3.0",
+    "lamejs": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

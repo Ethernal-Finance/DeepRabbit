@@ -1,0 +1,31 @@
+/* Global facelift theme for deeprabbit */
+:root {
+  --bg: #0b0b0b;
+  --panel: #111;
+  --panel-2: #151515;
+  --text: #e5e5e5;
+  --muted: #a8a8a8;
+  --brand: #29F2C6; /* primary mint */
+  --brand-2: #0FC9A7; /* hover */
+  --brand-glow: #835CFF; /* secondary glow */
+  --border: #262626;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+body {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 14px;
+  overflow: hidden;
+}
+body.dragging {
+  cursor: ns-resize;
+}
+body.dragging * {
+  user-select: none;
+  pointer-events: none;
+}
