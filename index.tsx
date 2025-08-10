@@ -375,6 +375,7 @@ const DEFAULT_PROMPTS = [
   { color: '#45b7d1', text: 'Bollywood' },
   { color: '#96ceb4', text: 'Celtic Folk' },
   { color: '#ffeaa7', text: 'Americana' },
+  { color: '#c19a6b', text: 'Western' },
   { color: '#dda0dd', text: 'Delta Blues' },
   { color: '#ffb347', text: 'Chicago Blues' },
   { color: '#98d8c8', text: 'Smooth Jazz' },
