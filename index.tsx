@@ -77,18 +77,27 @@ async function initializeMainApp() {
   };
   (gate as any).onVerify = async () => {
     try {
-      if (!VERIFY_URL) return;
-      const res = await fetch(VERIFY_URL, { credentials: 'include' });
-      if (res.ok) {
-        const json = await res.json();
-        if (json?.subscribed) {
-          localStorage.setItem(LS_KEY, '1');
-          (gate as any).isSubscribed = true;
-          pdjMidi.style.display = 'block';
-          (gate as any).style.display = 'none';
-        }
+      if (!VERIFY_URL) {
+        toastMessage.show('Verify URL not set. Configure VITE_SUBSCRIPTION_VERIFY_URL in .env.local');
+        return;
       }
-    } catch {}
+      const res = await fetch(VERIFY_URL, { credentials: 'include' });
+      if (!res.ok) {
+        toastMessage.show(`Verify failed (${res.status}). Check server/CORS`);
+        return;
+      }
+      const json = await res.json();
+      if (json?.subscribed) {
+        localStorage.setItem(LS_KEY, '1');
+        (gate as any).isSubscribed = true;
+        pdjMidi.style.display = 'block';
+        (gate as any).style.display = 'none';
+      } else {
+        toastMessage.show('Not subscribed yet. Complete checkout or sign in.');
+      }
+    } catch (e: any) {
+      toastMessage.show(e?.message || 'Verification error');
+    }
   };
 
   // Apply initial gate visibility
