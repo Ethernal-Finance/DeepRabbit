@@ -58,7 +58,7 @@ export class HelpPanel extends LitElement {
 
           <h3>Performance tips</h3>
           <ul>
-            <li>Curate your Tracks list with a wide range of styles, then toggle which 8 are active for each song.</li>
+            <li>Curate your Styles list with a wide range of styles, then toggle which 8 are active for each song.</li>
             <li>Use the left panel to quickly select/deselect styles. Non‑grid items are muted automatically.</li>
             <li>For smooth transitions, move one style down while bringing another up.</li>
           </ul>
