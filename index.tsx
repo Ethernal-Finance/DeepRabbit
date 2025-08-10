@@ -13,7 +13,7 @@ import { LiveMusicHelper } from './utils/LiveMusicHelper';
 import { AudioAnalyser } from './utils/AudioAnalyser';
 import { SessionRecorder, exportMp3, exportWav } from './utils/SessionRecorder';
 import './components/SubscriptionGate';
-import { STATUS_URL, VERIFY_URL, CHECKOUT_URL, STRIPE_PAYMENT_LINK, STRIPE_CREATE_CHECKOUT_URL, STRIPE_CUSTOMER_PORTAL_URL } from './utils/config';
+import { STATUS_URL, VERIFY_URL, CHECKOUT_URL, STRIPE_PAYMENT_LINK, STRIPE_CREATE_CHECKOUT_URL, STRIPE_CUSTOMER_PORTAL_URL, STRIPE_PUBLISHABLE_KEY } from './utils/config';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
 const model = 'lyria-realtime-exp';
@@ -52,6 +52,29 @@ async function initializeMainApp() {
   } catch {}
   (gate as any).isSubscribed = isSubscribed;
   (gate as any).checkoutUrl = (STRIPE_PAYMENT_LINK || CHECKOUT_URL) || '#';
+  (gate as any).onCheckout = async () => {
+    try {
+      if (STRIPE_CREATE_CHECKOUT_URL) {
+        const res = await fetch(STRIPE_CREATE_CHECKOUT_URL, { method: 'POST', credentials: 'include' });
+        if (res.ok) {
+          const json = await res.json();
+          const sessionId = json?.id || json?.sessionId;
+          const url = json?.url;
+          if (sessionId && STRIPE_PUBLISHABLE_KEY && (window as any).Stripe) {
+            const stripe = (window as any).Stripe(STRIPE_PUBLISHABLE_KEY);
+            await stripe.redirectToCheckout({ sessionId });
+            return;
+          }
+          if (url) {
+            window.location.href = url;
+            return;
+          }
+        }
+      }
+    } catch {}
+    const fallback = (STRIPE_PAYMENT_LINK || CHECKOUT_URL);
+    if (fallback) window.open(fallback, '_blank');
+  };
   (gate as any).onVerify = async () => {
     try {
       if (!VERIFY_URL) return;

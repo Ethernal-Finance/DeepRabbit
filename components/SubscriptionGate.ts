@@ -28,11 +28,16 @@ export class SubscriptionGate extends LitElement {
 
   @property({ type: Boolean }) isSubscribed = true;
   @property({ type: String }) checkoutUrl: string | null = null;
+  @property({ type: Function }) onCheckout: (() => Promise<void>) | null = null;
   @property({ type: Function }) onVerify: (() => Promise<void>) | null = null;
 
-  private startTrial() {
-    const url = this.checkoutUrl || '#';
-    window.open(url, '_blank');
+  private async startTrial() {
+    try {
+      await this.onCheckout?.();
+    } catch {
+      const url = this.checkoutUrl || '#';
+      window.open(url, '_blank');
+    }
   }
 
   private startDemo() {
