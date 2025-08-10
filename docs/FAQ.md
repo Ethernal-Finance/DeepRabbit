@@ -10,7 +10,7 @@ Open the Tracks panel and browse or search for styles. Add as many as you like, 
 Yes. Use the Tracks panel to enable or disable styles in real time. You can also map MIDI controls to quickly toggle slots on and off.
 
 ## Do I need a subscription?
-New users can start with a free trial. Afterward, a subscription is required to keep generating tracks.
+No. The app now runs without any subscription or checkout.
 
 ## My MIDI controller isn't detected. What can I do?
 Ensure your browser supports Web MIDI and that you've granted permissions. Refresh the page or reconnect the controller and try again.

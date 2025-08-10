@@ -8,12 +8,10 @@ import type { PlaybackState, Prompt } from './types';
 import { GoogleGenAI, LiveMusicFilteredPrompt } from '@google/genai';
 import { PromptDjMidi } from './components/PromptDjMidi';
 import { ToastMessage } from './components/ToastMessage';
-// Removed marketing and subscription gate pages
 import { LiveMusicHelper } from './utils/LiveMusicHelper';
 import { AudioAnalyser } from './utils/AudioAnalyser';
 import { SessionRecorder, exportMp3, exportWav } from './utils/SessionRecorder';
-import './components/SubscriptionGate';
-import { STATUS_URL, VERIFY_URL, CHECKOUT_URL, STRIPE_PAYMENT_LINK, STRIPE_CREATE_CHECKOUT_URL, STRIPE_CUSTOMER_PORTAL_URL, STRIPE_PUBLISHABLE_KEY } from './utils/config';
+// Subscription gating removed
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
 const model = 'lyria-realtime-exp';
@@ -27,105 +25,12 @@ async function initializeMainApp() {
   const initialPrompts = buildInitialPrompts();
 
   const pdjMidi = new PromptDjMidi(initialPrompts);
-  const gate = document.createElement('subscription-gate') as any;
-  gate.style.display = 'block';
-  document.body.appendChild(gate);
   document.body.appendChild(pdjMidi);
 
   const toastMessage = new ToastMessage();
   document.body.appendChild(toastMessage);
 
-  // Subscription status fetch and gating
-  let isSubscribed = false;
-  const LS_KEY = 'melodymint_subscribed';
-  try {
-    const cached = localStorage.getItem(LS_KEY);
-    if (cached === '1') isSubscribed = true;
-    if (!isSubscribed && STATUS_URL) {
-      const res = await fetch(STATUS_URL, { credentials: 'include' });
-      if (res.ok) {
-        const json = await res.json();
-        isSubscribed = !!json?.subscribed;
-        if (isSubscribed) localStorage.setItem(LS_KEY, '1');
-      }
-    }
-  } catch {}
-  (gate as any).isSubscribed = isSubscribed;
-  (gate as any).checkoutUrl = (STRIPE_PAYMENT_LINK || CHECKOUT_URL) || '#';
-  (gate as any).onCheckout = async () => {
-    try {
-      if (STRIPE_CREATE_CHECKOUT_URL) {
-        const res = await fetch(STRIPE_CREATE_CHECKOUT_URL, { method: 'POST', credentials: 'include' });
-        if (res.ok) {
-          const json = await res.json();
-          const sessionId = json?.id || json?.sessionId;
-          const url = json?.url;
-          if (sessionId && STRIPE_PUBLISHABLE_KEY && (window as any).Stripe) {
-            const stripe = (window as any).Stripe(STRIPE_PUBLISHABLE_KEY);
-            await stripe.redirectToCheckout({ sessionId });
-            return;
-          }
-          if (url) {
-            window.location.href = url;
-            return;
-          }
-        }
-      }
-    } catch {}
-    const fallback = (STRIPE_PAYMENT_LINK || CHECKOUT_URL);
-    if (fallback) window.open(fallback, '_blank');
-  };
-  (gate as any).onVerify = async () => {
-    try {
-      if (!VERIFY_URL) {
-        toastMessage.show('Verify URL not set. Configure VITE_SUBSCRIPTION_VERIFY_URL in .env.local');
-        return;
-      }
-      const res = await fetch(VERIFY_URL, { credentials: 'include' });
-      if (!res.ok) {
-        toastMessage.show(`Verify failed (${res.status}). Check server/CORS`);
-        return;
-      }
-      const json = await res.json();
-      if (json?.subscribed) {
-        localStorage.setItem(LS_KEY, '1');
-        (gate as any).isSubscribed = true;
-        pdjMidi.style.display = 'block';
-        (gate as any).style.display = 'none';
-      } else {
-        toastMessage.show('Not subscribed yet. Complete checkout or sign in.');
-      }
-    } catch (e: any) {
-      toastMessage.show(e?.message || 'Verification error');
-    }
-  };
-
-  // Apply initial gate visibility
-  if (isSubscribed) {
-    pdjMidi.style.display = 'block';
-    (gate as any).style.display = 'none';
-  } else {
-    pdjMidi.style.display = 'none';
-    (gate as any).style.display = 'block';
-  }
-
-  // Demo path: allow a limited session when user clicks "Try a demo"
-  gate.addEventListener('start-demo', () => {
-    localStorage.setItem('melodymint_subscribed','1');
-    (gate as any).isSubscribed = true;
-    pdjMidi.style.display = 'block';
-    (gate as any).style.display = 'none';
-  });
-
-  gate.addEventListener('open-portal', async () => {
-    const portalUrl = STRIPE_CUSTOMER_PORTAL_URL;
-    if (portalUrl) {
-      window.open(portalUrl, '_blank');
-      return;
-    }
-    // Optionally request a portal session from your backend
-    // if (STRIPE_CREATE_CHECKOUT_URL) await fetch(STRIPE_CREATE_CHECKOUT_URL, { method: 'POST', credentials: 'include' });
-  });
+  // Subscription gating removed: app loads immediately
 
   const liveMusicHelper = new LiveMusicHelper(ai, model);
   liveMusicHelper.setWeightedPrompts(initialPrompts);
