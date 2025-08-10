@@ -17,7 +17,13 @@ Prerequisites: Node.js
    - `VITE_STRIPE_CREATE_CHECKOUT_URL=https://your-api/stripe/create-checkout`
    - `VITE_STRIPE_PAYMENT_LINK=https://buy.stripe.com/...` *(optional direct payment link)*
    - `VITE_STRIPE_CUSTOMER_PORTAL_URL=https://billing.stripe.com/p/session/...` *(optional direct portal)*
-4. Run: `npm run dev`
+4. For the built-in subscription server set the following env vars and run `npm run server`:
+   - `STRIPE_SECRET_KEY=sk_test_XXXX`
+   - `STRIPE_PRICE_ID=price_XXXX`
+   - `SESSION_SECRET=change_me`
+   - `RETURN_URL=https://your-app-url`
+   - `ALLOWED_ORIGIN=http://localhost:5173`
+5. Run: `npm run dev`
 
 ## How to use (end users)
 
