@@ -13,6 +13,7 @@ import './PlayPauseButton';
 import './TimelineRuler';
 import type { PlaybackState, Prompt, ControlChange } from '../types';
 import './HelpPanel';
+import './OnboardingTutorial';
 import { MidiDispatcher } from '../utils/MidiDispatcher';
 import { SessionRecorder } from '../utils/SessionRecorder';
 
@@ -421,6 +422,11 @@ export class PromptDjMidi extends LitElement {
       overflow: visible;
     }
 
+    .slider-row.blending {
+      border-color: #29F2C6;
+      box-shadow: 0 0 20px rgba(41, 242, 198, 0.3);
+    }
+
     .slot-close {
       position: absolute;
       top: 8px;
@@ -642,6 +648,23 @@ export class PromptDjMidi extends LitElement {
         justify-content: center;
       }
     }
+
+    @media (max-width: 480px) {
+      .grid-container {
+        grid-template-columns: repeat(1, minmax(160px, 1fr));
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .track-panel,
+      .mixer-panel {
+        max-height: 200px;
+      }
+
+      .slider-row {
+        padding: 15px;
+      }
+    }
   `;
 
   private prompts: Map<string, Prompt>;
@@ -650,6 +673,7 @@ export class PromptDjMidi extends LitElement {
   @state() private maxSelectedPrompts = 8;
   private recorder: SessionRecorder | null = null;
   @state() private showExportMenu = false;
+  @state() private showTutorial = false;
   @state() private isRecording = false;
   @state() private autoEvolveEnabled = false;
   @state() private autoEvolveRateSec = 16; // how often to evolve
@@ -677,6 +701,18 @@ export class PromptDjMidi extends LitElement {
   
   private readonly PROMPT_CC_STORAGE_KEY = 'pdjmidi_prompt_cc_mappings';
   private readonly INSTR_CC_STORAGE_KEY = 'pdjmidi_instrument_cc_mappings';
+
+  override firstUpdated() {
+    try {
+      const done = localStorage.getItem('deeprabbit_onboarded');
+      if (!done) this.showTutorial = true;
+    } catch {}
+  }
+
+  private handleTutorialFinish() {
+    this.showTutorial = false;
+    try { localStorage.setItem('deeprabbit_onboarded', '1'); } catch {}
+  }
   @state() private showHelp = false;
 
   @property({ type: Object })
@@ -1326,9 +1362,9 @@ export class PromptDjMidi extends LitElement {
         <aside class="track-panel">
           <div class="panel-header">
             <h3>Tracks</h3>
-            <input class="midi-select" style="width: 100%; margin-top: 8px;" type="text" placeholder="Search styles..." @input=${(e: Event) => { this.styleSearchQuery = (e.target as HTMLInputElement).value.toLowerCase(); }} .value=${this.styleSearchQuery} />
+            <input class="midi-select" style="width: 100%; margin-top: 8px;" type="text" placeholder="Search styles..." aria-label="Search styles" @input=${(e: Event) => { this.styleSearchQuery = (e.target as HTMLInputElement).value.toLowerCase(); }} .value=${this.styleSearchQuery} />
           </div>
-          <div class="track-list">
+          <div class="track-list" role="listbox" aria-multiselectable="true">
             ${this.renderTrackList()}
           </div>
         </aside>
@@ -1358,6 +1394,7 @@ export class PromptDjMidi extends LitElement {
         
       </div>
       ${this.showHelp ? html`<help-panel open @close=${this.toggleHelp}></help-panel>` : ''}
+      ${this.showTutorial ? html`<onboarding-tutorial @finish=${this.handleTutorialFinish}></onboarding-tutorial>` : ''}
     `;
   }
 
@@ -1383,8 +1420,9 @@ export class PromptDjMidi extends LitElement {
     }
     return promptsToShow.map((prompt, index) => {
       const isFiltered = this.filteredPrompts.has(prompt.text);
-      return html`<div class="slider-row">
-        <button class="slot-close" title="Remove from grid" @click=${(e: Event) => { e.stopPropagation(); this.removePromptFromGrid(prompt.promptId); }}>✕</button>
+      const blending = prompt.weight > 0;
+      return html`<div class="slider-row ${blending ? 'blending' : ''}">
+        <button class="slot-close" title="Remove from grid" aria-label="Remove ${prompt.text} from grid" @click=${(e: Event) => { e.stopPropagation(); this.removePromptFromGrid(prompt.promptId); }}>✕</button>
         <div class="slider-label">${prompt.text}</div>
         <div class="slider-control">
           <weight-slider
@@ -1392,11 +1430,15 @@ export class PromptDjMidi extends LitElement {
             color=${isFiltered ? '#888' : prompt.color}
             audioLevel=${isFiltered ? 0 : this.audioLevel}
             @input=${(e: CustomEvent) => this.handleSliderChange(prompt.promptId, e.detail)}></weight-slider>
-          <div class="midi-info ${this.learningSlotIndex === index ? 'active' : ''}" @click=${() => this.toggleSlotLearn(index)}>
+          <button type="button" class="midi-info ${this.learningSlotIndex === index ? 'active' : ''}"
+            @click=${() => this.toggleSlotLearn(index)}
+            aria-label=${this.learningSlotIndex === index
+              ? 'Mapping in progress, turn a knob'
+              : (this.slotCcMap.has(index) ? `Mapped to CC ${this.slotCcMap.get(index)}. Click to remap` : 'Click to learn MIDI mapping')}>
             ${this.learningSlotIndex === index
               ? 'Learning… turn a knob'
               : (this.slotCcMap.has(index) ? `CC:${this.slotCcMap.get(index)}` : 'Click to learn')}
-          </div>
+          </button>
         </div>
       </div>`;
     });
@@ -1469,11 +1511,15 @@ export class PromptDjMidi extends LitElement {
           color=${isFiltered ? '#888' : instrument.color}
           audioLevel=${isFiltered ? 0 : this.audioLevel}
           @input=${(e: CustomEvent) => this.handleInstrumentChange(instrument.promptId, e.detail)}></weight-slider>
-        <div class="midi-info ${this.learningInstrumentId === instrument.promptId ? 'active' : ''}" @click=${() => this.toggleInstrumentLearnMode(instrument.promptId)}>
+        <button type="button" class="midi-info ${this.learningInstrumentId === instrument.promptId ? 'active' : ''}"
+          @click=${() => this.toggleInstrumentLearnMode(instrument.promptId)}
+          aria-label=${this.learningInstrumentId === instrument.promptId
+            ? 'Mapping in progress, turn a knob'
+            : (instrument.cc > 0 ? `Mapped to CC ${instrument.cc}. Click to remap` : 'Click to learn MIDI mapping')}>
           ${this.learningInstrumentId === instrument.promptId
             ? 'Learning… turn a knob'
             : (instrument.cc > 0 ? `CC:${instrument.cc}` : 'Click to learn')}
-        </div>
+        </button>
       </div>`;
     });
   }
@@ -1484,12 +1530,18 @@ export class PromptDjMidi extends LitElement {
     return items.map((prompt) => {
       const isFiltered = this.filteredPrompts.has(prompt.text);
       const isActive = this.selectedPromptIds.has(prompt.promptId);
-      return html`<div class="track-item ${isFiltered ? 'filtered' : ''} ${isActive ? 'active' : ''}" @click=${() => this.toggleTrackSelected(prompt.promptId)}>
+      return html`<div class="track-item ${isFiltered ? 'filtered' : ''} ${isActive ? 'active' : ''}"
+        role="option"
+        tabindex="0"
+        aria-selected=${isActive}
+        aria-label="${isActive ? 'Deselect' : 'Select'} track ${prompt.text}"
+        @click=${() => this.toggleTrackSelected(prompt.promptId)}
+        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleTrackSelected(prompt.promptId); } }}>
         <div class="track-color" style="background-color: ${prompt.color}"></div>
         <div class="track-name">${prompt.text}</div>
-        <div class="track-mute" @click=${() => this.toggleTrackMute(prompt.promptId)}>
+        <button type="button" class="track-mute" @click=${(e: Event) => { e.stopPropagation(); this.toggleTrackMute(prompt.promptId); }} aria-label="${this.isTrackMuted(prompt.promptId) ? 'Unmute' : 'Mute'} ${prompt.text}">
           ${this.isTrackMuted(prompt.promptId) ? '🔇' : '🔊'}
-        </div>
+        </button>
       </div>`;
     });
   }
