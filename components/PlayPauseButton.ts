@@ -28,10 +28,11 @@ export class PlayPauseButton extends LitElement {
       position: relative;
       width: 100%;
       height: 100%;
+      padding: 0;
+      border: 3px solid #444;
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
       border-radius: 10px;
       cursor: pointer;
-      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
-      border: 3px solid #444;
       transition: all 0.3s cubic-bezier(0.25, 1.56, 0.32, 0.99);
       display: flex;
       align-items: center;
@@ -237,13 +238,18 @@ export class PlayPauseButton extends LitElement {
   override render() {
     const buttonClass = this.playbackState === 'playing' ? 'playing' : '';
     
+    const ariaLabel = this.playbackState === 'playing' ? 'Pause' : 'Play';
     return html`
-      <div class="button-container ${buttonClass}">
+      <button
+        class="button-container ${buttonClass}"
+        type="button"
+        aria-label="${ariaLabel}"
+        aria-pressed="${this.playbackState === 'playing'}">
         <div class="icon-container">
           ${this.renderIcon()}
         </div>
         <div class="status-indicator ${this.playbackState === 'playing' ? 'playing' : ''}"></div>
-      </div>
+      </button>
     `;
   }
 }
