@@ -1570,7 +1570,7 @@ export class PromptDjMidi extends LitElement {
             <button class="toolbar-btn" @click=${() => { this.goHome(); if (this.isMobile) this.showMobileMenu = false; }} title="Return to Home">🏠</button>
             <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); if (this.isMobile) this.showMobileMenu = false; }} title="Record / Stop">⏺</button>
             <button class="toolbar-btn" @click=${() => { this.toggleHelp(); if (this.isMobile) this.showMobileMenu = false; }} title="How to use">❓</button>
-            <require-pro .userId=${this.userId} .email=${this.userEmail}>
+            <require-pro .userId=${this.userId} .email=${this.userEmail} inline>
               <div style="position: relative;">
                 <button class="toolbar-btn" @click=${() => { this.toggleExportMenu(); }} title="Export">⬇ Export</button>
                 ${this.showExportMenu ? html`

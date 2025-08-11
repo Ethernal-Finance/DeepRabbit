@@ -8,13 +8,18 @@ import type { PlaybackState, Prompt } from './types';
 import { GoogleGenAI, LiveMusicFilteredPrompt } from '@google/genai';
 import { PromptDjMidi } from './components/PromptDjMidi';
 import { ToastMessage } from './components/ToastMessage';
+import './components/SubscriptionGate';
 import { LiveMusicHelper } from './utils/LiveMusicHelper';
 import { AudioAnalyser } from './utils/AudioAnalyser';
 import { SessionRecorder, exportMp3, exportWav } from './utils/SessionRecorder';
 import { createClient } from '@supabase/supabase-js';
 // Subscription gating removed
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
+// Read API key from either process.env (via Vite define) or Vite client env (VITE_*)
+// This makes local dev and deployment resilient to different env setups.
+const GEMINI_API_KEY = (typeof process !== 'undefined' && (process as any).env?.GEMINI_API_KEY)
+  || ((import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined);
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY, apiVersion: 'v1alpha' });
 const model = 'lyria-realtime-exp';
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -22,8 +27,8 @@ const supabase = createClient(
 );
 
 function main() {
-  // Start directly in the core app
-  initializeMainApp();
+  // Check subscription status first; gate if not Pro
+  initializeAppWithGate();
 }
 
 async function initializeMainApp() {
@@ -161,6 +166,55 @@ async function initializeMainApp() {
     const level = customEvent.detail;
     pdjMidi.audioLevel = level;
   }));
+}
+
+async function initializeAppWithGate() {
+  // Try to detect Pro plan via our API using any available user id
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id ?? '';
+    const userEmail = user?.email ?? '';
+    if (!userId) {
+      // No auth – show gate requiring sign-in/upgrade
+      renderGate(userId, userEmail);
+      return;
+    }
+    const r = await fetch(`/api/plan?userId=${encodeURIComponent(userId)}`);
+    const plan = await r.json();
+    if (plan?.plan === 'pro') {
+      initializeMainApp();
+    } else {
+      renderGate(userId, userEmail);
+    }
+  } catch {
+    // On failure, be safe and gate
+    renderGate('', '');
+  }
+}
+
+function renderGate(userId: string, email: string) {
+  const gate = document.createElement('subscription-gate') as any;
+  gate.userId = userId;
+  gate.email = email;
+  gate.addEventListener('refresh-plan', async () => {
+    // Re-check and start app if Pro now
+    try {
+      const r = await fetch(`/api/plan?userId=${encodeURIComponent(userId)}`);
+      const plan = await r.json();
+      if (plan?.plan === 'pro') {
+        gate.remove();
+        initializeMainApp();
+      }
+    } catch {}
+  });
+  // Surface gate errors via toast
+  gate.addEventListener('notify', (e: Event) => {
+    const m = (e as CustomEvent<string>).detail;
+    const toast = new ToastMessage();
+    document.body.appendChild(toast);
+    toast.show(m);
+  });
+  document.body.appendChild(gate);
 }
 
 function buildInitialPrompts() {

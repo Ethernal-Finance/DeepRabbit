@@ -6,9 +6,11 @@ import { fetchPlan } from '../src/lib/plan';
 export class RequirePro extends LitElement {
   @property({ type: String, attribute: 'user-id' }) userId = '';
   @property({ type: String }) email = '';
+  @property({ type: Boolean, reflect: true }) inline = false;
   @state() private plan: 'loading' | 'free' | 'pro' | 'unknown' = 'loading';
 
   static override styles = css`
+    :host { display: inline-block; }
     .upgrade {
       display: flex;
       flex-direction: column;
@@ -27,6 +29,28 @@ export class RequirePro extends LitElement {
       background: #29f2c6;
       color: #000;
       font-weight: 600;
+    }
+    .inline-btn {
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 1px solid #444;
+      color: #e0e0e0;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .inline-btn:hover {
+      background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
+      border-color: #555;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
     }
   `;
 
@@ -66,8 +90,11 @@ export class RequirePro extends LitElement {
   }
 
   override render() {
-    if (this.plan === 'loading') return html`<p>Checking your plan…</p>`;
+    if (this.plan === 'loading') return html`<span style="opacity:.7">…</span>`;
     if (this.plan === 'pro') return html`<slot></slot>`;
+    if (this.inline) {
+      return html`<button class="inline-btn" @click=${this.upgrade} title="Upgrade to Pro to use this">Pro</button>`;
+    }
     return html`<div class="upgrade">
       <slot name="fallback"><p>Unlock DeepRabbit Pro to use this feature.</p></slot>
       <button @click=${this.upgrade}>Upgrade</button>
