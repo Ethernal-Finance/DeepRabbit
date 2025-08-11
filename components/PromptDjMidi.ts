@@ -718,7 +718,7 @@ export class PromptDjMidi extends LitElement {
   private evolveTimer: number | null = null;
   @state() private styleSearchQuery: string = '';
   @state() private selectedOrder: string[] = [];
-  @state() private showAllPrompts: boolean = true;
+  @state() private showAllPrompts: boolean = false;
   @state() private isMobile: boolean = false;
   @state() private showMobileMenu: boolean = false;
   private readonly SELECTED_ORDER_STORAGE_KEY = 'pdjmidi_selected_order';
@@ -871,11 +871,33 @@ export class PromptDjMidi extends LitElement {
     this.loadStyleCount?.();
     this.loadSelectedOrder();
     if (this.selectedOrder.length === 0) {
-      // Initialize selected prompts from current weights (up to MAX)
-      const sorted = [...this.prompts.values()].sort((a, b) => (b.weight || 0) - (a.weight || 0));
-      for (const p of sorted) {
+      // Initialize selected prompts empty by default; do not auto-fill more than max.
+      // If there are existing weights > 0, pick the top up to maxSelectedPrompts.
+      const weighted = [...this.prompts.values()]
+        .filter(p => (p.weight ?? 0) > 0.001)
+        .sort((a, b) => (b.weight || 0) - (a.weight || 0));
+      for (const p of weighted) {
         if (this.selectedOrder.length >= this.maxSelectedPrompts) break;
         this.selectedOrder.push(p.promptId);
+      }
+      // If still empty (fresh install), seed grid with 4 random styles at weight 1.0
+      if (this.selectedOrder.length === 0) {
+        const allIds = [...this.prompts.keys()];
+        for (let i = allIds.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allIds[i], allIds[j]] = [allIds[j], allIds[i]];
+        }
+        const seedCount = Math.min(4, allIds.length);
+        const chosen = allIds.slice(0, seedCount);
+        this.selectedOrder = chosen;
+        const updated = new Map(this.prompts);
+        chosen.forEach((id) => {
+          const p = updated.get(id);
+          if (p) { p.weight = 1.0; updated.set(id, p); }
+        });
+        this.prompts = updated;
+        this.saveSelectedOrder();
+        this.savePromptWeights();
       }
     }
     // Sync Set for quick membership checks
@@ -1494,7 +1516,7 @@ export class PromptDjMidi extends LitElement {
 
   private presetSlotCcMap = () => {
     // Determine the set of prompts currently shown in the grid, in order
-    const showAll = this.isMobile ? false : this.showAllPrompts;
+    const showAll = false; // always show selected grid only; "ALL" button was removed
     const promptsToShow: Prompt[] = showAll
       ? [...this.prompts.values()]
       : this.selectedOrder
@@ -1768,7 +1790,8 @@ export class PromptDjMidi extends LitElement {
   private loadShowAll() {
     try {
       const raw = localStorage.getItem(this.SHOW_ALL_GRID_STORAGE_KEY);
-      if (raw === '0') this.showAllPrompts = false; else this.showAllPrompts = true;
+      // Default to false (show only selected grid) unless explicitly set to '1'
+      this.showAllPrompts = raw === '1';
     } catch {}
   }
 

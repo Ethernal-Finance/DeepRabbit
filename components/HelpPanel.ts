@@ -37,36 +37,52 @@ export class HelpPanel extends LitElement {
       <div class="backdrop" @click=${this.close}></div>
       <div class="sheet" @click=${(e: Event) => e.stopPropagation()}>
         <div class="head">
-          <div class="brand">How to use deeprabbit</div>
+          <div class="brand">Music Maker — Quick Guide</div>
           <button class="close" @click=${this.close}>Close</button>
         </div>
         <div class="content">
-          <h3>Quick start</h3>
+          <h3>Make music</h3>
           <ul>
-            <li>Connect your MIDI controller and click the MIDI button to choose an input.</li>
-            <li>Select up to 8 styles for the grid.</li>
-            <li>Press Play.</li>
-            <li>Move mapped knobs to blend styles in real time.</li>
-            <li>Export stems when ready.</li>
+            <li>Select styles from the left panel to add them to the grid (max slots shown in toolbar).</li>
+            <li>Press Play. Move grid sliders to blend styles; higher = louder/denser for that style.</li>
+            <li>Remove a style: click the ✕ on its tile. Non‑grid styles are silent.</li>
           </ul>
 
-          <h3>Mapping controls</h3>
+          <h3>Scenes (instant morphs)</h3>
+          <ul>
+            <li>Open Scenes in the toolbar. Click “Save Scene” to capture current mix and grid.</li>
+            <li>Recall a scene to morph weights over 1/2/4/8s. Use ✎ to rename, 🗑 to delete.</li>
+          </ul>
+
+          <h3>Evolve (auto changes)</h3>
+          <ul>
+            <li>Toggle EVOLVE in the toolbar for subtle, periodic variation of active styles.</li>
+            <li>Use Rate and Depth selects to set how often and how much it changes.</li>
+          </ul>
+
+          <h3>MIDI control</h3>
           <ul>
             <li>Click “Click to learn” on a grid slot, then turn a knob to bind that slot to a MIDI CC.</li>
-            <li>Use the Instruments panel to adjust instrument layers. Click its “Click to learn” to map a MIDI CC.</li>
+            <li>Instrument sliders can also be mapped via their “Click to learn.”</li>
+            <li>Desktop: enter Up,Up,Down,Down,Left,Right,Left,Right to unlock slot CC presets (CC48–55).</li>
           </ul>
 
-          <h3>Performance tips</h3>
+          <h3>Record & export</h3>
           <ul>
-            <li>Curate your Styles list with a wide range of styles, then toggle which 8 are active for each song.</li>
-            <li>Use the left panel to quickly select/deselect styles. Non‑grid items are muted automatically.</li>
-            <li>For smooth transitions, move one style down while bringing another up.</li>
+            <li>Use ⏺ to capture a take. Open Export to download WAV or MP3.</li>
           </ul>
 
-          <h3>Links</h3>
+          <h3>Tips</h3>
           <ul>
-            <li><a href="#" target="_blank" rel="noreferrer">Docs</a></li>
-            <li><a href="#" target="_blank" rel="noreferrer">Changelog</a></li>
+            <li>For clean transitions, lower one style while raising another, or recall a Scene.</li>
+            <li>Keep drums/bass steady while morphing leads/chords for DJ‑tight blends.</li>
+          </ul>
+
+          <h3>Troubleshooting</h3>
+          <ul>
+            <li>No sound: ensure at least one grid slider is above zero; then press Play.</li>
+            <li>Connection lost: app auto‑reconnects; you may hear a short bumper, then music resumes.</li>
+            <li>Filtered text: if a style is blocked, try a different wording/genre.</li>
           </ul>
         </div>
       </div>
