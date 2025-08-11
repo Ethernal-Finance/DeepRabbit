@@ -724,6 +724,7 @@ export class PromptDjMidi extends LitElement {
   private readonly PROMPT_WEIGHTS_STORAGE_KEY = 'pdjmidi_prompt_weights';
   private readonly STYLE_COUNT_STORAGE_KEY = 'pdjmidi_style_count';
   private readonly SHOW_ALL_GRID_STORAGE_KEY = 'pdjmidi_show_all';
+  private readonly SCENES_STORAGE_KEY = 'pdjmidi_scenes';
   private mql?: MediaQueryList;
 
   @property({ type: Boolean }) private showMidi = false;
@@ -742,6 +743,16 @@ export class PromptDjMidi extends LitElement {
   
   private readonly PROMPT_CC_STORAGE_KEY = 'pdjmidi_prompt_cc_mappings';
   private readonly INSTR_CC_STORAGE_KEY = 'pdjmidi_instrument_cc_mappings';
+
+  // Scenes (snapshot/recall) state
+  @state() private scenes: Array<{ id: string; name: string; weights: Record<string, number>; selectedOrder: string[] }> = [];
+  @state() private showScenesMenu = false;
+  @state() private sceneMorphSec = 4;
+
+  // Konami unlock for advanced controls
+  @state() private konamiUnlocked = false;
+  private konamiIndex = 0;
+  private readonly konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight'];
 
   override firstUpdated() {
     try {
@@ -873,6 +884,7 @@ export class PromptDjMidi extends LitElement {
     this.loadMidiMappings();
     this.loadSlotMappings();
     this.loadShowAll();
+    this.loadScenes();
   }
 
   override connectedCallback() {
@@ -896,6 +908,20 @@ export class PromptDjMidi extends LitElement {
   }
 
   private _onKeyDown(e: KeyboardEvent) {
+    // Konami code handling
+    const key = e.key;
+    const expect = this.konamiSeq[this.konamiIndex];
+    if (key === expect) {
+      this.konamiIndex += 1;
+      if (this.konamiIndex === this.konamiSeq.length) {
+        this.konamiUnlocked = true;
+        this.konamiIndex = 0;
+      }
+    } else {
+      // If mismatch, check if this key restarts the sequence
+      this.konamiIndex = key === this.konamiSeq[0] ? 1 : 0;
+    }
+
     if (e.key === '?' || e.key === '/') {
       e.preventDefault();
       this.toggleHelp();
@@ -975,6 +1001,7 @@ export class PromptDjMidi extends LitElement {
 
   private toggleHelp() { this.showHelp = !this.showHelp; }
   private toggleExportMenu() { this.showExportMenu = !this.showExportMenu; }
+  private toggleScenesMenu() { this.showScenesMenu = !this.showScenesMenu; }
 
   private async exportWavOrMp3(kind: 'wav' | 'mp3') {
     this.dispatchEvent(new CustomEvent('export-audio', { detail: { kind } }));
@@ -1079,6 +1106,94 @@ export class PromptDjMidi extends LitElement {
     const run = () => this.runAutoEvolveOnce();
     run();
     this.evolveTimer = window.setInterval(run, this.autoEvolveRateSec * 1000);
+  }
+
+  // --- Scenes: Save/Load/Morph ---
+  private loadScenes() {
+    try {
+      const raw = localStorage.getItem(this.SCENES_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Array<{ id: string; name: string; weights: Record<string, number>; selectedOrder: string[] }>;
+      if (Array.isArray(parsed)) {
+        this.scenes = parsed;
+      }
+    } catch {}
+  }
+
+  private persistScenes() {
+    try { localStorage.setItem(this.SCENES_STORAGE_KEY, JSON.stringify(this.scenes)); } catch {}
+  }
+
+  private saveScene = () => {
+    const weights: Record<string, number> = {};
+    this.prompts.forEach((p, id) => { weights[id] = p.weight || 0; });
+    const nextIndex = this.scenes.length + 1;
+    const scene = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: `Scene ${nextIndex}`,
+      weights,
+      selectedOrder: [...this.selectedOrder],
+    };
+    this.scenes = [...this.scenes, scene];
+    this.persistScenes();
+    this.showScenesMenu = true;
+  }
+
+  private deleteScene = (id: string) => {
+    this.scenes = this.scenes.filter(s => s.id !== id);
+    this.persistScenes();
+  }
+
+  private renameScene = (id: string) => {
+    const name = prompt('Rename scene to:', this.scenes.find(s => s.id === id)?.name || 'Scene');
+    if (!name) return;
+    this.scenes = this.scenes.map(s => s.id === id ? { ...s, name } : s);
+    this.persistScenes();
+  }
+
+  private recallScene = (id: string) => {
+    const scene = this.scenes.find(s => s.id === id);
+    if (!scene) return;
+    // Update grid selection first
+    this.selectedOrder = [...scene.selectedOrder];
+    this.selectedPromptIds = new Set(this.selectedOrder);
+
+    // Prepare morph
+    const start: Record<string, number> = {};
+    this.prompts.forEach((p, pid) => { start[pid] = p.weight || 0; });
+    const target = scene.weights;
+    const durationMs = Math.max(0.1, this.sceneMorphSec) * 1000;
+    const startTime = performance.now();
+
+    const step = () => {
+      const now = performance.now();
+      const t = Math.min(1, (now - startTime) / durationMs);
+      const eased = t; // linear for now
+      const updated = new Map(this.prompts);
+      let changed = false;
+      updated.forEach((p, pid) => {
+        const a = start[pid] ?? 0;
+        const b = target[pid] ?? 0;
+        const w = a + (b - a) * eased;
+        if (Math.abs((p.weight || 0) - w) > 1e-3) {
+          p.weight = Math.max(0, Math.min(2, w));
+          updated.set(pid, p);
+          changed = true;
+        }
+      });
+      if (changed) {
+        this.prompts = updated;
+        this.requestUpdate();
+        this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
+      }
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        this.savePromptWeights();
+      }
+    };
+    requestAnimationFrame(step);
+    this.showScenesMenu = false;
   }
 
   private stopAutoEvolve() {
@@ -1415,7 +1530,7 @@ export class PromptDjMidi extends LitElement {
           <div class="toolbar-right ${this.isMobile ? (this.showMobileMenu ? 'show' : '') : ''}">
             ${this.isMobile ? html`<button class="toolbar-btn" @click=${() => { this.showMobileMenu = false; }} title="Close menu">✕</button>` : ''}
             <button class="toolbar-btn" @click=${() => { this.randomizeGrid(); if (this.isMobile) this.showMobileMenu = false; }} title="Fill grid randomly">🎲</button>
-            <button class="toolbar-btn" @click=${() => { this.presetSlotCcMap(); if (this.isMobile) this.showMobileMenu = false; }} title="Preset CC 48–55">CC48–55</button>
+            ${(!this.isMobile && this.konamiUnlocked) ? html`<button class="toolbar-btn" @click=${() => { this.presetSlotCcMap(); if (this.isMobile) this.showMobileMenu = false; }} title="Preset CC 48–55">CC48–55</button>` : ''}
             <button class="toolbar-btn" @click=${() => { this.resetAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Reset all">♻</button>
             <button class="toolbar-btn ${this.showAllPrompts ? 'active' : ''}" @click=${() => { this.toggleShowAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Show all prompts in grid">ALL</button>
             <button class="toolbar-btn" @click=${() => { this.goHome(); if (this.isMobile) this.showMobileMenu = false; }} title="Return to Home">🏠</button>
@@ -1427,6 +1542,26 @@ export class PromptDjMidi extends LitElement {
                 <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:6px; z-index: 1001;">
                   <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('wav'); if (this.isMobile) this.showMobileMenu = false; }}>Export WAV</button>
                   <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('mp3'); if (this.isMobile) this.showMobileMenu = false; }}>Export MP3</button>
+                </div>` : ''}
+            </div>
+            <div style="position: relative;">
+              <button class="toolbar-btn" @click=${() => { this.toggleScenesMenu(); }} title="Scenes">🎬 Scenes</button>
+              ${this.showScenesMenu ? html`
+                <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:8px; min-width: 220px; z-index: 1001;">
+                  <div style="display:flex; gap:6px; margin-bottom:6px; align-items:center;">
+                    <button class="toolbar-btn" style="flex:1;" @click=${() => { this.saveScene(); }}>Save Scene</button>
+                    <select class="midi-select" title="Morph time" @change=${(e: Event) => { this.sceneMorphSec = Number((e.target as HTMLSelectElement).value); }} .value=${String(this.sceneMorphSec)}>
+                      ${[1,2,4,8].map(s => html`<option value=${s}>${s}s</option>`)}
+                    </select>
+                  </div>
+                  ${this.scenes.length === 0 ? html`<div style="color:#aaa; font-size:12px; padding:6px;">No scenes yet</div>` : ''}
+                  ${this.scenes.map(scene => html`
+                    <div style="display:flex; align-items:center; gap:6px; margin:4px 0;">
+                      <button class="toolbar-btn" style="flex:1; text-align:left;" @click=${() => { this.recallScene(scene.id); if (this.isMobile) this.showMobileMenu = false; }} title="Recall scene">${scene.name}</button>
+                      <button class="toolbar-btn" title="Rename" @click=${() => { this.renameScene(scene.id); }}>✎</button>
+                      <button class="toolbar-btn" title="Delete" @click=${() => { this.deleteScene(scene.id); }}>🗑</button>
+                    </div>
+                  `)}
                 </div>` : ''}
             </div>
             <button class="toolbar-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleAutoEvolve(); if (this.isMobile) this.showMobileMenu = false; }} title="Auto‑evolve">EVOLVE</button>
