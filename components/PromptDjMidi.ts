@@ -634,6 +634,7 @@ export class PromptDjMidi extends LitElement {
         flex-direction: column;
         height: auto; /* let panels size naturally */
       }
+      .slot-close { width: 28px; height: 28px; }
       .toolbar-right { display: none; }
       .toolbar-right.show { display: flex; }
       .transport-controls.compact { padding: 6px 10px; gap: 10px; }
@@ -1327,6 +1328,15 @@ export class PromptDjMidi extends LitElement {
       // Append to order and set
       this.selectedOrder = [...this.selectedOrder, promptId];
       this.selectedPromptIds = new Set(this.selectedOrder);
+      // Auto-activate newly added style with a sensible default weight on mobile/desktop
+      const p = this.prompts.get(promptId);
+      if (p && (!p.weight || p.weight === 0)) {
+        p.weight = 1.0;
+        const updated = new Map(this.prompts); updated.set(promptId, p);
+        this.prompts = updated;
+        this.savePromptWeights();
+        this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
+      }
     } else {
       // Remove from order and set
       this.selectedOrder = this.selectedOrder.filter((id) => id !== promptId);
@@ -1655,7 +1665,7 @@ export class PromptDjMidi extends LitElement {
       const updated = new Map(this.prompts);
       let changed = false;
       updated.forEach((p, id) => {
-        if (!visibleIds.has(id) && p.weight !== 0) {
+        if (!visibleIds.has(id) && (p.weight ?? 0) > 0) {
           p.weight = 0;
           updated.set(id, p);
           changed = true;
@@ -1701,7 +1711,7 @@ export class PromptDjMidi extends LitElement {
     this.selectedPromptIds = new Set(this.selectedOrder);
     // Zero its weight
     const p = this.prompts.get(promptId);
-    if (p && p.weight !== 0) {
+    if (p && (p.weight ?? 0) !== 0) {
       p.weight = 0;
       const updated = new Map(this.prompts);
       updated.set(promptId, p);

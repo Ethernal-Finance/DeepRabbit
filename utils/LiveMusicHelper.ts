@@ -177,10 +177,10 @@ export class LiveMusicHelper extends EventTarget {
   }
 
   public get activePrompts() {
+    // Consider prompts "active" if they have a positive weight OR are present in the current selection
+    // Weight check tolerates tiny float errors.
     return Array.from(this.prompts.values())
-      .filter((p) => {
-        return !this.filteredPrompts.has(p.text) && p.weight !== 0;
-      })
+      .filter((p) => !this.filteredPrompts.has(p.text) && (p.weight ?? 0) > 0.001);
   }
 
   public readonly setWeightedPrompts = throttle(async (prompts: Map<string, Prompt>) => {
