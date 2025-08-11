@@ -16,6 +16,7 @@ import './HelpPanel';
 import './OnboardingTutorial';
 import { MidiDispatcher } from '../utils/MidiDispatcher';
 import { SessionRecorder } from '../utils/SessionRecorder';
+import './RequirePro';
 
 /** The grid of prompt inputs. */
 @customElement('prompt-dj-midi')
@@ -710,6 +711,8 @@ export class PromptDjMidi extends LitElement {
   @state() private maxSelectedPrompts = 8;
   private recorder: SessionRecorder | null = null;
   @state() private showExportMenu = false;
+  @property({ type: String }) userId = '';
+  @property({ type: String }) userEmail = '';
   @state() private showTutorial = false;
   @state() private isRecording = false;
   @state() private autoEvolveEnabled = false;
@@ -1567,14 +1570,16 @@ export class PromptDjMidi extends LitElement {
             <button class="toolbar-btn" @click=${() => { this.goHome(); if (this.isMobile) this.showMobileMenu = false; }} title="Return to Home">🏠</button>
             <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); if (this.isMobile) this.showMobileMenu = false; }} title="Record / Stop">⏺</button>
             <button class="toolbar-btn" @click=${() => { this.toggleHelp(); if (this.isMobile) this.showMobileMenu = false; }} title="How to use">❓</button>
-            <div style="position: relative;">
-              <button class="toolbar-btn" @click=${() => { this.toggleExportMenu(); }} title="Export">⬇ Export</button>
-              ${this.showExportMenu ? html`
-                <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:6px; z-index: 1001;">
-                  <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('wav'); if (this.isMobile) this.showMobileMenu = false; }}>Export WAV</button>
-                  <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('mp3'); if (this.isMobile) this.showMobileMenu = false; }}>Export MP3</button>
-                </div>` : ''}
-            </div>
+            <require-pro .userId=${this.userId} .email=${this.userEmail}>
+              <div style="position: relative;">
+                <button class="toolbar-btn" @click=${() => { this.toggleExportMenu(); }} title="Export">⬇ Export</button>
+                ${this.showExportMenu ? html`
+                  <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:6px; z-index: 1001;">
+                    <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('wav'); if (this.isMobile) this.showMobileMenu = false; }}>Export WAV</button>
+                    <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('mp3'); if (this.isMobile) this.showMobileMenu = false; }}>Export MP3</button>
+                  </div>` : ''}
+              </div>
+            </require-pro>
             <div style="position: relative;">
               <button class="toolbar-btn" @click=${() => { this.toggleScenesMenu(); }} title="Scenes">🎬 Scenes</button>
               ${this.showScenesMenu ? html`
