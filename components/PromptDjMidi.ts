@@ -1532,7 +1532,6 @@ export class PromptDjMidi extends LitElement {
             <button class="toolbar-btn" @click=${() => { this.randomizeGrid(); if (this.isMobile) this.showMobileMenu = false; }} title="Fill grid randomly">🎲</button>
             ${(!this.isMobile && this.konamiUnlocked) ? html`<button class="toolbar-btn" @click=${() => { this.presetSlotCcMap(); if (this.isMobile) this.showMobileMenu = false; }} title="Preset CC 48–55">CC48–55</button>` : ''}
             <button class="toolbar-btn" @click=${() => { this.resetAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Reset all">♻</button>
-            <button class="toolbar-btn ${this.showAllPrompts ? 'active' : ''}" @click=${() => { this.toggleShowAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Show all prompts in grid">ALL</button>
             <button class="toolbar-btn" @click=${() => { this.goHome(); if (this.isMobile) this.showMobileMenu = false; }} title="Return to Home">🏠</button>
             <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); if (this.isMobile) this.showMobileMenu = false; }} title="Record / Stop">⏺</button>
             <button class="toolbar-btn" @click=${() => { this.toggleHelp(); if (this.isMobile) this.showMobileMenu = false; }} title="How to use">❓</button>
