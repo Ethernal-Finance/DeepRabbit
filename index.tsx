@@ -11,10 +11,15 @@ import { ToastMessage } from './components/ToastMessage';
 import { LiveMusicHelper } from './utils/LiveMusicHelper';
 import { AudioAnalyser } from './utils/AudioAnalyser';
 import { SessionRecorder, exportMp3, exportWav } from './utils/SessionRecorder';
+import { createClient } from '@supabase/supabase-js';
 // Subscription gating removed
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
 const model = 'lyria-realtime-exp';
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL!,
+  import.meta.env.VITE_SUPABASE_ANON_KEY!
+);
 
 function main() {
   // Start directly in the core app
@@ -22,15 +27,18 @@ function main() {
 }
 
 async function initializeMainApp() {
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id ?? '';
+  const userEmail = user?.email ?? '';
   const initialPrompts = buildInitialPrompts();
 
   const pdjMidi = new PromptDjMidi(initialPrompts);
+  pdjMidi.userId = userId;
+  pdjMidi.userEmail = userEmail;
   document.body.appendChild(pdjMidi);
 
   const toastMessage = new ToastMessage();
   document.body.appendChild(toastMessage);
-
-  // Subscription gating removed: app loads immediately
 
   const liveMusicHelper = new LiveMusicHelper(ai, model);
   liveMusicHelper.setWeightedPrompts(initialPrompts);
