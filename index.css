@@ -17,10 +17,15 @@ html, body {
   background: var(--bg);
   color: var(--text);
 }
+/* Use dynamic viewport units on mobile to avoid browser chrome issues */
+@supports (height: 100dvh) {
+  html, body { height: 100dvh; }
+}
 body {
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
   font-size: 14px;
-  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  overflow: auto; /* allow scrolling on small screens */
 }
 body.dragging {
   cursor: ns-resize;

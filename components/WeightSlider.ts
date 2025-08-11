@@ -315,37 +315,22 @@ export class WeightSlider extends LitElement {
     }
 
     @media (max-width: 768px) {
-      :host {
-        height: 120px;
-      }
-      
-      .slider-container {
-        height: 90px;
-      }
-      
-      .slider-track {
-        height: 12px;
-        width: 100%;
-      }
-      
-      .slider-thumb {
-        width: 28px;
-        height: 28px;
-      }
-      
-      .value-display {
-        font-size: 11px;
-        padding: 6px 12px;
-      }
-      
-      .audio-visualizer {
-        width: 50px;
-        height: 25px;
-      }
-      
-      .audio-bar {
-        width: 4px;
-      }
+      :host { height: 110px; }
+      .slider-container { height: 80px; }
+      .slider-track { height: 10px; }
+      .slider-thumb { width: 24px; height: 24px; }
+      .value-display { font-size: 11px; padding: 6px 10px; }
+      .audio-visualizer { width: 48px; height: 22px; }
+      .audio-bar { width: 3px; }
+    }
+    
+    @media (max-width: 480px) {
+      :host { height: 100px; }
+      .slider-container { height: 72px; }
+      .slider-track { height: 9px; }
+      .slider-thumb { width: 22px; height: 22px; }
+      .value-display { font-size: 10px; padding: 5px 8px; }
+      .audio-visualizer { width: 44px; height: 20px; }
     }
   `;
 

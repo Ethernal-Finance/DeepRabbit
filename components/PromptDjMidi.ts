@@ -23,6 +23,7 @@ export class PromptDjMidi extends LitElement {
   static override styles = css`
     :host {
       height: 100vh;
+      height: 100dvh; /* mobile-safe */
       display: flex;
       flex-direction: column;
       background: #0f0f0f;
@@ -201,7 +202,8 @@ export class PromptDjMidi extends LitElement {
     .daw-layout {
       display: flex;
       flex: 1;
-      height: calc(100vh - 70px); /* ensure fixed vertical space below header */
+      height: calc(100vh - 70px);
+      height: calc(100dvh - 70px); /* mobile-safe */
       min-height: 0; /* allow children to shrink and enable inner scroll areas */
       align-items: stretch; /* ensure children fill height */
       overflow: hidden;
@@ -269,6 +271,7 @@ export class PromptDjMidi extends LitElement {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       padding: 15px 0;
+      scroll-snap-type: y mandatory;
     }
     
     .style-item {
@@ -279,6 +282,7 @@ export class PromptDjMidi extends LitElement {
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
+      scroll-snap-align: start;
     }
     
     .style-item::before {
@@ -415,7 +419,7 @@ export class PromptDjMidi extends LitElement {
       padding: 25px;
       overflow-y: auto;
       display: grid;
-      grid-template-columns: repeat(4, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 25px;
       align-content: start;
     }
@@ -628,19 +632,28 @@ export class PromptDjMidi extends LitElement {
     @media (max-width: 768px) {
       .daw-layout {
         flex-direction: column;
+        height: auto; /* let panels size naturally */
       }
+      .toolbar-right { display: none; }
+      .toolbar-right.show { display: flex; }
+      .transport-controls.compact { padding: 6px 10px; gap: 10px; }
+      .slider-row { padding: 12px; gap: 12px; }
+      .slider-label { font-size: 13px; }
+      weight-slider { max-width: 180px; }
       
       .style-panel,
       .mixer-panel {
         width: 100%;
         height: auto;
-        max-height: 250px;
+        max-height: 40vh; /* overall panel cap */
+        overflow: auto;
       }
       
       .grid-container {
-        grid-template-columns: repeat(2, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 15px;
         padding: 15px;
+        -webkit-overflow-scrolling: touch;
       }
       
       .slider-row {
@@ -652,6 +665,9 @@ export class PromptDjMidi extends LitElement {
         padding: 20px 25px;
         flex-direction: column;
         gap: 20px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
       }
       
       .toolbar-left,
@@ -663,18 +679,26 @@ export class PromptDjMidi extends LitElement {
 
     @media (max-width: 480px) {
       .grid-container {
-        grid-template-columns: repeat(1, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 10px;
         padding: 10px;
       }
 
       .style-panel,
       .mixer-panel {
-        max-height: 200px;
+        max-height: 35vh;
       }
 
-      .slider-row {
-        padding: 15px;
+      .slider-row { padding: 10px; gap: 10px; }
+      .slider-label { font-size: 12px; }
+      weight-slider { max-width: 160px; }
+      .toolbar-right {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .toolbar-btn, .midi-select {
+        padding: 8px 12px;
+        font-size: 11px;
       }
     }
   `;
@@ -693,9 +717,14 @@ export class PromptDjMidi extends LitElement {
   private evolveTimer: number | null = null;
   @state() private styleSearchQuery: string = '';
   @state() private selectedOrder: string[] = [];
+  @state() private showAllPrompts: boolean = true;
+  @state() private isMobile: boolean = false;
+  @state() private showMobileMenu: boolean = false;
   private readonly SELECTED_ORDER_STORAGE_KEY = 'pdjmidi_selected_order';
   private readonly PROMPT_WEIGHTS_STORAGE_KEY = 'pdjmidi_prompt_weights';
   private readonly STYLE_COUNT_STORAGE_KEY = 'pdjmidi_style_count';
+  private readonly SHOW_ALL_GRID_STORAGE_KEY = 'pdjmidi_show_all';
+  private mql?: MediaQueryList;
 
   @property({ type: Boolean }) private showMidi = false;
   @property({ type: String }) public playbackState: PlaybackState = 'stopped';
@@ -843,16 +872,26 @@ export class PromptDjMidi extends LitElement {
     // Load saved MIDI CC mappings (if any)
     this.loadMidiMappings();
     this.loadSlotMappings();
+    this.loadShowAll();
   }
 
   override connectedCallback() {
     super.connectedCallback();
     this._onKeyDown = this._onKeyDown.bind(this);
     window.addEventListener('keydown', this._onKeyDown);
+    // Detect mobile viewport
+    this.mql = window.matchMedia('(max-width: 768px)');
+    const handleMql = () => { this.isMobile = !!this.mql?.matches; if (!this.isMobile) this.showMobileMenu = false; this.requestUpdate(); };
+    this.mql.addEventListener ? this.mql.addEventListener('change', handleMql) : this.mql.addListener(handleMql);
+    handleMql();
   }
 
   override disconnectedCallback() {
     window.removeEventListener('keydown', this._onKeyDown);
+    if (this.mql) {
+      const noop = () => {};
+      try { this.mql.removeEventListener?.('change', noop); } catch {}
+    }
     super.disconnectedCallback();
   }
 
@@ -860,6 +899,12 @@ export class PromptDjMidi extends LitElement {
     if (e.key === '?' || e.key === '/') {
       e.preventDefault();
       this.toggleHelp();
+    } else if (e.key === 'Escape') {
+      if (this.isMobile && this.showMobileMenu) {
+        e.preventDefault();
+        this.showMobileMenu = false;
+        this.requestUpdate();
+      }
     }
   }
 
@@ -1297,6 +1342,16 @@ export class PromptDjMidi extends LitElement {
     this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
   }
 
+  private toggleShowAll = () => {
+    this.showAllPrompts = !this.showAllPrompts;
+    this.saveShowAll();
+    // When turning off show-all, ensure we zero weights for non-displayed prompts again
+    if (!this.showAllPrompts) {
+      this.resetWeightsForNonDisplayedPrompts();
+    }
+    this.requestUpdate();
+  }
+
   private randomizeGrid = () => {
     const allIds = [...this.prompts.keys()];
     const k = Math.min(this.maxSelectedPrompts, allIds.length);
@@ -1312,91 +1367,132 @@ export class PromptDjMidi extends LitElement {
     this.requestUpdate();
   }
 
+  private presetSlotCcMap = () => {
+    // Determine the set of prompts currently shown in the grid, in order
+    const showAll = this.isMobile ? false : this.showAllPrompts;
+    const promptsToShow: Prompt[] = showAll
+      ? [...this.prompts.values()]
+      : this.selectedOrder
+          .map((id) => this.prompts.get(id))
+          .filter((p): p is Prompt => !!p)
+          .slice(0, this.maxSelectedPrompts);
+
+    const newMap = new Map<number, number>();
+    for (let i = 0; i < promptsToShow.length; i++) {
+      const cc = 48 + (i % 8); // strictly 48..55 only
+      newMap.set(i, cc);
+    }
+    this.slotCcMap = newMap;
+    this.saveSlotMappings();
+    this.requestUpdate();
+  }
+
   override render() {
     return html`
       <!-- DAW Header -->
       <header class="daw-header">
-        <div class="toolbar-left">
-          <gf-brand></gf-brand>
-          <div class="transport-controls">
-            <play-pause-button .playbackState=${this.playbackState} @click=${this.playPause}></play-pause-button>
-            <div class="status-indicator">
-              <div class="status-dot ${this.playbackState === 'playing' ? 'playing' : ''}"></div>
-              <span>${this.playbackState === 'playing' ? 'Playing' : 'Stopped'}</span>
+        ${this.isMobile && !this.showMobileMenu ? html`
+          <div class="toolbar-left" style="justify-content: space-between; width:100%">
+            <gf-brand></gf-brand>
+            <div class="transport-controls compact">
+              <play-pause-button .playbackState=${this.playbackState} @click=${this.playPause}></play-pause-button>
+            </div>
+            <button class="toolbar-btn" @click=${() => { this.showMobileMenu = true; }} title="Open menu">☰</button>
+          </div>
+        ` : html`
+          <div class="toolbar-left">
+            ${this.isMobile ? html`<button class="toolbar-btn" @click=${() => { this.showMobileMenu = false; }} title="Close menu">✕</button>` : ''}
+            <gf-brand></gf-brand>
+            <div class="transport-controls">
+              <play-pause-button .playbackState=${this.playbackState} @click=${this.playPause}></play-pause-button>
+              <div class="status-indicator">
+                <div class="status-dot ${this.playbackState === 'playing' ? 'playing' : ''}"></div>
+                <span>${this.playbackState === 'playing' ? 'Playing' : 'Stopped'}</span>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div class="toolbar-right">
-          <button class="toolbar-btn" @click=${this.randomizeGrid} title="Fill grid randomly">🎲</button>
-          <button class="toolbar-btn" @click=${this.resetAll} title="Reset all">♻</button>
-          <button class="toolbar-btn" @click=${this.goHome} title="Return to Home">🏠</button>
-          <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${this.toggleRecording} title="Record / Stop">⏺</button>
-          <button class="toolbar-btn" @click=${this.toggleHelp} title="How to use">❓</button>
-          <div style="position: relative;">
-            <button class="toolbar-btn" @click=${this.toggleExportMenu} title="Export">⬇ Export</button>
-            ${this.showExportMenu ? html`
-              <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:6px; z-index: 1001;">
-                <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => this.exportWavOrMp3('wav')}>Export WAV</button>
-                <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => this.exportWavOrMp3('mp3')}>Export MP3</button>
-              </div>` : ''}
-          </div>
-          <button class="toolbar-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${this.toggleAutoEvolve} title="Auto‑evolve">EVOLVE</button>
-          <select class="midi-select" title="Evolve rate" @change=${(e: Event) => { this.autoEvolveRateSec = Number((e.target as HTMLSelectElement).value); if (this.autoEvolveEnabled) this.startAutoEvolve(); }} .value=${String(this.autoEvolveRateSec)}>
-            ${[8,16,32,64].map(s => html`<option value=${s}>${s}s</option>`)}
-          </select>
-          <select class="midi-select" title="Evolve depth" @change=${(e: Event) => { this.autoEvolveDepth = Number((e.target as HTMLSelectElement).value); }} .value=${String(this.autoEvolveDepth)}>
-            <option value="0.1">Subtle</option>
-            <option value="0.15">Light</option>
-            <option value="0.25">Medium</option>
-            <option value="0.4">Bold</option>
-          </select>
-          <select class="midi-select" title="Style slots" @change=${this.handleStyleSlotChange} .value=${String(this.maxSelectedPrompts)}>
-            ${[2,4,6,8,16].map(n => html`<option value=${n}>${n} styles</option>`)}
-          </select>
-          <button class="toolbar-btn ${this.showMidi ? 'active' : ''}" @click=${this.toggleShowMidi}>MIDI</button>
-          ${this.showMidi ? html`
-            <select class="midi-select" @change=${this.handleMidiInputChange} .value=${this.activeMidiInputId || ''}>
-              <option value="">MIDI Input</option>
-              ${this.midiInputIds.length > 0
-                ? this.midiInputIds.map(
-                    (id) => html`<option value=${id}>${this.midiDispatcher.getDeviceName(id)}</option>`
-                  )
-                : html`<option value="">No devices found</option>`}
+          
+          <div class="toolbar-right ${this.isMobile ? (this.showMobileMenu ? 'show' : '') : ''}">
+            ${this.isMobile ? html`<button class="toolbar-btn" @click=${() => { this.showMobileMenu = false; }} title="Close menu">✕</button>` : ''}
+            <button class="toolbar-btn" @click=${() => { this.randomizeGrid(); if (this.isMobile) this.showMobileMenu = false; }} title="Fill grid randomly">🎲</button>
+            <button class="toolbar-btn" @click=${() => { this.presetSlotCcMap(); if (this.isMobile) this.showMobileMenu = false; }} title="Preset CC 48–55">CC48–55</button>
+            <button class="toolbar-btn" @click=${() => { this.resetAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Reset all">♻</button>
+            <button class="toolbar-btn ${this.showAllPrompts ? 'active' : ''}" @click=${() => { this.toggleShowAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Show all prompts in grid">ALL</button>
+            <button class="toolbar-btn" @click=${() => { this.goHome(); if (this.isMobile) this.showMobileMenu = false; }} title="Return to Home">🏠</button>
+            <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); if (this.isMobile) this.showMobileMenu = false; }} title="Record / Stop">⏺</button>
+            <button class="toolbar-btn" @click=${() => { this.toggleHelp(); if (this.isMobile) this.showMobileMenu = false; }} title="How to use">❓</button>
+            <div style="position: relative;">
+              <button class="toolbar-btn" @click=${() => { this.toggleExportMenu(); }} title="Export">⬇ Export</button>
+              ${this.showExportMenu ? html`
+                <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:6px; z-index: 1001;">
+                  <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('wav'); if (this.isMobile) this.showMobileMenu = false; }}>Export WAV</button>
+                  <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('mp3'); if (this.isMobile) this.showMobileMenu = false; }}>Export MP3</button>
+                </div>` : ''}
+            </div>
+            <button class="toolbar-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleAutoEvolve(); if (this.isMobile) this.showMobileMenu = false; }} title="Auto‑evolve">EVOLVE</button>
+            <select class="midi-select" title="Evolve rate" @change=${(e: Event) => { this.autoEvolveRateSec = Number((e.target as HTMLSelectElement).value); if (this.autoEvolveEnabled) this.startAutoEvolve(); if (this.isMobile) this.showMobileMenu = false; }} .value=${String(this.autoEvolveRateSec)}>
+              ${[8,16,32,64].map(s => html`<option value=${s}>${s}s</option>`)}
             </select>
-          ` : ''}
-        </div>
+            <select class="midi-select" title="Evolve depth" @change=${(e: Event) => { this.autoEvolveDepth = Number((e.target as HTMLSelectElement).value); if (this.isMobile) this.showMobileMenu = false; }} .value=${String(this.autoEvolveDepth)}>
+              <option value="0.1">Subtle</option>
+              <option value="0.15">Light</option>
+              <option value="0.25">Medium</option>
+              <option value="0.4">Bold</option>
+            </select>
+          ${this.isMobile ? '' : html`
+            <select class="midi-select" title="Style slots" @change=${this.handleStyleSlotChange} .value=${String(this.maxSelectedPrompts)}>
+              ${[2,4,6,8,16].map(n => html`<option value=${n}>${n} styles</option>`)}
+            </select>
+          `}
+          ${this.isMobile ? '' : html`
+            <button class="toolbar-btn ${this.showMidi ? 'active' : ''}" @click=${this.toggleShowMidi}>MIDI</button>
+            ${this.showMidi ? html`
+              <select class="midi-select" @change=${this.handleMidiInputChange} .value=${this.activeMidiInputId || ''}>
+                <option value="">MIDI Input</option>
+                ${this.midiInputIds.length > 0
+                  ? this.midiInputIds.map(
+                      (id) => html`<option value=${id}>${this.midiDispatcher.getDeviceName(id)}</option>`
+                    )
+                  : html`<option value="">No devices found</option>`}
+              </select>
+            ` : ''}
+          `}
+          </div>
+        `}
       </header>
 
       <!-- Main DAW Layout -->
       <div class="daw-layout">
         <!-- Left Panel: Track List -->
-        <aside class="style-panel">
+          <aside class="style-panel">
           <div class="panel-header">
             <h3>Styles</h3>
             <input class="midi-select" style="width: 100%; margin-top: 8px;" type="text" placeholder="Search styles..." aria-label="Search styles" @input=${(e: Event) => { this.styleSearchQuery = (e.target as HTMLInputElement).value.toLowerCase(); }} .value=${this.styleSearchQuery} />
           </div>
-          <div class="style-list" role="listbox" aria-multiselectable="true">
+          <div class="style-list" role="listbox" aria-multiselectable="true" style="${this.isMobile ? 'max-height: 216px;' : ''}">
             ${this.renderStyleList()}
           </div>
         </aside>
 
         <!-- Center: Main Workspace -->
         <main class="workspace">
-          <!-- Timeline Ruler -->
-          <timeline-ruler 
-            .currentTime=${this.currentTime || 0}
-            .duration=${120}
-            .bpm=${120}
-            .timeSignature=${4}
-            .isPlaying=${this.playbackState === 'playing'}>
-          </timeline-ruler>
+          ${this.isMobile ? '' : html`
+            <timeline-ruler 
+              .currentTime=${this.currentTime || 0}
+              .duration=${120}
+              .bpm=${120}
+              .timeSignature=${4}
+              .isPlaying=${this.playbackState === 'playing'}>
+            </timeline-ruler>
+          `}
           
           <!-- Timeline/Grid Area -->
           <div class="timeline-area">
-           <div class="timeline-header">
-              <h3>deeprabbit — Fresh tracks. Forged by AI.</h3>
-            </div>
+            ${this.isMobile ? '' : html`
+              <div class="timeline-header">
+                <h3>deeprabbit — Fresh tracks. Forged by AI.</h3>
+              </div>
+            `}
             <div class="grid-container">
               ${this.renderPrompts()}
             </div>
@@ -1411,25 +1507,32 @@ export class PromptDjMidi extends LitElement {
   }
 
   private renderPrompts() {
-    const promptsToShow: Prompt[] = this.selectedOrder
-      .map((id) => this.prompts.get(id))
-      .filter((p): p is Prompt => !!p)
-      .slice(0, this.maxSelectedPrompts);
-    // Ensure any prompts not in the visible set have zero weight
-    const visibleIds = new Set(promptsToShow.map(p => p.promptId));
-    const updated = new Map(this.prompts);
-    let changed = false;
-    updated.forEach((p, id) => {
-      if (!visibleIds.has(id) && p.weight !== 0) {
-        p.weight = 0;
-        updated.set(id, p);
-        changed = true;
+    const showAll = this.isMobile ? false : this.showAllPrompts;
+    const promptsToShow: Prompt[] = showAll
+      ? [...this.prompts.values()]
+      : this.selectedOrder
+          .map((id) => this.prompts.get(id))
+          .filter((p): p is Prompt => !!p)
+          .slice(0, this.maxSelectedPrompts);
+
+    // When not showing all, ensure non-visible prompts are zeroed
+    if (!showAll) {
+      const visibleIds = new Set(promptsToShow.map(p => p.promptId));
+      const updated = new Map(this.prompts);
+      let changed = false;
+      updated.forEach((p, id) => {
+        if (!visibleIds.has(id) && p.weight !== 0) {
+          p.weight = 0;
+          updated.set(id, p);
+          changed = true;
+        }
+      });
+      if (changed) {
+        this.prompts = updated;
+        this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
       }
-    });
-    if (changed) {
-      this.prompts = updated;
-      this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
     }
+
     return promptsToShow.map((prompt, index) => {
       const isFiltered = this.filteredPrompts.has(prompt.text);
       const blending = prompt.weight > 0;
@@ -1442,15 +1545,17 @@ export class PromptDjMidi extends LitElement {
             color=${isFiltered ? '#888' : prompt.color}
             audioLevel=${isFiltered ? 0 : this.audioLevel}
             @input=${(e: CustomEvent) => this.handleSliderChange(prompt.promptId, e.detail)}></weight-slider>
-          <button type="button" class="midi-info ${this.learningSlotIndex === index ? 'active' : ''}"
-            @click=${() => this.toggleSlotLearn(index)}
-            aria-label=${this.learningSlotIndex === index
-              ? 'Mapping in progress, turn a knob'
-              : (this.slotCcMap.has(index) ? `Mapped to CC ${this.slotCcMap.get(index)}. Click to remap` : 'Click to learn MIDI mapping')}>
-            ${this.learningSlotIndex === index
-              ? 'Learning… turn a knob'
-              : (this.slotCcMap.has(index) ? `CC:${this.slotCcMap.get(index)}` : 'Click to learn')}
-          </button>
+          ${this.isMobile ? '' : html`
+            <button type="button" class="midi-info ${this.learningSlotIndex === index ? 'active' : ''}"
+              @click=${() => this.toggleSlotLearn(index)}
+              aria-label=${this.learningSlotIndex === index
+                ? 'Mapping in progress, turn a knob'
+                : (this.slotCcMap.has(index) ? `Mapped to CC ${this.slotCcMap.get(index)}. Click to remap` : 'Click to learn MIDI mapping')}>
+              ${this.learningSlotIndex === index
+                ? 'Learning… turn a knob'
+                : (this.slotCcMap.has(index) ? `CC:${this.slotCcMap.get(index)}` : 'Click to learn')}
+            </button>
+          `}
         </div>
       </div>`;
     });
@@ -1509,6 +1614,17 @@ export class PromptDjMidi extends LitElement {
         if (p) { p.weight = w; updated.set(id, p); }
       });
       this.prompts = updated;
+    } catch {}
+  }
+
+  private saveShowAll() {
+    try { localStorage.setItem(this.SHOW_ALL_GRID_STORAGE_KEY, this.showAllPrompts ? '1' : '0'); } catch {}
+  }
+
+  private loadShowAll() {
+    try {
+      const raw = localStorage.getItem(this.SHOW_ALL_GRID_STORAGE_KEY);
+      if (raw === '0') this.showAllPrompts = false; else this.showAllPrompts = true;
     } catch {}
   }
 
