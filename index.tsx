@@ -199,7 +199,20 @@ function renderGate(userId: string, email: string) {
   gate.addEventListener('refresh-plan', async () => {
     // Re-check and start app if Pro now
     try {
+      if (!userId) {
+        const toast = new ToastMessage();
+        document.body.appendChild(toast);
+        toast.show('Sign in required before refreshing plan.');
+        return;
+      }
       const r = await fetch(`/api/plan?userId=${encodeURIComponent(userId)}`);
+      if (!r.ok) {
+        const msg = await r.text();
+        const toast = new ToastMessage();
+        document.body.appendChild(toast);
+        toast.show(msg || 'Plan check failed');
+        return;
+      }
       const plan = await r.json();
       if (plan?.plan === 'pro') {
         gate.remove();
@@ -213,6 +226,14 @@ function renderGate(userId: string, email: string) {
     const toast = new ToastMessage();
     document.body.appendChild(toast);
     toast.show(m);
+  });
+  // Dev bypass: allow skipping the gate locally
+  gate.addEventListener('dev-bypass', () => {
+    const host = (window?.location?.hostname || '').toLowerCase();
+    if (host === 'localhost' || host === '127.0.0.1') {
+      gate.remove();
+      initializeMainApp();
+    }
   });
   document.body.appendChild(gate);
 }
@@ -393,6 +414,7 @@ const DEFAULT_PROMPTS = [
   { color: '#ff6b6b', text: 'Dark Trap' },
   { color: '#4ecdc4', text: 'Afro Trap' },
   { color: '#45b7d1', text: 'Dungeon Synth' },
+  { color: '#ffd166', text: 'Gospel' },
 ];
 
 main();

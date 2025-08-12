@@ -85,6 +85,8 @@ export class SubscriptionGate extends LitElement {
   }
 
   override render() {
+    const host = (window?.location?.hostname || '').toLowerCase();
+    const isDev = host === 'localhost' || host === '127.0.0.1';
     return html`
       <div class="card" role="dialog" aria-modal="true" aria-label="Subscription required">
         <h1>DeepRabbit Pro required</h1>
@@ -93,6 +95,7 @@ export class SubscriptionGate extends LitElement {
           <button class="primary" ?disabled=${this.busy} @click=${this.upgrade}>Upgrade</button>
           <button ?disabled=${this.busy} @click=${this.manage}>Manage billing</button>
           <button class="muted" ?disabled=${this.busy} @click=${this.refresh}>I’ve upgraded — Refresh</button>
+          ${isDev ? html`<button class="muted" @click=${() => this.dispatchEvent(new CustomEvent('dev-bypass', {bubbles:true, composed:true}))}>Skip for Dev</button>` : ''}
         </div>
         <div class="hint">We’ll unlock the studio as soon as your plan is Pro.</div>
       </div>
