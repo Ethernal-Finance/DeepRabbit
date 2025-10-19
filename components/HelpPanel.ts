@@ -41,48 +41,69 @@ export class HelpPanel extends LitElement {
           <button class="close" @click=${this.close}>Close</button>
         </div>
         <div class="content">
-          <h3>Make music</h3>
+          <h3>Getting Started</h3>
           <ul>
-            <li>Select styles from the left panel to add them to the grid (max slots shown in toolbar).</li>
-            <li>Press Play. Move grid sliders to blend styles; higher = louder/denser for that style.</li>
-            <li>Remove a style: click the ✕ on its tile. Non‑grid styles are silent.</li>
+            <li>Toggle between <strong>Styles</strong> and <strong>Instruments</strong> in the left panel</li>
+            <li>Click styles/instruments to add them to your grid (max slots shown in toolbar)</li>
+            <li>Press <strong>Play</strong> to start your music. Adjust grid sliders to blend elements</li>
+            <li>Higher slider values = more prominent in your mix</li>
           </ul>
 
-          <h3>Scenes (instant morphs)</h3>
+          <h3>Mobile Experience</h3>
           <ul>
-            <li>Open Scenes in the toolbar. Click “Save Scene” to capture current mix and grid.</li>
-            <li>Recall a scene to morph weights over 1/2/4/8s. Use ✎ to rename, 🗑 to delete.</li>
+            <li>Use the <strong>bottom navigation bar</strong> for all controls</li>
+            <li><strong>Center Play Button</strong>: Start/stop your music</li>
+            <li><strong>Evolve Button</strong>: Auto-evolution controls</li>
+            <li><strong>Menu Button</strong>: Access all features</li>
+            <li><strong>Settings Button</strong>: Generator settings</li>
+            <li><strong>Record Button</strong>: Recording controls</li>
           </ul>
 
-          <h3>Evolve (auto changes)</h3>
+          <h3>Auto-Evolve</h3>
           <ul>
-            <li>Toggle EVOLVE in the toolbar for subtle, periodic variation of active styles.</li>
-            <li>Use Rate and Depth selects to set how often and how much it changes.</li>
+            <li>Enable <strong>EVOLVE</strong> for automatic musical variation</li>
+            <li><strong>Rate</strong>: How often changes occur (8s, 16s, 32s, 64s)</li>
+            <li><strong>Depth</strong>: How much variation (Subtle, Light, Medium, Bold)</li>
+            <li>Creates dynamic, ever-changing performances</li>
           </ul>
 
-          <h3>MIDI control</h3>
+          <h3>Scenes & Morphing</h3>
           <ul>
-            <li>Click “Click to learn” on a grid slot, then turn a knob to bind that slot to a MIDI CC.</li>
-            <li>Instrument sliders can also be mapped via their “Click to learn.”</li>
-            <li>Desktop: enter Up,Up,Down,Down,Left,Right,Left,Right to unlock slot CC presets (CC48–55).</li>
+            <li><strong>Save Scene</strong>: Capture current mix and grid settings</li>
+            <li><strong>Recall Scene</strong>: Morph to saved settings over time</li>
+            <li><strong>Morph Time</strong>: Choose transition speed (1s, 2s, 4s, 8s)</li>
+            <li>Perfect for live performances and smooth transitions</li>
           </ul>
 
-          <h3>Record & export</h3>
+          <h3>MIDI Control</h3>
           <ul>
-            <li>Use ⏺ to capture a take. Open Export to download WAV or MP3.</li>
+            <li>Click <strong>"Click to learn"</strong> on grid slots, then turn MIDI knobs</li>
+            <li>Map instrument sliders via their "Click to learn" buttons</li>
+            <li>Desktop: Konami code (↑↑↓↓←→←→) unlocks CC48–55 presets</li>
+            <li>Real-time control for live performances</li>
           </ul>
 
-          <h3>Tips</h3>
+          <h3>Recording & Export</h3>
           <ul>
-            <li>For clean transitions, lower one style while raising another, or recall a Scene.</li>
-            <li>Keep drums/bass steady while morphing leads/chords for DJ‑tight blends.</li>
+            <li><strong>Record Button</strong>: Start/stop recording your performance</li>
+            <li><strong>Export</strong>: Download your music as WAV or MP3</li>
+            <li>Capture your creative moments and share them</li>
+          </ul>
+
+          <h3>Pro Tips</h3>
+          <ul>
+            <li>Use <strong>Active Only</strong> filter to focus on current elements</li>
+            <li>Search styles/instruments for quick access</li>
+            <li>Keep drums/bass steady while morphing leads for tight blends</li>
+            <li>Combine Auto-Evolve with Scenes for dynamic performances</li>
           </ul>
 
           <h3>Troubleshooting</h3>
           <ul>
-            <li>No sound: ensure at least one grid slider is above zero; then press Play.</li>
-            <li>Connection lost: app auto‑reconnects; you may hear a short bumper, then music resumes.</li>
-            <li>Filtered text: if a style is blocked, try a different wording/genre.</li>
+            <li><strong>No sound</strong>: Ensure grid sliders are above zero, then press Play</li>
+            <li><strong>Connection issues</strong>: App auto-reconnects; music resumes after brief pause</li>
+            <li><strong>Mobile zoom</strong>: Fixed with proper input sizing</li>
+            <li><strong>Performance</strong>: Close unused popups for better responsiveness</li>
           </ul>
         </div>
       </div>

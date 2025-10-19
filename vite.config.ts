@@ -16,12 +16,6 @@ export default defineConfig(({ mode }) => {
           // Explicit host seen in error (helps if RegExp is not honored)
           '13306b8a3138.ngrok-free.app',
         ],
-        proxy: {
-          '/api': {
-            target: 'http://localhost:8787',
-            changeOrigin: true,
-          },
-        },
       },
       preview: {
         allowedHosts: [

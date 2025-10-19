@@ -207,12 +207,44 @@ export class PlayPauseButton extends LitElement {
       left: 100%;
     }
     
-    /* Professional button glow effect */
-    .button-container.playing::after {
-      background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(41, 242, 198, 0.2) 50%, 
-        transparent 100%);
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      :host {
+        width: 44px;
+        height: 44px;
+        touch-action: manipulation;
+      }
+      
+      .button-container {
+        border-width: 2px;
+        border-radius: 8px;
+      }
+      
+      .button-container:active {
+        transform: scale(0.95);
+      }
+      
+      .status-indicator {
+        width: 16px;
+        height: 16px;
+        top: -8px;
+        right: -8px;
+        border-width: 2px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      :host {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .status-indicator {
+        width: 14px;
+        height: 14px;
+        top: -7px;
+        right: -7px;
+      }
     }
   `;
 

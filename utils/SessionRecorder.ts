@@ -11,10 +11,11 @@ export class SessionRecorder {
   private chunks: BlobPart[] = [];
   private mimeType: string;
   private asMp3: boolean;
-  private scriptNode: ScriptProcessorNode | null = null;
+  private audioWorkletNode: AudioWorkletNode | null = null;
   private pcmLeft: Float32Array[] = [];
   private pcmRight: Float32Array[] = [];
   private wavBuffer: AudioBuffer | null = null;
+  private workletLoaded: boolean = false;
 
   constructor(audioContext: AudioContext, tapNode: AudioNode, mimeType: string = 'audio/webm;codecs=opus', asMp3 = false) {
     this.audioContext = audioContext;
@@ -23,48 +24,127 @@ export class SessionRecorder {
     this.asMp3 = asMp3;
   }
 
-  public start(): void {
+  private async loadAudioWorklet(): Promise<void> {
+    if (this.workletLoaded) return;
+    
+    // Check if AudioWorklet is supported
+    if (!this.audioContext.audioWorklet) {
+      throw new Error('AudioWorklet not supported in this browser');
+    }
+    
+    try {
+      await this.audioContext.audioWorklet.addModule('/audio-recorder-processor.js');
+      this.workletLoaded = true;
+      console.log('AudioWorklet loaded successfully');
+    } catch (error) {
+      console.error('Failed to load AudioWorklet:', error);
+      throw new Error(`AudioWorklet failed to load: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  public async start(): Promise<void> {
     if (this.asMp3) {
-      if (this.scriptNode) return;
-      // Capture PCM via ScriptProcessor and encode later
-      const bufferSize = 4096;
-      const channels = 2;
-      // @ts-ignore - deprecated in TS but still available in browsers
-      this.scriptNode = this.audioContext.createScriptProcessor(bufferSize, channels, channels);
-      this.pcmLeft = [];
-      this.pcmRight = [];
-      this.scriptNode.onaudioprocess = (e: AudioProcessingEvent) => {
-        const input = e.inputBuffer;
-        const left = new Float32Array(input.getChannelData(0));
-        const right = input.numberOfChannels > 1 ? new Float32Array(input.getChannelData(1)) : new Float32Array(left);
-        this.pcmLeft.push(left);
-        this.pcmRight.push(right);
-        this.wavBuffer = input;
-        // Do not write to output; keep it silent
-      };
-      // Connect tap to processor; connect processor to destination to keep it alive (outputs silence)
-      (this.tapNode as any).connect?.(this.scriptNode);
-      this.scriptNode.connect(this.audioContext.destination);
+      if (this.audioWorkletNode) return;
+      
+      try {
+        // Load AudioWorklet if not already loaded
+        await this.loadAudioWorklet();
+        
+        // Create AudioWorkletNode
+        this.audioWorkletNode = new AudioWorkletNode(this.audioContext, 'audio-recorder-processor');
+        
+        // Set up message handling from the worklet
+        this.audioWorkletNode.port.onmessage = (event) => {
+          const { type, leftChannel, rightChannel } = event.data;
+          
+          if (type === 'data') {
+            this.pcmLeft = leftChannel || [];
+            this.pcmRight = rightChannel || [];
+          }
+        };
+        
+        // Clear previous data
+        this.pcmLeft = [];
+        this.pcmRight = [];
+        
+        // Connect tap to worklet; connect worklet to destination to keep it alive
+        this.tapNode.connect(this.audioWorkletNode);
+        this.audioWorkletNode.connect(this.audioContext.destination);
+        
+        // Start recording
+        this.audioWorkletNode.port.postMessage({ type: 'start' });
+        
+      } catch (error) {
+        console.error('Failed to start AudioWorklet recording:', error);
+        // Fallback to ScriptProcessorNode if AudioWorklet fails
+        console.warn('Falling back to legacy ScriptProcessorNode recording');
+        this.startLegacyRecording();
+      }
       return;
     }
+    
     // Default: record via MediaRecorder (WebM/Opus)
     if (this.recorder) return;
     this.mediaDest = this.audioContext.createMediaStreamDestination();
-    (this.tapNode as any).connect?.(this.mediaDest);
+    this.tapNode.connect(this.mediaDest);
     this.recorder = new MediaRecorder(this.mediaDest.stream, { mimeType: this.mimeType });
     this.chunks = [];
     this.recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) this.chunks.push(e.data); };
     this.recorder.start();
   }
 
+  private startLegacyRecording(): void {
+    // Fallback to deprecated ScriptProcessorNode if AudioWorklet is not available
+    console.warn('Using deprecated ScriptProcessorNode as fallback. AudioWorklet not available.');
+    
+    const bufferSize = 4096;
+    const channels = 2;
+    // @ts-ignore - deprecated in TS but still available in browsers
+    const scriptNode = this.audioContext.createScriptProcessor(bufferSize, channels, channels);
+    this.pcmLeft = [];
+    this.pcmRight = [];
+    
+    scriptNode.onaudioprocess = (e: AudioProcessingEvent) => {
+      const input = e.inputBuffer;
+      const left = new Float32Array(input.getChannelData(0));
+      const right = input.numberOfChannels > 1 ? new Float32Array(input.getChannelData(1)) : new Float32Array(left);
+      this.pcmLeft.push(left);
+      this.pcmRight.push(right);
+      this.wavBuffer = input;
+    };
+    
+    this.tapNode.connect(scriptNode);
+    scriptNode.connect(this.audioContext.destination);
+    
+    // Store reference for cleanup
+    (this as any).scriptNode = scriptNode;
+  }
+
   public async stop(): Promise<Blob> {
     // MP3 path using PCM capture
     if (this.asMp3) {
-      if (!this.scriptNode) throw new Error('Recorder not started');
-      try { (this.tapNode as any).disconnect?.(this.scriptNode as any); } catch {}
-      try { this.scriptNode.disconnect(); } catch {}
-      this.scriptNode.onaudioprocess = null as any;
-      this.scriptNode = null;
+      if (this.audioWorkletNode) {
+        // Stop the worklet and get final data
+        this.audioWorkletNode.port.postMessage({ type: 'stop' });
+        
+        // Wait a moment for the worklet to send the final data
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Clean up connections
+        try { this.tapNode.disconnect(this.audioWorkletNode); } catch {}
+        try { this.audioWorkletNode.disconnect(); } catch {}
+        this.audioWorkletNode = null;
+      } else if ((this as any).scriptNode) {
+        // Legacy ScriptProcessorNode cleanup
+        const scriptNode = (this as any).scriptNode;
+        try { this.tapNode.disconnect(scriptNode); } catch {}
+        try { scriptNode.disconnect(); } catch {}
+        scriptNode.onaudioprocess = null as any;
+        (this as any).scriptNode = null;
+      } else {
+        throw new Error('Recorder not started');
+      }
+      
       const left = concatFloat32(this.pcmLeft);
       const right = concatFloat32(this.pcmRight);
       this.pcmLeft = [];
@@ -73,6 +153,7 @@ export class SessionRecorder {
       const mp3Blob = encodeStereoToMp3(left, right, this.audioContext.sampleRate, lame);
       return mp3Blob;
     }
+    
     // WebM path
     if (!this.recorder) throw new Error('Recorder not started');
     const recorder = this.recorder;
@@ -82,7 +163,7 @@ export class SessionRecorder {
     });
     recorder.stop();
     await finished;
-    try { (this.tapNode as any).disconnect?.(dest as any); } catch {}
+    try { this.tapNode.disconnect(dest); } catch {}
     this.recorder = null;
     this.mediaDest = null;
     return new Blob(this.chunks, { type: this.mimeType });

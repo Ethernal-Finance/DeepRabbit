@@ -23,15 +23,16 @@ export class PromptController extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(26, 26, 46, 0.6);
       border-radius: 16px;
       padding: 0.6rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      backdrop-filter: blur(20px);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
       margin: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
     
     .prompt::before {
@@ -52,9 +53,9 @@ export class PromptController extends LitElement {
     }
     
     .prompt:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(41, 242, 198, 0.2);
+      border-color: rgba(41, 242, 198, 0.4);
     }
     
     weight-slider {
@@ -67,23 +68,24 @@ export class PromptController extends LitElement {
       font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
       text-align: center;
       font-size: 0.75rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(41, 242, 198, 0.3);
       border-radius: 8px;
       padding: 0.25rem 0.5rem;
-      color: rgba(255, 255, 255, 0.8);
-      background: rgba(0, 0, 0, 0.3);
+      color: rgba(224, 224, 224, 0.8);
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(15px);
       cursor: pointer;
       visibility: hidden;
       user-select: none;
       margin-top: 0.5rem;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
       font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       
       .learn-mode & {
         color: #fbbf24;
         border-color: #fbbf24;
-        background: rgba(251, 191, 36, 0.1);
+        background: rgba(251, 191, 36, 0.2);
         animation: pulse 1.5s ease-in-out infinite;
       }
       
@@ -92,9 +94,10 @@ export class PromptController extends LitElement {
       }
       
       &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: translateY(-1px);
+        background: rgba(41, 242, 198, 0.1);
+        border-color: rgba(41, 242, 198, 0.6);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(41, 242, 198, 0.2);
       }
     }
     
@@ -110,22 +113,23 @@ export class PromptController extends LitElement {
       text-align: center;
       white-space: pre;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(41, 242, 198, 0.2);
       outline: none;
       -webkit-font-smoothing: antialiased;
-      background: rgba(0, 0, 0, 0.4);
-      color: #fff;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(10px);
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(15px);
+      color: #e0e0e0;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       
       &:not(:focus) {
         text-overflow: ellipsis;
       }
       
       &:focus {
-        border-color: rgba(255, 255, 255, 0.4);
-        background: rgba(0, 0, 0, 0.6);
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        border-color: rgba(41, 242, 198, 0.6);
+        background: rgba(26, 26, 46, 0.8);
+        box-shadow: 0 0 0 3px rgba(41, 242, 198, 0.2);
       }
     }
     

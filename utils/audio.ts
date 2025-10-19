@@ -24,62 +24,75 @@ function decode(base64: string) {
   return bytes;
 }
 
-function createBlob(data: Float32Array): Blob {
-  const l = data.length;
-  const int16 = new Int16Array(l);
-  for (let i = 0; i < l; i++) {
-    // convert float32 -1 to 1 to int16 -32768 to 32767
-    int16[i] = data[i] * 32768;
-  }
-
-  return {
-    data: encode(new Uint8Array(int16.buffer)),
-    mimeType: 'audio/pcm;rate=16000',
-  };
-}
-
-async function decodeAudioData(
-  data: Uint8Array,
-  ctx: AudioContext,
-  sampleRate: number,
-  numChannels: number,
-): Promise<AudioBuffer> {
-  const buffer = ctx.createBuffer(
-    numChannels,
-    data.length / 2 / numChannels,
-    sampleRate,
-  );
-
-  const dataInt16 = new Int16Array(data.buffer);
-  const l = dataInt16.length;
-  const dataFloat32 = new Float32Array(l);
-  for (let i = 0; i < l; i++) {
-    dataFloat32[i] = dataInt16[i] / 32768.0;
-  }
-  // Extract interleaved channels
-  if (numChannels === 0) {
-    buffer.copyToChannel(dataFloat32, 0);
-  } else {
-    for (let i = 0; i < numChannels; i++) {
-      const channel = dataFloat32.filter(
-        (_, index) => index % numChannels === i,
-      );
-      buffer.copyToChannel(channel, i);
+export async function decodeAudioData(audioData: Uint8Array, audioContext: AudioContext, sampleRate: number = 48000, channels: number = 2): Promise<AudioBuffer> {
+  try {
+    // Ensure audio context is running
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
     }
+    
+    // Debug: Log audio data info
+    console.log('Audio data info:', {
+      length: audioData.length,
+      byteOffset: audioData.byteOffset,
+      byteLength: audioData.byteLength,
+      firstBytes: Array.from(audioData.slice(0, 16)).map(b => b.toString(16).padStart(2, '0')).join(' '),
+      audioContextState: audioContext.state
+    });
+    
+    // Check if data looks like valid audio (has common audio file headers)
+    const firstBytes = Array.from(audioData.slice(0, 4));
+    const isLikelyAudio = firstBytes[0] === 0x52 && firstBytes[1] === 0x49 && firstBytes[2] === 0x46 && firstBytes[3] === 0x46 || // RIFF
+                         firstBytes[0] === 0xFF && (firstBytes[1] === 0xFB || firstBytes[1] === 0xFA) || // MP3
+                         firstBytes[0] === 0x4F && firstBytes[1] === 0x67 && firstBytes[2] === 0x67 && firstBytes[3] === 0x53; // OggS
+    
+    if (!isLikelyAudio && audioData.length > 0) {
+      console.log('Raw PCM audio data detected, creating AudioBuffer directly');
+      
+      // This is raw PCM data from Google GenAI - create AudioBuffer directly
+      const samplesPerChannel = audioData.length / (channels * 2); // 16-bit samples (2 bytes per sample)
+      const buffer = audioContext.createBuffer(channels, samplesPerChannel, sampleRate);
+      
+      // Convert raw bytes to float32 samples
+      const dataView = new DataView(audioData.buffer, audioData.byteOffset, audioData.byteLength);
+      for (let channel = 0; channel < channels; channel++) {
+        const channelData = buffer.getChannelData(channel);
+        for (let i = 0; i < samplesPerChannel; i++) {
+          // Read 16-bit signed integer and convert to float32 (-1.0 to 1.0)
+          const sample = dataView.getInt16((i * channels + channel) * 2, true); // little-endian
+          channelData[i] = sample / 32768.0; // Convert to float32 range
+        }
+      }
+      
+      console.log('Successfully created AudioBuffer from raw PCM data:', {
+        channels: buffer.numberOfChannels,
+        length: buffer.length,
+        sampleRate: buffer.sampleRate,
+        duration: buffer.duration
+      });
+      
+      return buffer;
+    }
+    
+    // Try to decode as audio file (WAV, MP3, etc.)
+    return await audioContext.decodeAudioData(audioData.buffer.slice(audioData.byteOffset, audioData.byteOffset + audioData.byteLength));
+  } catch (error) {
+    console.warn('Failed to decode audio data:', error);
+    console.warn('Audio data length:', audioData.length, 'bytes');
+    // Create a silent buffer as fallback
+    const buffer = audioContext.createBuffer(channels, sampleRate * 0.1, sampleRate); // 100ms of silence
+    return buffer;
   }
-
-  return buffer;
 }
 
-export {createBlob, decode, decodeAudioData, encode};
-
-// Master bus soft limiter for safety on the output chain
-export function createMasterLimiter(ctx: AudioContext): DynamicsCompressorNode {
-  const comp = ctx.createDynamicsCompressor();
-  comp.threshold.value = -6;
-  comp.knee.value = 20;
-  comp.ratio.value = 12;
-  comp.attack.value = 0.003;
-  comp.release.value = 0.25;
-  return comp;
+export function createMasterLimiter(audioContext: AudioContext): DynamicsCompressorNode {
+  const limiter = audioContext.createDynamicsCompressor();
+  limiter.threshold.value = -3;
+  limiter.knee.value = 0;
+  limiter.ratio.value = 20;
+  limiter.attack.value = 0.003;
+  limiter.release.value = 0.1;
+  return limiter;
 }
+
+export { decode };

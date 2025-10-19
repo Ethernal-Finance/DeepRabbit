@@ -38,9 +38,11 @@ export class OnboardingTutorial extends LitElement {
   @state() private step = 0;
 
   private steps = [
-    { title: 'Welcome to deeprabbit', text: 'Use the Styles panel to choose styles for your performance.' },
-    { title: 'Blend styles', text: 'Adjust the sliders in the grid and click “Click to learn” to map MIDI controls.' },
-    { title: 'Manage instruments', text: 'Use the mixer panel to balance instrument layers and map their controls.' }
+    { title: 'Welcome to DeepRabbit', text: 'Your AI-powered music creation studio. Toggle between Styles and Instruments in the left panel to build your sound.' },
+    { title: 'Create Your Mix', text: 'Select styles and instruments, then adjust their weights in the grid. Higher values = more prominent in your mix.' },
+    { title: 'Mobile Navigation', text: 'On mobile, use the bottom navigation bar. The center play button starts your music, while other buttons access features.' },
+    { title: 'Auto-Evolve Magic', text: 'Enable EVOLVE for automatic musical variation. Set the rate (how often) and depth (how much) for dynamic performances.' },
+    { title: 'Scenes & Recording', text: 'Save Scenes to capture perfect moments, then morph between them. Use Record to capture your performances.' }
   ];
 
   private next() { if (this.step < this.steps.length - 1) this.step++; else this.finish(); }

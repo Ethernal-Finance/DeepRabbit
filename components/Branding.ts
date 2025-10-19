@@ -11,7 +11,6 @@ export class Branding extends LitElement {
     :host { display: inline-flex; align-items: center; gap: 10px; }
     .logo { width: 20px; height: 20px; }
     .name { color: #29F2C6; font-weight: 900; letter-spacing: 1px; }
-    .pro { font-size: 9px; background: #29F2C6; color: #000; padding: 1px 4px; border-radius: 3px; font-weight: 900; margin-left: 6px; }
   `;
 
   @property({ type: String }) name = 'deeprabbit';
@@ -35,7 +34,6 @@ export class Branding extends LitElement {
     return html`
       ${this.logo()}
       <span class="name">${this.name}</span>
-      <span class="pro">PRO</span>
     `;
   }
 }

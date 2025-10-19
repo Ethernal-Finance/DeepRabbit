@@ -2,9 +2,9 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
-import type { PlaybackState, Prompt } from '../types';
+import type { PlaybackState, Prompt, GeneratorSettings } from '../types';
 import type { AudioChunk, GoogleGenAI, LiveMusicFilteredPrompt, LiveMusicServerMessage, LiveMusicSession } from '@google/genai';
-import { decode, decodeAudioData, createMasterLimiter } from './audio';
+import { decode, decodeAudioData, createMasterLimiter } from './audio.js';
 import { throttle } from './throttle';
 
 export class LiveMusicHelper extends EventTarget {
@@ -34,6 +34,12 @@ export class LiveMusicHelper extends EventTarget {
   private playbackState: PlaybackState = 'stopped';
 
   private prompts: Map<string, Prompt>;
+  private settings: GeneratorSettings = {
+    loopBars: 8,
+    variation: 1.2,
+    genreContrast: 1.2,
+    mix: 'balanced',
+  };
   
   // Resilience / auto-reconnect
   private reconnecting = false;
@@ -152,35 +158,72 @@ export class LiveMusicHelper extends EventTarget {
 
   private async processAudioChunks(audioChunks: AudioChunk[]) {
     if (this.playbackState === 'paused' || this.playbackState === 'stopped') return;
-    const audioBuffer = await decodeAudioData(
-      decode(audioChunks[0].data!),
-      this.audioContext,
-      48000,
-      2,
-    );
-    const source = this.audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(this.outputNode);
-    if (this.nextStartTime === 0) {
-      this.nextStartTime = this.audioContext.currentTime + this.bufferTime;
-      setTimeout(() => {
-        this.setPlaybackState('playing');
-      }, this.bufferTime * 1000);
+    
+    try {
+      console.log('Processing audio chunks:', {
+        chunkCount: audioChunks.length,
+        firstChunkDataLength: audioChunks[0]?.data?.length || 0,
+        firstChunkDataType: typeof audioChunks[0]?.data
+      });
+      
+      const audioBuffer = await decodeAudioData(
+        decode(audioChunks[0].data!),
+        this.audioContext,
+        48000,
+        2,
+      );
+      const source = this.audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(this.outputNode);
+      if (this.nextStartTime === 0) {
+        this.nextStartTime = this.audioContext.currentTime + this.bufferTime;
+        setTimeout(() => {
+          this.setPlaybackState('playing');
+        }, this.bufferTime * 1000);
+      }
+      if (this.nextStartTime < this.audioContext.currentTime) {
+        this.setPlaybackState('loading');
+        this.nextStartTime = 0;
+        return;
+      }
+      source.start(this.nextStartTime);
+      this.nextStartTime += audioBuffer.duration;
+    } catch (error) {
+      console.warn('Failed to process audio chunk:', error);
+      // Continue processing other chunks
     }
-    if (this.nextStartTime < this.audioContext.currentTime) {
-      this.setPlaybackState('loading');
-      this.nextStartTime = 0;
-      return;
-    }
-    source.start(this.nextStartTime);
-    this.nextStartTime += audioBuffer.duration;
   }
+
 
   public get activePrompts() {
     // Consider prompts "active" if they have a positive weight OR are present in the current selection
     // Weight check tolerates tiny float errors.
     return Array.from(this.prompts.values())
       .filter((p) => !this.filteredPrompts.has(p.text) && (p.weight ?? 0) > 0.001);
+  }
+
+  /** Allow host to update generator behavior controls. */
+  public setGeneratorSettings(settings: Partial<GeneratorSettings>) {
+    this.settings = { ...this.settings, ...settings };
+    // Nudge session with the updated meta prompt without requiring UI weight changes
+    if (this.session) this.setWeightedPrompts(this.prompts);
+  }
+
+  private buildMetaPrompt(): string {
+    const s = this.settings;
+    const mixText = s.mix === 'background' ? 'subtle, sit-behind mix levels' : s.mix === 'energetic' ? 'forward, punchy mix with higher dynamics' : 'balanced, modern mix'
+    const barLen = Math.max(4, Math.min(32, Math.round(s.loopBars)));
+    // Map 0..2 to descriptors
+    const variationPct = Math.round((Math.max(0, Math.min(2, s.variation)) / 2) * 100);
+    const contrastPct = Math.round((Math.max(0, Math.min(2, s.genreContrast)) / 2) * 100);
+    return [
+      `Meta controls:`,
+      `- Phrase structure: loop-safe ${barLen}-bar chunks; evolve motifs every ${barLen} bars.`,
+      `- Variation: ${variationPct}% phrase and drum fill variation; avoid copy-paste repetition.`,
+      `- Genre contrast: ${contrastPct}% stronger genre-defining rhythm, sound design, and harmony when styles change.`,
+      `- ${mixText}.`,
+      `- Keep stems exposed (drums, bass, chords, lead, fx) and align changes to bar boundaries.`,
+    ].join(' ');
   }
 
   public readonly setWeightedPrompts = throttle(async (prompts: Map<string, Prompt>) => {
@@ -204,10 +247,22 @@ export class LiveMusicHelper extends EventTarget {
     }
 
     try {
-      console.log('Setting weighted prompts on session:', this.activePrompts);
-      await this.session.setWeightedPrompts({
-        weightedPrompts: this.activePrompts,
-      });
+      const base = this.activePrompts;
+      // If there are active style prompts, append meta controls to guide behavior.
+      const weighted = base.length > 0
+        ? [
+            ...base,
+            {
+              promptId: 'meta',
+              text: this.buildMetaPrompt(),
+              color: '#ffffff',
+              cc: 0,
+              weight: 0.35,
+            } as Prompt,
+          ]
+        : base;
+      console.log('Setting weighted prompts on session:', weighted);
+      await this.session.setWeightedPrompts({ weightedPrompts: weighted });
       console.log('Successfully set weighted prompts on session');
     } catch (e: any) {
       console.error('Error setting weighted prompts:', e);
@@ -300,6 +355,8 @@ export class LiveMusicHelper extends EventTarget {
       'Thanks for listening to deeprabbit dot net.',
       'DeepRabbit: fresh tracks, forged by A I. Thanks for tuning in.',
       'We\'ll be back in a beat. Thanks for listening to deeprabbit dot net.',
+      'The Rabbit\'s Got A Bomb.',
+      'The Rabbit\'s goes deep this way.',
     ];
     const phrase = phraseOptions[Math.floor(Math.random() * phraseOptions.length)];
     try {
@@ -355,5 +412,6 @@ export class LiveMusicHelper extends EventTarget {
         return this.stop();
     }
   }
+
 
 }

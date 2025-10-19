@@ -1,14 +1,17 @@
-/* Global facelift theme for deeprabbit */
+/* Global glassmorphism theme for deeprabbit */
 :root {
-  --bg: #0b0b0b;
-  --panel: #111;
-  --panel-2: #151515;
-  --text: #e5e5e5;
-  --muted: #a8a8a8;
+  --bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  --panel: rgba(26, 26, 46, 0.6);
+  --panel-2: rgba(26, 26, 46, 0.8);
+  --text: #e0e0e0;
+  --muted: rgba(224, 224, 224, 0.6);
   --brand: #29F2C6; /* primary mint */
   --brand-2: #0FC9A7; /* hover */
-  --brand-glow: #835CFF; /* secondary glow */
-  --border: #262626;
+  --brand-glow: rgba(41, 242, 198, 0.3); /* secondary glow */
+  --border: rgba(41, 242, 198, 0.2);
+  --glass-bg: rgba(26, 26, 46, 0.6);
+  --glass-border: rgba(41, 242, 198, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 html, body {
@@ -16,6 +19,22 @@ html, body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
+  position: relative;
+}
+
+html::before, body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(41, 242, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(41, 242, 198, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
 }
 /* Use dynamic viewport units on mobile to avoid browser chrome issues */
 @supports (height: 100dvh) {
@@ -26,6 +45,13 @@ body {
   font-size: 14px;
   -webkit-text-size-adjust: 100%;
   overflow: auto; /* allow scrolling on small screens */
+  /* Mobile-specific improvements */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 body.dragging {
   cursor: ns-resize;
@@ -33,4 +59,31 @@ body.dragging {
 body.dragging * {
   user-select: none;
   pointer-events: none;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  body {
+    font-size: 13px;
+    /* Prevent zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  /* Improve touch targets */
+  button, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better scrolling on mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
 }

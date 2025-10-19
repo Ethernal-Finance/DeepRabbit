@@ -109,6 +109,7 @@ export class WeightSlider extends LitElement {
     .slider-thumb {
       position: absolute;
       top: 50%;
+      left: 0%;
       transform: translate(-50%, -50%);
       width: 32px;
       height: 32px;
@@ -122,7 +123,6 @@ export class WeightSlider extends LitElement {
       cursor: grab;
       transition: all 0.2s ease;
       z-index: 2;
-      position: relative;
       display: none; /* hide thumb visually */
     }
     
@@ -315,22 +315,78 @@ export class WeightSlider extends LitElement {
     }
 
     @media (max-width: 768px) {
-      :host { height: 110px; }
-      .slider-container { height: 80px; }
-      .slider-track { height: 10px; }
-      .slider-thumb { width: 24px; height: 24px; }
-      .value-display { font-size: 11px; padding: 6px 10px; }
-      .audio-visualizer { width: 48px; height: 22px; }
-      .audio-bar { width: 3px; }
+      :host { 
+        height: 100px; 
+        touch-action: none;
+      }
+      .slider-container { 
+        height: 70px; 
+      }
+      .slider-track { 
+        height: 12px; 
+        border-width: 1px;
+      }
+      .slider-thumb { 
+        width: 28px; 
+        height: 28px; 
+        border-width: 2px;
+        display: block; /* show thumb on mobile for better UX */
+        left: 0%;
+        transform: translate(-50%, -50%);
+      }
+      .value-display { 
+        font-size: 11px; 
+        padding: 6px 10px; 
+        top: -35px;
+      }
+      .audio-visualizer { 
+        width: 50px; 
+        height: 24px; 
+        top: -45px;
+      }
+      .audio-bar { 
+        width: 4px; 
+      }
+      
+      /* Better touch interaction */
+      .slider-container:active .slider-thumb {
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 
+          0 6px 20px rgba(0, 0, 0, 0.9), 
+          inset 0 2px 4px rgba(255, 255, 255, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.2);
+      }
     }
     
     @media (max-width: 480px) {
-      :host { height: 100px; }
-      .slider-container { height: 72px; }
-      .slider-track { height: 9px; }
-      .slider-thumb { width: 22px; height: 22px; }
-      .value-display { font-size: 10px; padding: 5px 8px; }
-      .audio-visualizer { width: 44px; height: 20px; }
+      :host { 
+        height: 90px; 
+      }
+      .slider-container { 
+        height: 65px; 
+      }
+      .slider-track { 
+        height: 10px; 
+      }
+      .slider-thumb { 
+        width: 26px; 
+        height: 26px; 
+        left: 0%;
+        transform: translate(-50%, -50%);
+      }
+      .value-display { 
+        font-size: 10px; 
+        padding: 5px 8px; 
+        top: -32px;
+      }
+      .audio-visualizer { 
+        width: 45px; 
+        height: 22px; 
+        top: -42px;
+      }
+      .audio-bar { 
+        width: 3px; 
+      }
     }
   `;
 
@@ -363,6 +419,12 @@ export class WeightSlider extends LitElement {
     this.dragStartX = e.clientX;
     this.dragStartValue = this.value;
     document.body.classList.add('dragging');
+    
+    // Set pointer capture for better mobile interaction
+    if (this.setPointerCapture) {
+      this.setPointerCapture(e.pointerId);
+    }
+    
     window.addEventListener('pointermove', this.handlePointerMove);
     window.addEventListener('pointerup', this.handlePointerUp);
   }
@@ -371,7 +433,9 @@ export class WeightSlider extends LitElement {
     if (!this.isDragging) return;
     
     const delta = e.clientX - this.dragStartX;
-    const newValue = this.dragStartValue + delta * 0.01;
+    // Adjust sensitivity for mobile vs desktop
+    const sensitivity = window.innerWidth <= 768 ? 0.005 : 0.01;
+    const newValue = this.dragStartValue + delta * sensitivity;
     this.setValue(Math.max(0, Math.min(2, newValue)));
   }
 
@@ -410,9 +474,10 @@ export class WeightSlider extends LitElement {
   }
 
   private getSliderThumbPosition(): string {
-    // Keep the thumb centered over the track edges, compensating for half thumb width (16px)
+    // Calculate position based on value (0-2 range)
+    // The thumb should be centered on the track at the correct percentage
     const percent = (this.value / 2) * 100;
-    return `calc(${percent}% + 16px)`;
+    return `${percent}%`;
   }
 
   private getAudioBars(): number[] {

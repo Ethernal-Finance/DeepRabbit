@@ -17,3 +17,10 @@ export interface ControlChange {
 }
 
 export type PlaybackState = 'stopped' | 'playing' | 'loading' | 'paused';
+
+export interface GeneratorSettings {
+  loopBars: number;
+  variation: number; // 0..2 (higher = more phrase/motif/drum variation)
+  genreContrast: number; // 0..2 (higher = stronger genre-specific differentiation on changes)
+  mix: 'background' | 'balanced' | 'energetic';
+}

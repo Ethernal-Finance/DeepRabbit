@@ -27,23 +27,40 @@ export class PromptDjMidi extends LitElement {
       height: 100dvh; /* mobile-safe */
       display: flex;
       flex-direction: column;
-      background: #0f0f0f;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
       font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
       color: #e0e0e0;
       overflow: hidden;
       user-select: none;
+      position: relative;
+    }
+
+    :host::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(41, 242, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(41, 242, 198, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
     }
     
     /* Professional DAW Header */
     .daw-header {
       height: 70px;
-      background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
-      border-bottom: 2px solid #2a2a2a;
+      background: rgba(26, 26, 46, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(41, 242, 198, 0.2);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 25px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       z-index: 1000;
       position: relative;
     }
@@ -55,8 +72,8 @@ export class PromptDjMidi extends LitElement {
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent 0%, #29F2C6 50%, transparent 100%);
-      opacity: 0.6;
+      background: linear-gradient(90deg, transparent 0%, rgba(41, 242, 198, 0.6) 50%, transparent 100%);
+      opacity: 0.8;
     }
     
     .toolbar-left {
@@ -75,29 +92,17 @@ export class PromptDjMidi extends LitElement {
       position: relative;
     }
     
-    .app-title::after {
-      content: 'PRO';
-      position: absolute;
-      top: -8px;
-      right: -25px;
-      font-size: 10px;
-      background: #29F2C6;
-      color: #000;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
     
     .transport-controls {
       display: flex;
       align-items: center;
       gap: 20px;
-      background: #1a1a1a;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(15px);
       padding: 12px 20px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
     
     .status-indicator {
@@ -136,18 +141,19 @@ export class PromptDjMidi extends LitElement {
     }
     
     .toolbar-btn {
-      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-      border: 1px solid #444;
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
       color: #e0e0e0;
       padding: 10px 18px;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 12px;
       font-weight: 600;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       position: relative;
       overflow: hidden;
     }
@@ -168,35 +174,168 @@ export class PromptDjMidi extends LitElement {
     }
     
     .toolbar-btn:hover {
-      background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
-      border-color: #555;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      background: rgba(26, 26, 46, 0.9);
+      border-color: rgba(41, 242, 198, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
     
     .toolbar-btn.active {
-      background: linear-gradient(135deg, #29F2C6 0%, #0FC9A7 100%);
+      background: linear-gradient(135deg, rgba(41, 242, 198, 0.8) 0%, rgba(15, 201, 167, 0.8) 100%);
       color: #000;
-      border-color: #29F2C6;
+      border-color: rgba(41, 242, 198, 0.6);
       box-shadow: 0 0 20px rgba(41, 242, 198, 0.4);
     }
     
     .midi-select {
-      background: #1a1a1a;
-      border: 1px solid #444;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
       color: #e0e0e0;
       padding: 8px 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 12px;
       outline: none;
       font-weight: 500;
-      transition: all 0.2s ease;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
     
     .midi-select:focus {
-      border-color: #29F2C6;
+      border-color: rgba(41, 242, 198, 0.6);
       box-shadow: 0 0 0 3px rgba(41, 242, 198, 0.2);
+    }
+
+    /* Panel Toggle Styles */
+    .panel-toggle {
+      display: flex;
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 4px;
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      margin-bottom: 15px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: rgba(224, 224, 224, 0.7);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      color: rgba(41, 242, 198, 0.8);
+      background: rgba(41, 242, 198, 0.1);
+    }
+
+    .toggle-btn.active {
+      background: rgba(41, 242, 198, 0.8);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(41, 242, 198, 0.3);
+    }
+
+    .active-count {
+      background: rgba(41, 242, 198, 0.9);
+      color: #000;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+      min-width: 16px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Filter Controls */
+    .filter-controls {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      color: rgba(224, 224, 224, 0.8);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-btn:hover {
+      background: rgba(26, 26, 46, 0.8);
+      border-color: rgba(41, 242, 198, 0.4);
+      color: rgba(41, 242, 198, 1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .filter-btn.active {
+      background: rgba(41, 242, 198, 0.8);
+      border-color: rgba(41, 242, 198, 0.6);
+      color: #000;
+      box-shadow: 0 0 0 2px rgba(41, 242, 198, 0.2), 0 2px 8px rgba(41, 242, 198, 0.3);
+    }
+
+    /* Search Container Styles */
+    .search-container {
+      width: 100%;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      color: #e0e0e0;
+      padding: 10px 40px 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      outline: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-input:focus {
+      border-color: rgba(41, 242, 198, 0.6);
+      box-shadow: 0 0 0 3px rgba(41, 242, 198, 0.2);
+    }
+
+    .search-input::placeholder {
+      color: rgba(224, 224, 224, 0.5);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(41, 242, 198, 0.6);
+      font-size: 14px;
+      pointer-events: none;
     }
     
     /* Main DAW Layout */
@@ -214,8 +353,9 @@ export class PromptDjMidi extends LitElement {
     /* Left Panel - Style List */
     .style-panel {
       width: 300px;
-      background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
-      border-right: 2px solid #2a2a2a;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(41, 242, 198, 0.2);
       display: flex;
       flex-direction: column;
       min-height: 0; /* critical for nested flex scroll */
@@ -223,6 +363,7 @@ export class PromptDjMidi extends LitElement {
       flex: 0 0 300px; /* fix width in flex row */
       overflow: hidden;
       position: relative;
+      box-shadow: 4px 0 16px rgba(0, 0, 0, 0.2);
     }
     
     .style-panel::after {
@@ -232,14 +373,15 @@ export class PromptDjMidi extends LitElement {
       right: 0;
       width: 1px;
       height: 100%;
-      background: linear-gradient(180deg, transparent 0%, #29F2C6 50%, transparent 100%);
-      opacity: 0.3;
+      background: linear-gradient(180deg, transparent 0%, rgba(41, 242, 198, 0.6) 50%, transparent 100%);
+      opacity: 0.5;
     }
     
     .panel-header {
-      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      background: rgba(26, 26, 46, 0.8);
+      backdrop-filter: blur(15px);
       padding: 18px 25px;
-      border-bottom: 2px solid #333;
+      border-bottom: 1px solid rgba(41, 242, 198, 0.2);
       position: relative;
       flex-shrink: 0; /* prevent header from stealing space */
     }
@@ -251,8 +393,8 @@ export class PromptDjMidi extends LitElement {
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent 0%, #29F2C6 50%, transparent 100%);
-      opacity: 0.4;
+      background: linear-gradient(90deg, transparent 0%, rgba(41, 242, 198, 0.6) 50%, transparent 100%);
+      opacity: 0.6;
     }
     
     .panel-header h3 {
@@ -279,11 +421,16 @@ export class PromptDjMidi extends LitElement {
       display: flex;
       align-items: center;
       padding: 15px 25px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid rgba(41, 242, 198, 0.1);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       position: relative;
       scroll-snap-align: start;
+      background: rgba(26, 26, 46, 0.3);
+      backdrop-filter: blur(10px);
+      margin: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(41, 242, 198, 0.1);
     }
     
     .style-item::before {
@@ -294,36 +441,42 @@ export class PromptDjMidi extends LitElement {
       bottom: 0;
       width: 3px;
       background: transparent;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      border-radius: 8px 0 0 8px;
     }
     
     .style-item:hover {
-      background: linear-gradient(90deg, rgba(41, 242, 198, 0.1) 0%, transparent 100%);
-      border-left: 3px solid #29F2C6;
+      background: rgba(41, 242, 198, 0.1);
+      border-color: rgba(41, 242, 198, 0.3);
+      transform: translateX(4px);
+      box-shadow: 0 4px 16px rgba(41, 242, 198, 0.2);
     }
     
     .style-item:hover::before {
-      background: #29F2C6;
+      background: rgba(41, 242, 198, 0.8);
       box-shadow: 0 0 10px rgba(41, 242, 198, 0.5);
     }
     
     .style-item.filtered {
       opacity: 0.4;
-      background: rgba(255, 0, 0, 0.1);
+      background: rgba(255, 68, 68, 0.1);
+      border-color: rgba(255, 68, 68, 0.3);
     }
+    
     .style-item.active {
-      background: linear-gradient(90deg, rgba(41, 242, 198, 0.12) 0%, transparent 100%);
-      border-left: 3px solid #29F2C6;
+      background: rgba(41, 242, 198, 0.15);
+      border-color: rgba(41, 242, 198, 0.4);
+      box-shadow: 0 4px 16px rgba(41, 242, 198, 0.3);
     }
     
     .style-color {
       width: 14px;
       height: 14px;
-      border-radius: 3px;
+      border-radius: 4px;
       margin-right: 15px;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     .style-name {
@@ -342,17 +495,20 @@ export class PromptDjMidi extends LitElement {
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      background: #333;
-      border: 1px solid #555;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
       font-size: 12px;
+      color: rgba(41, 242, 198, 0.8);
     }
     
     .style-mute:hover {
-      background: #444;
-      border-color: #666;
+      background: rgba(41, 242, 198, 0.2);
+      border-color: rgba(41, 242, 198, 0.4);
       transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(41, 242, 198, 0.3);
     }
     
     /* Center Workspace */
@@ -360,7 +516,8 @@ export class PromptDjMidi extends LitElement {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #0f0f0f;
+      background: rgba(26, 26, 46, 0.3);
+      backdrop-filter: blur(10px);
       min-height: 0; /* enable inner scroll */
       overflow: hidden;
       position: relative;
@@ -374,8 +531,8 @@ export class PromptDjMidi extends LitElement {
       right: 0;
       bottom: 0;
       background: 
-        radial-gradient(circle at 20% 20%, rgba(41, 242, 198, 0.02) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(41, 242, 198, 0.02) 0%, transparent 50%);
+        radial-gradient(circle at 20% 20%, rgba(41, 242, 198, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(41, 242, 198, 0.03) 0%, transparent 50%);
       pointer-events: none;
     }
     
@@ -426,9 +583,10 @@ export class PromptDjMidi extends LitElement {
     }
     
     .slider-row {
-      background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-      border: 2px solid #2a2a2a;
-      border-radius: 8px;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      border-radius: 12px;
       padding: 25px;
       display: flex;
       flex-direction: column;
@@ -437,11 +595,12 @@ export class PromptDjMidi extends LitElement {
       transition: all 0.3s ease;
       position: relative;
       overflow: visible;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
     .slider-row.blending {
-      border-color: #29F2C6;
-      box-shadow: 0 0 20px rgba(41, 242, 198, 0.3);
+      border-color: rgba(41, 242, 198, 0.6);
+      box-shadow: 0 8px 32px rgba(41, 242, 198, 0.3);
     }
 
     .slot-close {
@@ -451,22 +610,24 @@ export class PromptDjMidi extends LitElement {
       width: 22px;
       height: 22px;
       border-radius: 50%;
-      border: 1px solid #444;
-      background: #222;
-      color: #aaa;
+      border: 1px solid rgba(41, 242, 198, 0.3);
+      background: rgba(26, 26, 46, 0.8);
+      backdrop-filter: blur(10px);
+      color: rgba(224, 224, 224, 0.7);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 12px;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
     }
 
     .slot-close:hover {
-      background: #333;
-      color: #fff;
-      border-color: #666;
+      background: rgba(41, 242, 198, 0.2);
+      color: rgba(41, 242, 198, 1);
+      border-color: rgba(41, 242, 198, 0.6);
       transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(41, 242, 198, 0.3);
     }
     
     .slider-row::before {
@@ -476,15 +637,16 @@ export class PromptDjMidi extends LitElement {
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent 0%, #29F2C6 50%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(41, 242, 198, 0.8) 50%, transparent 100%);
       opacity: 0;
       transition: opacity 0.3s ease;
+      border-radius: 12px 12px 0 0;
     }
     
     .slider-row:hover {
-      border-color: #29F2C6;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(41, 242, 198, 0.1);
-      transform: translateY(-2px);
+      border-color: rgba(41, 242, 198, 0.4);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(41, 242, 198, 0.2);
+      transform: translateY(-4px);
     }
     
     .slider-row:hover::before {
@@ -517,35 +679,124 @@ export class PromptDjMidi extends LitElement {
     }
     
     .midi-info {
-      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-      border: 1px solid #555;
-      border-radius: 6px;
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      border-radius: 8px;
       padding: 10px 18px;
       font-size: 11px;
-      color: #aaa;
+      color: rgba(224, 224, 224, 0.8);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       text-align: center;
       min-width: 90px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
     
     .midi-info:hover {
-      background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
-      border-color: #29F2C6;
-      color: #29F2C6;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      background: rgba(26, 26, 46, 0.9);
+      border-color: rgba(41, 242, 198, 0.4);
+      color: rgba(41, 242, 198, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     .midi-info.active {
-      background: linear-gradient(135deg, #072a25 0%, #05211d 100%);
-      border-color: #29F2C6;
+      background: rgba(41, 242, 198, 0.2);
+      border-color: rgba(41, 242, 198, 0.6);
+      color: rgba(41, 242, 198, 1);
+      box-shadow: 0 0 0 3px rgba(41, 242, 198, 0.2), 0 0 20px rgba(41, 242, 198, 0.2);
+    }
+    
+    /* EVOLVE Submenu Styles */
+    .evolve-submenu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(41, 242, 198, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 8px;
+      min-width: 280px;
+      z-index: 1002;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .evolve-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(41, 242, 198, 0.2);
+    }
+    
+    .evolve-header h4 {
+      margin: 0;
       color: #29F2C6;
-      box-shadow: 0 0 0 3px rgba(41, 242, 198, 0.15), 0 0 20px rgba(41, 242, 198, 0.15);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(41, 242, 198, 0.3);
+    }
+    
+    .evolve-toggle {
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(41, 242, 198, 0.2);
+      color: #e0e0e0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .evolve-toggle:hover {
+      background: rgba(26, 26, 46, 0.9);
+      border-color: rgba(41, 242, 198, 0.4);
+      color: rgba(41, 242, 198, 1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .evolve-toggle.active {
+      background: rgba(41, 242, 198, 0.8);
+      border-color: rgba(41, 242, 198, 0.6);
+      color: #000;
+      box-shadow: 0 0 0 2px rgba(41, 242, 198, 0.2), 0 2px 8px rgba(41, 242, 198, 0.3);
+    }
+    
+    .evolve-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .control-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .control-row label {
+      color: #e0e0e0;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 50px;
     }
     
     /* Right Panel - Mixer */
@@ -631,76 +882,1354 @@ export class PromptDjMidi extends LitElement {
     }
     
     @media (max-width: 768px) {
+      :host {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+      }
+      
+      /* Prevent mobile zoom on input focus */
+      input, select, textarea {
+        font-size: 16px !important;
+        transform: scale(1) !important;
+      }
+      
+      /* Prevent zoom on focus */
+      * {
+        -webkit-text-size-adjust: 100%;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+      /* Allow text selection in inputs */
+      input, textarea {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+      }
+      
+      .daw-header.mobile-hidden {
+        display: none;
+      }
+      
       .daw-layout {
         flex-direction: column;
-        height: auto; /* let panels size naturally */
-      }
-      .slot-close { width: 28px; height: 28px; }
-      .toolbar-right { display: none; }
-      .toolbar-right.show { display: flex; }
-      .transport-controls.compact { padding: 6px 10px; gap: 10px; }
-      .slider-row { padding: 12px; gap: 12px; }
-      .slider-label { font-size: 13px; }
-      weight-slider { max-width: 180px; }
-      
-      .style-panel,
-      .mixer-panel {
-        width: 100%;
-        height: auto;
-        max-height: 40vh; /* overall panel cap */
-        overflow: auto;
+        height: calc(100vh - 70px);
+        height: calc(100dvh - 70px);
+        overflow: hidden;
+        padding-bottom: 80px; /* Space for bottom nav */
       }
       
-      .grid-container {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 15px;
+      .daw-layout.mobile-full,
+      .workspace.mobile-full {
+        height: 100vh;
+        height: 100dvh;
+      }
+      
+      .slot-close { 
+        width: 32px; 
+        height: 32px; 
+        font-size: 14px;
+        top: 6px;
+        right: 6px;
+      }
+      
+      .toolbar-right { 
+        display: flex; 
+        align-items: center;
+        gap: 20px;
+      }
+      
+      /* Mobile Menu Header */
+      .mobile-menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(41, 242, 198, 0.2);
+      }
+      
+      .mobile-menu-header h3 {
+        margin: 0;
+        color: #29F2C6;
+        font-size: 18px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      .close-btn {
+        background: rgba(41, 242, 198, 0.8);
+        border: none;
+        color: #000;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(41, 242, 198, 0.3);
+      }
+      
+      .close-btn:hover {
+        background: rgba(41, 242, 198, 1);
+        transform: scale(1.05);
+      }
+      
+      /* Mobile Button Groups */
+      .mobile-btn-group {
+        background: rgba(26, 26, 46, 0.6);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        border-radius: 12px;
         padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .mobile-controls {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: center;
+        margin-top: 10px;
+      }
+      
+      .mobile-controls label {
+        color: #e0e0e0;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      /* Mobile Submenu Styles */
+      .mobile-submenu {
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(41, 242, 198, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      
+      .submenu-btn {
+        display: block;
+        width: 100%;
+        background: rgba(26, 26, 46, 0.7);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        color: #e0e0e0;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-bottom: 6px;
+        text-align: left;
+      }
+      
+      .submenu-btn:hover {
+        background: rgba(41, 242, 198, 0.2);
+        border-color: rgba(41, 242, 198, 0.4);
+        color: rgba(41, 242, 198, 1);
+      }
+      
+      .submenu-btn:last-child {
+        margin-bottom: 0;
+      }
+      
+      /* Settings Submenu */
+      .settings-submenu {
+        min-width: 280px;
+      }
+      
+      .settings-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+      }
+      
+      .settings-grid label {
+        color: #e0e0e0;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      /* Scenes Submenu */
+      .scenes-submenu {
+        min-width: 250px;
+      }
+      
+      .scene-controls {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        align-items: center;
+      }
+      
+      .scenes-list {
+        max-height: 200px;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
       
-      .slider-row {
+      .scene-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      
+      .scene-btn {
+        flex: 1;
+        background: rgba(26, 26, 46, 0.7);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        color: #e0e0e0;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: left;
+      }
+      
+      .scene-btn:hover {
+        background: rgba(41, 242, 198, 0.2);
+        border-color: rgba(41, 242, 198, 0.4);
+        color: rgba(41, 242, 198, 1);
+      }
+      
+      .scene-action-btn {
+        background: rgba(26, 26, 46, 0.7);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        color: #e0e0e0;
+        padding: 6px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 10px;
+        transition: all 0.3s ease;
+      }
+      
+      .scene-action-btn:hover {
+        background: rgba(41, 242, 198, 0.2);
+        border-color: rgba(41, 242, 198, 0.4);
+        color: rgba(41, 242, 198, 1);
+      }
+      
+      .no-scenes {
+        color: rgba(224, 224, 224, 0.6);
+        font-size: 11px;
+        padding: 8px;
+        text-align: center;
+        font-style: italic;
+      }
+      
+      /* Evolve Controls */
+      .evolve-controls {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: center;
+        margin-top: 10px;
+      }
+      
+      .evolve-controls label {
+        color: #e0e0e0;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      /* Bottom Navigation Bar */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 2px solid rgba(41, 242, 198, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 12px 0;
+        z-index: 1002;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+        min-height: 80px;
+      }
+      
+      /* Bottom Sheet Menu System */
+      .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 46, 0.98);
+        backdrop-filter: blur(20px);
+        border-top: 2px solid rgba(41, 242, 198, 0.4);
+        border-radius: 20px 20px 0 0;
+        z-index: 1003;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        max-height: 80vh;
+        overflow: hidden;
+        box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.5);
+      }
+      
+      .bottom-sheet.open {
+        transform: translateY(0);
+      }
+      
+      .bottom-sheet-handle {
+        width: 40px;
+        height: 4px;
+        background: rgba(41, 242, 198, 0.6);
+        border-radius: 2px;
+        margin: 12px auto 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .bottom-sheet-handle:hover {
+        background: rgba(41, 242, 198, 0.8);
+        transform: scaleX(1.2);
+      }
+      
+      .bottom-sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px 16px;
+        border-bottom: 1px solid rgba(41, 242, 198, 0.2);
+        margin-bottom: 20px;
+      }
+      
+      .bottom-sheet-header h3 {
+        margin: 0;
+        color: #29F2C6;
+        font-size: 18px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px rgba(41, 242, 198, 0.3);
+      }
+      
+      .bottom-sheet-close {
+        background: rgba(41, 242, 198, 0.8);
+        border: none;
+        color: #000;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(41, 242, 198, 0.3);
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .bottom-sheet-close:hover {
+        background: rgba(41, 242, 198, 1);
+        transform: scale(1.05);
+      }
+      
+      .bottom-sheet-content {
+        padding: 0 20px 20px;
+        max-height: calc(80vh - 120px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+      
+      .sheet-section {
+        margin-bottom: 24px;
+      }
+      
+      .sheet-section:last-child {
+        margin-bottom: 0;
+      }
+      
+      .sheet-section h4 {
+        margin: 0 0 12px 0;
+        color: #29F2C6;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding-left: 4px;
+      }
+      
+      .sheet-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+      }
+      
+      .sheet-btn {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        border-radius: 12px;
+        color: #e0e0e0;
+        padding: 16px 12px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        min-height: 80px;
+        justify-content: center;
+        touch-action: manipulation;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .sheet-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+      }
+      
+      .sheet-btn:hover::before {
+        left: 100%;
+      }
+      
+      .sheet-btn:hover {
+        background: rgba(26, 26, 46, 0.9);
+        border-color: rgba(41, 242, 198, 0.4);
+        color: rgba(41, 242, 198, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(41, 242, 198, 0.2);
+      }
+      
+      .sheet-btn.active {
+        background: rgba(41, 242, 198, 0.2);
+        border-color: rgba(41, 242, 198, 0.6);
+        color: rgba(41, 242, 198, 1);
+        box-shadow: 0 0 0 2px rgba(41, 242, 198, 0.2);
+      }
+      
+      .sheet-btn-icon {
+        font-size: 20px;
+        line-height: 1;
+      }
+      
+      .sheet-btn-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+      }
+      
+      /* Control Rows for Settings */
+      .control-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(41, 242, 198, 0.1);
+      }
+      
+      .control-row:last-child {
+        border-bottom: none;
+      }
+      
+      .control-label {
+        color: #e0e0e0;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 80px;
+        flex-shrink: 0;
+      }
+      
+      .control-input {
+        flex: 1;
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        border-radius: 8px;
+        color: #e0e0e0;
+        padding: 8px 12px;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        min-height: 44px;
+      }
+      
+      .control-input:focus {
+        border-color: rgba(41, 242, 198, 0.5);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(41, 242, 198, 0.1);
+      }
+      
+      .control-range {
+        flex: 1;
+        height: 8px;
+        background: linear-gradient(to right, rgba(41, 242, 198, 0.3) 0%, rgba(41, 242, 198, 0.3) 50%, rgba(26, 26, 46, 0.8) 50%, rgba(26, 26, 46, 0.8) 100%);
+        border-radius: 4px;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+        position: relative;
+        border: 1px solid rgba(41, 242, 198, 0.4);
+      }
+      
+      .control-range::-webkit-slider-track {
+        height: 8px;
+        background: transparent;
+        border-radius: 4px;
+        border: none;
+        -webkit-appearance: none;
+      }
+      
+      .control-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        background: #29F2C6;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(41, 242, 198, 0.4);
+        transition: all 0.3s ease;
+        border: 3px solid rgba(26, 26, 46, 0.9);
+        margin-top: -8px;
+      }
+      
+      .control-range::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 16px rgba(41, 242, 198, 0.6);
+      }
+      
+      .control-range::-moz-range-track {
+        height: 8px;
+        background: rgba(26, 26, 46, 0.8);
+        border-radius: 4px;
+        border: 1px solid rgba(41, 242, 198, 0.4);
+      }
+      
+      .control-range::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        background: #29F2C6;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid rgba(26, 26, 46, 0.9);
+        box-shadow: 0 2px 8px rgba(41, 242, 198, 0.4);
+      }
+      
+      /* Scene List */
+      .scenes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      
+      .scene-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(26, 26, 46, 0.6);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+      }
+      
+      .scene-item:hover {
+        background: rgba(26, 26, 46, 0.8);
+        border-color: rgba(41, 242, 198, 0.4);
+        transform: translateX(4px);
+      }
+      
+      .scene-btn {
+        flex: 1;
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: 12px;
+        font-weight: 500;
+        text-align: left;
+        cursor: pointer;
+        padding: 4px 0;
+        transition: color 0.3s ease;
+      }
+      
+      .scene-btn:hover {
+        color: rgba(41, 242, 198, 1);
+      }
+      
+      .scene-actions {
+        display: flex;
+        gap: 6px;
+      }
+      
+      .scene-action-btn {
+        background: rgba(26, 26, 46, 0.8);
+        border: 1px solid rgba(41, 242, 198, 0.2);
+        border-radius: 6px;
+        color: #e0e0e0;
+        padding: 6px 8px;
+        cursor: pointer;
+        font-size: 10px;
+        transition: all 0.3s ease;
+        min-width: 32px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .scene-action-btn:hover {
+        background: rgba(41, 242, 198, 0.2);
+        border-color: rgba(41, 242, 198, 0.4);
+        color: rgba(41, 242, 198, 1);
+        transform: scale(1.05);
+      }
+      
+      .no-scenes {
+        text-align: center;
+        color: rgba(224, 224, 224, 0.6);
+        font-size: 12px;
+        font-style: italic;
         padding: 20px;
+        background: rgba(26, 26, 46, 0.3);
+        border-radius: 8px;
+        border: 1px dashed rgba(41, 242, 198, 0.2);
+      }
+      
+      .nav-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+      
+      .nav-item.nav-center {
+        flex: 0 0 auto;
+        margin: 0 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      
+      .nav-btn {
+        background: transparent;
+        border: none;
+        color: #e0e0e0;
+        padding: 12px 16px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        min-width: 70px;
+        min-height: 70px;
+        justify-content: center;
+        touch-action: manipulation;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .nav-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+      }
+      
+      .nav-btn:hover::before {
+        left: 100%;
+      }
+      
+      .nav-btn:hover {
+        background: rgba(41, 242, 198, 0.1);
+        color: rgba(41, 242, 198, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(41, 242, 198, 0.2);
+      }
+      
+      .nav-btn.active {
+        background: rgba(41, 242, 198, 0.2);
+        color: rgba(41, 242, 198, 1);
+        box-shadow: 0 0 0 2px rgba(41, 242, 198, 0.2);
+      }
+      
+      .nav-play {
+        background: rgba(41, 242, 198, 0.8);
+        color: #000;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
+        min-height: 70px;
+        box-shadow: 0 6px 20px rgba(41, 242, 198, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -15px 0; /* Extend above and below nav bar */
+      }
+      
+      .nav-play:hover {
+        background: rgba(41, 242, 198, 1);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(41, 242, 198, 0.5);
+      }
+      
+      .nav-play.playing {
+        background: rgba(255, 107, 107, 0.8);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+      }
+      
+      .nav-play.playing:hover {
+        background: rgba(255, 107, 107, 1);
+        box-shadow: 0 8px 24px rgba(255, 107, 107, 0.5);
+      }
+      
+      .nav-play .nav-icon {
+        font-size: 28px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .nav-play .nav-label {
+        display: none;
+      }
+      
+      
+      /* Responsive adjustments for bottom sheet */
+      @media (max-width: 480px) {
+        .nav-play {
+          width: 65px;
+          height: 65px;
+          min-width: 65px;
+          min-height: 65px;
+          margin: -12px 0;
+        }
+        
+        .nav-play .nav-icon {
+          font-size: 26px;
+        }
+        
+        .nav-item.nav-center {
+          margin: 0 20px;
+        }
+        
+        .nav-btn {
+          min-width: 60px;
+          min-height: 60px;
+          padding: 10px 12px;
+        }
+        
+        .bottom-sheet-content {
+          padding: 0 16px 16px;
+        }
+        
+        .sheet-grid {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 10px;
+        }
+        
+        .sheet-btn {
+          min-height: 70px;
+          padding: 12px 8px;
+        }
+      }
+      
+      @media (max-width: 360px) {
+        .nav-btn {
+          min-width: 55px;
+          min-height: 55px;
+          padding: 8px 10px;
+        }
+        
+        .nav-item.nav-center {
+          margin: 0 15px;
+        }
+        
+        .sheet-grid {
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+          gap: 8px;
+        }
+        
+        .sheet-btn {
+          min-height: 65px;
+          padding: 10px 6px;
+        }
+        
+        .sheet-btn-icon {
+          font-size: 18px;
+        }
+        
+        .sheet-btn-label {
+          font-size: 10px;
+        }
+      }
+      
+      .transport-controls.compact { 
+        padding: 8px 12px; 
+        gap: 12px; 
+        min-width: auto;
+      }
+      
+      .slider-row { 
+        padding: 15px; 
+        gap: 15px; 
+        min-height: 120px;
+      }
+      
+      .slider-label { 
+        font-size: 13px; 
+        margin-bottom: 8px;
+      }
+      
+      weight-slider { 
+        max-width: 200px; 
+        height: 100px;
+      }
+      
+      .style-panel {
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+        overflow: hidden;
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+        flex-shrink: 0;
+      }
+      
+      .style-list {
+        max-height: calc(50vh - 80px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+      
+      .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 12px;
+        padding: 12px;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        flex: 1;
+        overflow-y: auto;
       }
       
       .daw-header {
         height: auto;
-        padding: 20px 25px;
+        min-height: 70px;
+        padding: 15px 20px;
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         position: sticky;
         top: 0;
         z-index: 1000;
+        flex-shrink: 0;
       }
       
-      .toolbar-left,
-      .toolbar-right {
+      .toolbar-left {
         width: 100%;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .app-title {
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+      
+      .toolbar-btn {
+        padding: 10px 14px;
+        font-size: 11px;
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+      }
+      
+      .midi-select {
+        padding: 10px 12px;
+        font-size: 11px;
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+      
+      /* Mobile menu button */
+      .mobile-menu-btn {
+        display: block;
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        border: 1px solid #444;
+        color: #e0e0e0;
+        padding: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
         justify-content: center;
+        transition: all 0.2s ease;
+        touch-action: manipulation;
+      }
+      
+      .mobile-menu-btn:hover {
+        background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
+        border-color: #555;
+        transform: translateY(-1px);
       }
     }
 
     @media (max-width: 480px) {
       .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .style-panel {
+        max-height: 45vh;
+      }
+      
+      .style-list {
+        max-height: calc(45vh - 80px);
+      }
+
+      .slider-row { 
+        padding: 12px; 
+        gap: 12px; 
+        min-height: 100px;
+      }
+      
+      .slider-label { 
+        font-size: 12px; 
+        margin-bottom: 6px;
+      }
+      
+      weight-slider { 
+        max-width: 160px; 
+        height: 80px;
+      }
+      
+      .toolbar-btn, .midi-select {
+        padding: 8px 10px;
+        font-size: 10px;
+        min-height: 40px;
+        min-width: 40px;
+      }
+      
+      .daw-header {
+        padding: 12px 15px;
+        gap: 12px;
+      }
+      
+      .app-title {
+        font-size: 14px;
+      }
+      
+      .transport-controls.compact {
+        padding: 6px 10px;
+        gap: 8px;
+      }
+      
+      .slot-close {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+    }
+    
+    /* Landscape mobile optimization */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .style-panel {
+        max-height: 40vh;
+      }
+      
+      .style-list {
+        max-height: calc(40vh - 80px);
+      }
+      
+      .grid-container {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 10px;
         padding: 10px;
       }
-
-      .style-panel,
-      .mixer-panel {
-        max-height: 35vh;
+    }
+    
+    /* Ambient Animations */
+    @keyframes ambientGlow {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(41, 242, 198, 0.1),
+                    0 0 40px rgba(41, 242, 198, 0.05);
       }
-
-      .slider-row { padding: 10px; gap: 10px; }
-      .slider-label { font-size: 12px; }
-      weight-slider { max-width: 160px; }
-      .toolbar-right {
-        flex-wrap: wrap;
-        gap: 10px;
+      50% { 
+        box-shadow: 0 0 30px rgba(41, 242, 198, 0.15),
+                    0 0 60px rgba(41, 242, 198, 0.08);
       }
-      .toolbar-btn, .midi-select {
-        padding: 8px 12px;
-        font-size: 11px;
+    }
+    
+    @keyframes ambientFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+    
+    @keyframes ambientPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    
+    @keyframes ambientShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    @keyframes ambientBreath {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    /* Apply ambient animations */
+    .toolbar-btn:hover {
+      animation: ambientFloat 2s ease-in-out infinite;
+    }
+    
+    /* Nav button ambient effects - REMOVED */
+    /* .nav-btn:hover {
+      animation: ambientFloat 2s ease-in-out infinite;
+    } */
+    
+    .play-pause-button:hover {
+      animation: ambientBreath 3s ease-in-out infinite;
+    }
+    
+    /* Nav play ambient effects - REMOVED */
+    /* .nav-play:hover {
+      animation: ambientGlow 2s ease-in-out infinite, ambientBreath 3s ease-in-out infinite;
+    } */
+    
+    .active-count {
+      animation: ambientPulse 2s ease-in-out infinite;
+    }
+    
+    .status-dot.playing {
+      animation: ambientPulse 1.5s ease-in-out infinite;
+    }
+    
+    /* Subtle background animations */
+    .daw-header {
+      background: linear-gradient(135deg, 
+        rgba(26, 26, 46, 0.95) 0%, 
+        rgba(26, 26, 46, 0.98) 50%, 
+        rgba(26, 26, 46, 0.95) 100%);
+      background-size: 200% 200%;
+      animation: ambientShimmer 8s ease-in-out infinite;
+    }
+    
+    .bottom-nav {
+      background: linear-gradient(135deg, 
+        rgba(26, 26, 46, 0.95) 0%, 
+        rgba(26, 26, 46, 0.98) 50%, 
+        rgba(26, 26, 46, 0.95) 100%);
+      background-size: 200% 200%;
+      animation: ambientShimmer 10s ease-in-out infinite;
+    }
+    
+    /* Grid item ambient effects */
+    .grid-item:hover {
+      animation: ambientFloat 1.5s ease-in-out infinite;
+    }
+    
+    .grid-item.active {
+      animation: ambientGlow 3s ease-in-out infinite;
+    }
+    
+    /* Panel ambient effects */
+    .style-panel, .instruments-panel {
+      background: linear-gradient(135deg, 
+        rgba(26, 26, 46, 0.8) 0%, 
+        rgba(26, 26, 46, 0.9) 50%, 
+        rgba(26, 26, 46, 0.8) 100%);
+      background-size: 300% 300%;
+      animation: ambientShimmer 12s ease-in-out infinite;
+    }
+    
+    /* Popup ambient effects - REMOVED */
+    /* .evolve-popup, .menu-popup, .settings-popup, .record-popup {
+      animation: ambientFloat 0.3s ease-out;
+    } */
+    
+    /* Slider ambient effects */
+    weight-slider:hover {
+      animation: ambientGlow 2s ease-in-out infinite;
+    }
+    
+    /* Scene ambient effects */
+    .scene-btn:hover {
+      animation: ambientFloat 1s ease-in-out infinite;
+    }
+    
+    /* Menu button ambient effects */
+    .menu-btn:hover {
+      animation: ambientFloat 1.2s ease-in-out infinite;
+    }
+    
+    /* Search input ambient effects */
+    .search-input:focus {
+      animation: ambientGlow 2s ease-in-out infinite;
+    }
+    
+    /* Toggle button ambient effects */
+    .toggle-btn:hover {
+      animation: ambientFloat 1.5s ease-in-out infinite;
+    }
+    
+    .toggle-btn.active {
+      animation: ambientGlow 2s ease-in-out infinite;
+    }
+    
+    /* Filter button ambient effects */
+    .filter-btn:hover {
+      animation: ambientFloat 1.3s ease-in-out infinite;
+    }
+    
+    .filter-btn.active {
+      animation: ambientGlow 2.5s ease-in-out infinite;
+    }
+    
+    /* Instrument/Style item ambient effects */
+    .style-item:hover, .instrument-item:hover {
+      animation: ambientFloat 1.2s ease-in-out infinite;
+    }
+    
+    .style-item.selected, .instrument-item.selected {
+      animation: ambientGlow 3s ease-in-out infinite;
+    }
+    
+    /* Nav icon ambient effects - REMOVED */
+    /* .nav-icon {
+      animation: ambientFloat 3s ease-in-out infinite;
+    } */
+    
+    /* Nav label ambient effects - REMOVED */
+    /* .nav-label {
+      animation: ambientFloat 3.5s ease-in-out infinite;
+    } */
+    
+    /* Nav item ambient effects - REMOVED */
+    /* .nav-item {
+      animation: ambientFloat 4s ease-in-out infinite;
+    }
+    
+    .nav-item:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .nav-item:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    
+    .nav-item:nth-child(3) {
+      animation-delay: 1s;
+    }
+    
+    .nav-item:nth-child(4) {
+      animation-delay: 1.5s;
+    }
+    
+    .nav-item:nth-child(5) {
+      animation-delay: 2s;
+    } */
+    
+    /* Hamburger ambient effects */
+    .hamburger span {
+      animation: ambientFloat 2s ease-in-out infinite;
+    }
+    
+    .hamburger span:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .hamburger span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .hamburger span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    /* Brand ambient effects */
+    gf-brand {
+      animation: ambientFloat 4s ease-in-out infinite;
+    }
+    
+    /* Status indicator ambient effects */
+    .status-indicator:hover {
+      animation: ambientFloat 2s ease-in-out infinite;
+    }
+    
+    /* Transport controls ambient effects */
+    .transport-controls:hover {
+      animation: ambientFloat 2.5s ease-in-out infinite;
+    }
+    
+    /* MIDI info ambient effects */
+    .midi-info:hover {
+      animation: ambientFloat 1.8s ease-in-out infinite;
+    }
+    
+    .midi-info.active {
+      animation: ambientGlow 2s ease-in-out infinite;
+    }
+    
+    /* Handle ambient effects */
+    .bottom-sheet-handle {
+      animation: ambientPulse 3s ease-in-out infinite;
+    }
+    
+    /* Backdrop ambient effects - REMOVED */
+    /* .popup-backdrop {
+      animation: ambientPulse 4s ease-in-out infinite;
+    } */
+    
+    /* Content ambient effects - REMOVED */
+    /* .popup-content {
+      animation: ambientFloat 0.5s ease-out;
+    } */
+    
+    /* Header ambient effects - REMOVED */
+    /* .popup-header {
+      animation: ambientFloat 0.3s ease-out;
+    } */
+    
+    /* Section ambient effects - REMOVED */
+    /* .menu-section {
+      animation: ambientFloat 0.4s ease-out;
+    }
+    
+    .menu-section:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
+    
+    .menu-section:nth-child(even) {
+      animation-delay: 0.2s;
+    } */
+    
+    /* Button group ambient effects - REMOVED */
+    /* .menu-buttons {
+      animation: ambientFloat 0.6s ease-out;
+    } */
+    
+    /* Settings grid ambient effects - REMOVED */
+    /* .settings-grid {
+      animation: ambientFloat 0.7s ease-out;
+    } */
+    
+    /* Setting row ambient effects - REMOVED */
+    /* .setting-row {
+      animation: ambientFloat 0.8s ease-out;
+    }
+    
+    .setting-row:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
+    
+    .setting-row:nth-child(even) {
+      animation-delay: 0.2s;
+    } */
+    
+    /* Scenes list ambient effects - REMOVED */
+    /* .scenes-list {
+      animation: ambientFloat 0.9s ease-out;
+    } */
+    
+    /* Scene item ambient effects - REMOVED */
+    /* .scene-item {
+      animation: ambientFloat 1s ease-out;
+    }
+    
+    .scene-item:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
+    
+    .scene-item:nth-child(even) {
+      animation-delay: 0.2s;
+    } */
+    
+    /* Control row ambient effects - REMOVED */
+    /* .control-row {
+      animation: ambientFloat 1.1s ease-out;
+    }
+    
+    .control-row:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
+    
+    .control-row:nth-child(even) {
+      animation-delay: 0.2s;
+    } */
+    
+    /* Popup controls ambient effects - REMOVED */
+    /* .popup-controls {
+      animation: ambientFloat 1.2s ease-out;
+    } */
+    
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   `;
@@ -724,6 +2253,11 @@ export class PromptDjMidi extends LitElement {
   @state() private showAllPrompts: boolean = false;
   @state() private isMobile: boolean = false;
   @state() private showMobileMenu: boolean = false;
+  @state() private showEvolveMenu: boolean = false;
+  @state() private showSettingsMenu: boolean = false;
+  @state() private showRecordMenu: boolean = false;
+  @state() private leftPanelMode: 'styles' | 'instruments' = 'styles';
+  @state() private showActiveOnly: boolean = false;
   private readonly SELECTED_ORDER_STORAGE_KEY = 'pdjmidi_selected_order';
   private readonly PROMPT_WEIGHTS_STORAGE_KEY = 'pdjmidi_prompt_weights';
   private readonly STYLE_COUNT_STORAGE_KEY = 'pdjmidi_style_count';
@@ -752,6 +2286,12 @@ export class PromptDjMidi extends LitElement {
   @state() private scenes: Array<{ id: string; name: string; weights: Record<string, number>; selectedOrder: string[] }> = [];
   @state() private showScenesMenu = false;
   @state() private sceneMorphSec = 4;
+
+    // Generator settings UI
+  @state() private genLoopBars = 8;
+  @state() private genVariation = 1.2; // 0..2
+  @state() private genGenreContrast = 1.2; // 0..2
+  @state() private genMix: 'background' | 'balanced' | 'energetic' = 'balanced';
 
   // Konami unlock for advanced controls
   @state() private konamiUnlocked = false;
@@ -783,16 +2323,127 @@ export class PromptDjMidi extends LitElement {
     super();
     this.prompts = initialPrompts;
     
-    // Initialize instruments with common musical instruments
+    // Initialize instruments with comprehensive musical instruments
     this.instruments = new Map([
-      ['piano', { promptId: 'piano', text: 'Piano', weight: 0, color: '#FF6B6B', cc: 0 }],
+      // Core Instruments
+      ['piano', { promptId: 'piano', text: 'Piano', weight: 0, color: '#FFEAA7', cc: 0 }],
+      ['rhodes-piano', { promptId: 'rhodes-piano', text: 'Rhodes Piano', weight: 0, color: '#DDA0DD', cc: 0 }],
+      ['harpsichord', { promptId: 'harpsichord', text: 'Harpsichord', weight: 0, color: '#C19A6B', cc: 0 }],
+      ['celesta', { promptId: 'celesta', text: 'Celesta', weight: 0, color: '#F0E68C', cc: 0 }],
+      
+      // Guitars
       ['guitar', { promptId: 'guitar', text: 'Guitar', weight: 0, color: '#4ECDC4', cc: 0 }],
-      ['drums', { promptId: 'drums', text: 'Drums', weight: 0, color: '#45B7D1', cc: 0 }],
+      ['electric-guitar', { promptId: 'electric-guitar', text: 'Electric Guitar', weight: 0, color: '#FF6B6B', cc: 0 }],
+      ['acoustic-guitar', { promptId: 'acoustic-guitar', text: 'Acoustic Guitar', weight: 0, color: '#4ECDC4', cc: 0 }],
+      ['classical-guitar', { promptId: 'classical-guitar', text: 'Classical Guitar', weight: 0, color: '#8FBC8F', cc: 0 }],
+      ['bass-guitar', { promptId: 'bass-guitar', text: 'Bass Guitar', weight: 0, color: '#45B7D1', cc: 0 }],
+      ['ukulele', { promptId: 'ukulele', text: 'Ukulele', weight: 0, color: '#FFA07A', cc: 0 }],
+      ['banjo', { promptId: 'banjo', text: 'Banjo', weight: 0, color: '#DAA520', cc: 0 }],
+      ['mandolin', { promptId: 'mandolin', text: 'Mandolin', weight: 0, color: '#CD853F', cc: 0 }],
+      
+      // Bass Instruments
       ['bass', { promptId: 'bass', text: 'Bass', weight: 0, color: '#96CEB4', cc: 0 }],
-      ['strings', { promptId: 'strings', text: 'Strings', weight: 0, color: '#FFEAA7', cc: 0 }],
+      ['electric-bass', { promptId: 'electric-bass', text: 'Electric Bass', weight: 0, color: '#45B7D1', cc: 0 }],
+      ['acoustic-bass', { promptId: 'acoustic-bass', text: 'Acoustic Bass', weight: 0, color: '#96CEB4', cc: 0 }],
+      ['double-bass', { promptId: 'double-bass', text: 'Double Bass', weight: 0, color: '#8B4513', cc: 0 }],
+      ['fretless-bass', { promptId: 'fretless-bass', text: 'Fretless Bass', weight: 0, color: '#2E8B57', cc: 0 }],
+      
+      // Drums & Percussion
+      ['drums', { promptId: 'drums', text: 'Drums', weight: 0, color: '#FFB347', cc: 0 }],
+      ['live-drums', { promptId: 'live-drums', text: 'Live Drums', weight: 0, color: '#98D8C8', cc: 0 }],
+      ['electronic-drums', { promptId: 'electronic-drums', text: 'Electronic Drums', weight: 0, color: '#FF6347', cc: 0 }],
+      ['snare-drum', { promptId: 'snare-drum', text: 'Snare Drum', weight: 0, color: '#DC143C', cc: 0 }],
+      ['kick-drum', { promptId: 'kick-drum', text: 'Kick Drum', weight: 0, color: '#8B0000', cc: 0 }],
+      ['hi-hat', { promptId: 'hi-hat', text: 'Hi-Hat', weight: 0, color: '#C0C0C0', cc: 0 }],
+      ['crash-cymbal', { promptId: 'crash-cymbal', text: 'Crash Cymbal', weight: 0, color: '#D3D3D3', cc: 0 }],
+      ['ride-cymbal', { promptId: 'ride-cymbal', text: 'Ride Cymbal', weight: 0, color: '#A9A9A9', cc: 0 }],
+      ['tambourine', { promptId: 'tambourine', text: 'Tambourine', weight: 0, color: '#FFD700', cc: 0 }],
+      ['shaker', { promptId: 'shaker', text: 'Shaker', weight: 0, color: '#F4A460', cc: 0 }],
+      ['conga', { promptId: 'conga', text: 'Conga', weight: 0, color: '#8B4513', cc: 0 }],
+      ['bongo', { promptId: 'bongo', text: 'Bongo', weight: 0, color: '#A0522D', cc: 0 }],
+      ['timpani', { promptId: 'timpani', text: 'Timpani', weight: 0, color: '#8B4513', cc: 0 }],
+      ['marimba', { promptId: 'marimba', text: 'Marimba', weight: 0, color: '#DEB887', cc: 0 }],
+      ['xylophone', { promptId: 'xylophone', text: 'Xylophone', weight: 0, color: '#F5DEB3', cc: 0 }],
+      ['vibraphone', { promptId: 'vibraphone', text: 'Vibraphone', weight: 0, color: '#E6E6FA', cc: 0 }],
+      ['glockenspiel', { promptId: 'glockenspiel', text: 'Glockenspiel', weight: 0, color: '#FFE4E1', cc: 0 }],
+      
+      // Strings
+      ['strings', { promptId: 'strings', text: 'Strings', weight: 0, color: '#9900FF', cc: 0 }],
+      ['violin', { promptId: 'violin', text: 'Violin', weight: 0, color: '#5200FF', cc: 0 }],
+      ['viola', { promptId: 'viola', text: 'Viola', weight: 0, color: '#6A0DAD', cc: 0 }],
+      ['cello', { promptId: 'cello', text: 'Cello', weight: 0, color: '#FF25F6', cc: 0 }],
+      ['double-bass-string', { promptId: 'double-bass-string', text: 'Double Bass', weight: 0, color: '#8B4513', cc: 0 }],
+      ['harp', { promptId: 'harp', text: 'Harp', weight: 0, color: '#FFB6C1', cc: 0 }],
+      ['sitar', { promptId: 'sitar', text: 'Sitar', weight: 0, color: '#FF8C00', cc: 0 }],
+      ['erhu', { promptId: 'erhu', text: 'Erhu', weight: 0, color: '#FF4500', cc: 0 }],
+      
+      // Brass
+      ['trumpet', { promptId: 'trumpet', text: 'Trumpet', weight: 0, color: '#FFDD28', cc: 0 }],
+      ['trombone', { promptId: 'trombone', text: 'Trombone', weight: 0, color: '#FFA500', cc: 0 }],
+      ['french-horn', { promptId: 'french-horn', text: 'French Horn', weight: 0, color: '#FF7F50', cc: 0 }],
+      ['tuba', { promptId: 'tuba', text: 'Tuba', weight: 0, color: '#CD853F', cc: 0 }],
+      ['cornet', { promptId: 'cornet', text: 'Cornet', weight: 0, color: '#DAA520', cc: 0 }],
+      ['flugelhorn', { promptId: 'flugelhorn', text: 'Flugelhorn', weight: 0, color: '#B8860B', cc: 0 }],
+      
+      // Woodwinds
+      ['flute', { promptId: 'flute', text: 'Flute', weight: 0, color: '#3DFFAB', cc: 0 }],
+      ['piccolo', { promptId: 'piccolo', text: 'Piccolo', weight: 0, color: '#98FB98', cc: 0 }],
+      ['clarinet', { promptId: 'clarinet', text: 'Clarinet', weight: 0, color: '#87CEEB', cc: 0 }],
+      ['bass-clarinet', { promptId: 'bass-clarinet', text: 'Bass Clarinet', weight: 0, color: '#4682B4', cc: 0 }],
+      ['oboe', { promptId: 'oboe', text: 'Oboe', weight: 0, color: '#DDA0DD', cc: 0 }],
+      ['english-horn', { promptId: 'english-horn', text: 'English Horn', weight: 0, color: '#DA70D6', cc: 0 }],
+      ['bassoon', { promptId: 'bassoon', text: 'Bassoon', weight: 0, color: '#8B008B', cc: 0 }],
+      ['contrabassoon', { promptId: 'contrabassoon', text: 'Contrabassoon', weight: 0, color: '#4B0082', cc: 0 }],
+      ['recorder', { promptId: 'recorder', text: 'Recorder', weight: 0, color: '#32CD32', cc: 0 }],
+      ['pan-flute', { promptId: 'pan-flute', text: 'Pan Flute', weight: 0, color: '#00FF7F', cc: 0 }],
+      
+      // Saxophones
+      ['saxophone', { promptId: 'saxophone', text: 'Saxophone', weight: 0, color: '#2AF6DE', cc: 0 }],
+      ['alto-sax', { promptId: 'alto-sax', text: 'Alto Sax', weight: 0, color: '#00CED1', cc: 0 }],
+      ['tenor-sax', { promptId: 'tenor-sax', text: 'Tenor Sax', weight: 0, color: '#20B2AA', cc: 0 }],
+      ['baritone-sax', { promptId: 'baritone-sax', text: 'Baritone Sax', weight: 0, color: '#008B8B', cc: 0 }],
+      ['soprano-sax', { promptId: 'soprano-sax', text: 'Soprano Sax', weight: 0, color: '#00FFFF', cc: 0 }],
+      
+      // Keyboards & Organs
+      ['organ', { promptId: 'organ', text: 'Organ', weight: 0, color: '#D9B2FF', cc: 0 }],
+      ['pipe-organ', { promptId: 'pipe-organ', text: 'Pipe Organ', weight: 0, color: '#9370DB', cc: 0 }],
+      ['hammond-organ', { promptId: 'hammond-organ', text: 'Hammond Organ', weight: 0, color: '#8A2BE2', cc: 0 }],
+      ['accordion', { promptId: 'accordion', text: 'Accordion', weight: 0, color: '#FF69B4', cc: 0 }],
+      ['concertina', { promptId: 'concertina', text: 'Concertina', weight: 0, color: '#FF1493', cc: 0 }],
+      
+      // Synthesizers & Electronic
       ['synth', { promptId: 'synth', text: 'Synth', weight: 0, color: '#DDA0DD', cc: 0 }],
+      ['analog-synth', { promptId: 'analog-synth', text: 'Analog Synth', weight: 0, color: '#BA55D3', cc: 0 }],
+      ['digital-synth', { promptId: 'digital-synth', text: 'Digital Synth', weight: 0, color: '#9370DB', cc: 0 }],
+      ['pad-synth', { promptId: 'pad-synth', text: 'Pad Synth', weight: 0, color: '#8A2BE2', cc: 0 }],
+      ['lead-synth', { promptId: 'lead-synth', text: 'Lead Synth', weight: 0, color: '#7B68EE', cc: 0 }],
+      ['bass-synth', { promptId: 'bass-synth', text: 'Bass Synth', weight: 0, color: '#6A5ACD', cc: 0 }],
+      ['arp-synth', { promptId: 'arp-synth', text: 'Arp Synth', weight: 0, color: '#483D8B', cc: 0 }],
+      ['sequencer', { promptId: 'sequencer', text: 'Sequencer', weight: 0, color: '#4169E1', cc: 0 }],
+      
+      // Ethnic & World Instruments
+      ['harmonica', { promptId: 'harmonica', text: 'Harmonica', weight: 0, color: '#D8FF3E', cc: 0 }],
+      ['kazoo', { promptId: 'kazoo', text: 'Kazoo', weight: 0, color: '#FFFF00', cc: 0 }],
+      ['whistle', { promptId: 'whistle', text: 'Whistle', weight: 0, color: '#ADFF2F', cc: 0 }],
+      ['ocarina', { promptId: 'ocarina', text: 'Ocarina', weight: 0, color: '#9ACD32', cc: 0 }],
+      ['didgeridoo', { promptId: 'didgeridoo', text: 'Didgeridoo', weight: 0, color: '#556B2F', cc: 0 }],
+      ['kalimba', { promptId: 'kalimba', text: 'Kalimba', weight: 0, color: '#6B8E23', cc: 0 }],
+      ['steel-drum', { promptId: 'steel-drum', text: 'Steel Drum', weight: 0, color: '#FFD700', cc: 0 }],
+      ['tabla', { promptId: 'tabla', text: 'Tabla', weight: 0, color: '#CD853F', cc: 0 }],
+      ['djembe', { promptId: 'djembe', text: 'Djembe', weight: 0, color: '#8B4513', cc: 0 }],
+      ['cajon', { promptId: 'cajon', text: 'Cajon', weight: 0, color: '#A0522D', cc: 0 }],
+      
+      // Vocal & Choir
+      ['vocals', { promptId: 'vocals', text: 'Vocals', weight: 0, color: '#FF69B4', cc: 0 }],
+      ['choir', { promptId: 'choir', text: 'Choir', weight: 0, color: '#FFB6C1', cc: 0 }],
+      ['backing-vocals', { promptId: 'backing-vocals', text: 'Backing Vocals', weight: 0, color: '#FFC0CB', cc: 0 }],
+      ['vocal-harmony', { promptId: 'vocal-harmony', text: 'Vocal Harmony', weight: 0, color: '#FFA0B4', cc: 0 }],
+      
+      // General Categories
       ['brass', { promptId: 'brass', text: 'Brass', weight: 0, color: '#FFB347', cc: 0 }],
-      ['woodwind', { promptId: 'woodwind', text: 'Woodwind', weight: 0, color: '#98D8C8', cc: 0 }]
+      ['woodwind', { promptId: 'woodwind', text: 'Woodwind', weight: 0, color: '#98D8C8', cc: 0 }],
+      ['percussion', { promptId: 'percussion', text: 'Percussion', weight: 0, color: '#D2691E', cc: 0 }],
+      ['strings-section', { promptId: 'strings-section', text: 'Strings Section', weight: 0, color: '#9370DB', cc: 0 }]
     ]);
     
     this.midiDispatcher = new MidiDispatcher();
@@ -883,7 +2534,7 @@ export class PromptDjMidi extends LitElement {
         if (this.selectedOrder.length >= this.maxSelectedPrompts) break;
         this.selectedOrder.push(p.promptId);
       }
-      // If still empty (fresh install), seed grid with 4 random styles at weight 1.0
+      // If still empty (fresh install), seed grid with 4 random styles with random weights
       if (this.selectedOrder.length === 0) {
         const allIds = [...this.prompts.keys()];
         for (let i = allIds.length - 1; i > 0; i--) {
@@ -896,7 +2547,10 @@ export class PromptDjMidi extends LitElement {
         const updated = new Map(this.prompts);
         chosen.forEach((id) => {
           const p = updated.get(id);
-          if (p) { p.weight = 1.0; updated.set(id, p); }
+          if (p) { 
+            p.weight = Math.random() * 1.9 + 0.1; // Random weight between 0.1 and 2.0
+            updated.set(id, p); 
+          }
         });
         this.prompts = updated;
         this.saveSelectedOrder();
@@ -1353,10 +3007,10 @@ export class PromptDjMidi extends LitElement {
       // Append to order and set
       this.selectedOrder = [...this.selectedOrder, promptId];
       this.selectedPromptIds = new Set(this.selectedOrder);
-      // Auto-activate newly added style with a sensible default weight on mobile/desktop
+      // Auto-activate newly added style with a random weight
       const p = this.prompts.get(promptId);
       if (p && (!p.weight || p.weight === 0)) {
-        p.weight = 1.0;
+        p.weight = Math.random() * 1.9 + 0.1; // Random weight between 0.1 and 2.0
         const updated = new Map(this.prompts); updated.set(promptId, p);
         this.prompts = updated;
         this.savePromptWeights();
@@ -1368,6 +3022,8 @@ export class PromptDjMidi extends LitElement {
       this.selectedPromptIds = new Set(this.selectedOrder);
     }
 
+    // Clear search after selection
+    this.styleSearchQuery = '';
     // Ensure prompts not displayed in grid are not active: zero their weights
     this.resetWeightsForNonDisplayedPrompts();
     this.saveSelectedOrder();
@@ -1473,6 +3129,8 @@ export class PromptDjMidi extends LitElement {
   private toggleStyleMute(styleId: string) {
     // TODO: Implement style muting
     console.log('Toggle mute for style:', styleId);
+    // Clear search after selection
+    this.styleSearchQuery = '';
   }
 
   private isStyleMuted(styleId: string): boolean {
@@ -1512,8 +3170,22 @@ export class PromptDjMidi extends LitElement {
     const chosen = allIds.slice(0, k);
     this.selectedOrder = chosen;
     this.selectedPromptIds = new Set(this.selectedOrder);
+    
+    // Assign random weights to selected styles (0.1 to 2.0)
+    const updated = new Map(this.prompts);
+    chosen.forEach((id) => {
+      const p = updated.get(id);
+      if (p) {
+        p.weight = Math.random() * 1.9 + 0.1; // Random weight between 0.1 and 2.0
+        updated.set(id, p);
+      }
+    });
+    this.prompts = updated;
+    
     this.resetWeightsForNonDisplayedPrompts();
     this.saveSelectedOrder();
+    this.savePromptWeights();
+    this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
     this.requestUpdate();
   }
 
@@ -1540,14 +3212,13 @@ export class PromptDjMidi extends LitElement {
   override render() {
     return html`
       <!-- DAW Header -->
-      <header class="daw-header">
+      <header class="daw-header ${this.isMobile ? 'mobile-hidden' : ''}">
         ${this.isMobile && !this.showMobileMenu ? html`
           <div class="toolbar-left" style="justify-content: space-between; width:100%">
             <gf-brand></gf-brand>
             <div class="transport-controls compact">
               <play-pause-button .playbackState=${this.playbackState} @click=${this.playPause}></play-pause-button>
             </div>
-            <button class="toolbar-btn" @click=${() => { this.showMobileMenu = true; }} title="Open menu">☰</button>
           </div>
         ` : html`
           <div class="toolbar-left">
@@ -1562,54 +3233,33 @@ export class PromptDjMidi extends LitElement {
             </div>
           </div>
           
-          <div class="toolbar-right ${this.isMobile ? (this.showMobileMenu ? 'show' : '') : ''}">
-            ${this.isMobile ? html`<button class="toolbar-btn" @click=${() => { this.showMobileMenu = false; }} title="Close menu">✕</button>` : ''}
-            <button class="toolbar-btn" @click=${() => { this.randomizeGrid(); if (this.isMobile) this.showMobileMenu = false; }} title="Fill grid randomly">🎲</button>
-            ${(!this.isMobile && this.konamiUnlocked) ? html`<button class="toolbar-btn" @click=${() => { this.presetSlotCcMap(); if (this.isMobile) this.showMobileMenu = false; }} title="Preset CC 48–55">CC48–55</button>` : ''}
-            <button class="toolbar-btn" @click=${() => { this.resetAll(); if (this.isMobile) this.showMobileMenu = false; }} title="Reset all">♻</button>
-            <button class="toolbar-btn" @click=${() => { this.goHome(); if (this.isMobile) this.showMobileMenu = false; }} title="Return to Home">🏠</button>
-            <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); if (this.isMobile) this.showMobileMenu = false; }} title="Record / Stop">⏺</button>
-            <button class="toolbar-btn" @click=${() => { this.toggleHelp(); if (this.isMobile) this.showMobileMenu = false; }} title="How to use">❓</button>
+          <div class="toolbar-right">
+            <!-- Desktop Menu Items -->
+            ${!this.isMobile ? html`
+              <!-- Core Actions -->
+              <button class="toolbar-btn ${this.isRecording ? 'active' : ''}" @click=${this.toggleRecording} title="Record / Stop">⏺</button>
+              <button class="toolbar-btn" @click=${this.resetAll} title="Reset all">♻</button>
+              <button class="toolbar-btn" @click=${this.goHome} title="Return to Home">🏠</button>
+              
+              <!-- Generation -->
+              <button class="toolbar-btn" @click=${this.randomizeGrid} title="Fill grid randomly">🎲</button>
+              ${this.konamiUnlocked ? html`<button class="toolbar-btn" @click=${this.presetSlotCcMap} title="Preset CC 48–55">CC48–55</button>` : ''}
+              
+              <!-- Export -->
             <require-pro .userId=${this.userId} .email=${this.userEmail} inline>
-              <div style="position: relative;">
-                <button class="toolbar-btn" @click=${() => { this.toggleExportMenu(); }} title="Export">⬇ Export</button>
-                ${this.showExportMenu ? html`
-                  <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:6px; z-index: 1001;">
-                    <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('wav'); if (this.isMobile) this.showMobileMenu = false; }}>Export WAV</button>
-                    <button class="toolbar-btn" style="display:block; width:100%; margin:4px 0;" @click=${() => { this.exportWavOrMp3('mp3'); if (this.isMobile) this.showMobileMenu = false; }}>Export MP3</button>
-                  </div>` : ''}
-              </div>
+                <button class="toolbar-btn" @click=${this.toggleExportMenu} title="Export">⬇</button>
             </require-pro>
-            <div style="position: relative;">
-              <button class="toolbar-btn" @click=${() => { this.toggleScenesMenu(); }} title="Scenes">🎬 Scenes</button>
-              ${this.showScenesMenu ? html`
-                <div style="position:absolute; right:0; top:110%; background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:8px; min-width: 220px; z-index: 1001;">
-                  <div style="display:flex; gap:6px; margin-bottom:6px; align-items:center;">
-                    <button class="toolbar-btn" style="flex:1;" @click=${() => { this.saveScene(); }}>Save Scene</button>
-                    <select class="midi-select" title="Morph time" @change=${(e: Event) => { this.sceneMorphSec = Number((e.target as HTMLSelectElement).value); }} .value=${String(this.sceneMorphSec)}>
-                      ${[1,2,4,8].map(s => html`<option value=${s}>${s}s</option>`)}
-                    </select>
-                  </div>
-                  ${this.scenes.length === 0 ? html`<div style="color:#aaa; font-size:12px; padding:6px;">No scenes yet</div>` : ''}
-                  ${this.scenes.map(scene => html`
-                    <div style="display:flex; align-items:center; gap:6px; margin:4px 0;">
-                      <button class="toolbar-btn" style="flex:1; text-align:left;" @click=${() => { this.recallScene(scene.id); if (this.isMobile) this.showMobileMenu = false; }} title="Recall scene">${scene.name}</button>
-                      <button class="toolbar-btn" title="Rename" @click=${() => { this.renameScene(scene.id); }}>✎</button>
-                      <button class="toolbar-btn" title="Delete" @click=${() => { this.deleteScene(scene.id); }}>🗑</button>
-                    </div>
-                  `)}
-                </div>` : ''}
-            </div>
-            <button class="toolbar-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleAutoEvolve(); if (this.isMobile) this.showMobileMenu = false; }} title="Auto‑evolve">EVOLVE</button>
-            <select class="midi-select" title="Evolve rate" @change=${(e: Event) => { this.autoEvolveRateSec = Number((e.target as HTMLSelectElement).value); if (this.autoEvolveEnabled) this.startAutoEvolve(); if (this.isMobile) this.showMobileMenu = false; }} .value=${String(this.autoEvolveRateSec)}>
-              ${[8,16,32,64].map(s => html`<option value=${s}>${s}s</option>`)}
-            </select>
-            <select class="midi-select" title="Evolve depth" @change=${(e: Event) => { this.autoEvolveDepth = Number((e.target as HTMLSelectElement).value); if (this.isMobile) this.showMobileMenu = false; }} .value=${String(this.autoEvolveDepth)}>
-              <option value="0.1">Subtle</option>
-              <option value="0.15">Light</option>
-              <option value="0.25">Medium</option>
-              <option value="0.4">Bold</option>
-            </select>
+              
+              <!-- Settings -->
+              <button class="toolbar-btn ${this.showSettingsMenu ? 'active' : ''}" @click=${() => { this.showSettingsMenu = !this.showSettingsMenu; }} title="Generator Settings">⚙</button>
+              
+              <!-- Scenes -->
+              <button class="toolbar-btn" @click=${this.toggleScenesMenu} title="Scenes">🎬</button>
+              
+              <!-- Help -->
+              <button class="toolbar-btn" @click=${this.toggleHelp} title="How to use">❓</button>
+            ` : ''}
+            
           ${this.isMobile ? '' : html`
             <select class="midi-select" title="Style slots" @change=${this.handleStyleSlotChange} .value=${String(this.maxSelectedPrompts)}>
               ${[2,4,6,8,16].map(n => html`<option value=${n}>${n} styles</option>`)}
@@ -1627,6 +3277,35 @@ export class PromptDjMidi extends LitElement {
                   : html`<option value="">No devices found</option>`}
               </select>
             ` : ''}
+            
+            <!-- EVOLVE Button -->
+            <div style="position: relative;">
+              <button class="toolbar-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleEvolveMenu(); }} title="Auto-Evolve">EVOLVE</button>
+              ${this.showEvolveMenu ? html`
+                <div class="evolve-submenu">
+                  <div class="evolve-header">
+                    <h4>Auto-Evolve</h4>
+                    <button class="evolve-toggle ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleAutoEvolve(); }}>${this.autoEvolveEnabled ? 'ON' : 'OFF'}</button>
+                  </div>
+                  <div class="evolve-controls">
+                    <div class="control-row">
+                      <label>Rate</label>
+                      <select class="midi-select" title="Evolve rate" @change=${(e: Event) => { this.autoEvolveRateSec = Number((e.target as HTMLSelectElement).value); if (this.autoEvolveEnabled) this.startAutoEvolve(); }} .value=${String(this.autoEvolveRateSec)}>
+                        ${[8,16,32,64].map(s => html`<option value=${s}>${s}s</option>`)}
+                      </select>
+                    </div>
+                    <div class="control-row">
+                      <label>Depth</label>
+                      <select class="midi-select" title="Evolve depth" @change=${(e: Event) => { this.autoEvolveDepth = Number((e.target as HTMLSelectElement).value); }} .value=${String(this.autoEvolveDepth)}>
+                        <option value="0.1">Subtle</option>
+                        <option value="0.15">Light</option>
+                        <option value="0.25">Medium</option>
+                        <option value="0.4">Bold</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>` : ''}
+            </div>
           `}
           </div>
         `}
@@ -1634,19 +3313,48 @@ export class PromptDjMidi extends LitElement {
 
       <!-- Main DAW Layout -->
       <div class="daw-layout">
-        <!-- Left Panel: Track List -->
+        <!-- Left Panel: Styles & Instruments -->
           <aside class="style-panel">
           <div class="panel-header">
-            <h3>Styles</h3>
-            <input class="midi-select" style="width: 100%; margin-top: 8px;" type="text" placeholder="Search styles..." aria-label="Search styles" @input=${(e: Event) => { this.styleSearchQuery = (e.target as HTMLInputElement).value.toLowerCase(); }} .value=${this.styleSearchQuery} />
+            <div class="panel-toggle">
+              <button class="toggle-btn ${this.leftPanelMode === 'styles' ? 'active' : ''}" @click=${() => { this.leftPanelMode = 'styles'; }}>
+                Styles
+                ${this.leftPanelMode === 'styles' ? html`<span class="active-count">${this.getActiveStylesCount()}</span>` : ''}
+              </button>
+              <button class="toggle-btn ${this.leftPanelMode === 'instruments' ? 'active' : ''}" @click=${() => { this.leftPanelMode = 'instruments'; }}>
+                Instruments
+                ${this.leftPanelMode === 'instruments' ? html`<span class="active-count">${this.getActiveInstrumentsCount()}</span>` : ''}
+              </button>
+            </div>
+            
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+              <button class="filter-btn ${this.showActiveOnly ? 'active' : ''}" @click=${this.toggleShowActiveOnly}>
+                ${this.showActiveOnly ? 'Show All' : 'Show Active Only'}
+              </button>
+            </div>
+            
+            <div class="search-container">
+              <div class="search-input-wrapper">
+                <input 
+                  class="search-input" 
+                  type="text" 
+                  placeholder=${this.leftPanelMode === 'styles' ? 'Search styles...' : 'Search instruments...'} 
+                  aria-label=${this.leftPanelMode === 'styles' ? 'Search styles' : 'Search instruments'} 
+                  @input=${(e: Event) => { this.styleSearchQuery = (e.target as HTMLInputElement).value.toLowerCase(); }} 
+                  .value=${this.styleSearchQuery} 
+                />
+                <div class="search-icon">🔍</div>
+              </div>
+            </div>
           </div>
           <div class="style-list" role="listbox" aria-multiselectable="true" style="${this.isMobile ? 'max-height: 216px;' : ''}">
-            ${this.renderStyleList()}
+            ${this.leftPanelMode === 'styles' ? this.renderStyleList() : this.renderInstrumentList()}
           </div>
         </aside>
 
         <!-- Center: Main Workspace -->
-        <main class="workspace">
+        <main class="workspace ${this.isMobile ? 'mobile-full' : ''}">
           ${this.isMobile ? '' : html`
             <timeline-ruler 
               .currentTime=${this.currentTime || 0}
@@ -1669,6 +3377,244 @@ export class PromptDjMidi extends LitElement {
             </div>
           </div>
         </main>
+
+      <!-- Bottom Navigation Bar -->
+      ${this.isMobile ? html`
+        <div class="bottom-nav">
+          <!-- Evolve Button -->
+          <div class="nav-item">
+            <button class="nav-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleEvolveMenu(); }} title="Auto-Evolve">
+              <div class="nav-icon">🔄</div>
+              <div class="nav-label">Evolve</div>
+            </button>
+          </div>
+          
+          <!-- Menu Button -->
+          <div class="nav-item">
+            <button class="nav-btn" @click=${() => { this.toggleMobileMenu(); }} title="Menu">
+              <div class="nav-icon">☰</div>
+              <div class="nav-label">Menu</div>
+            </button>
+          </div>
+          
+          <!-- Play Button (Center) -->
+          <div class="nav-item nav-center">
+            <button class="nav-btn nav-play ${this.playbackState === 'playing' ? 'playing' : ''}" @click=${this.playPause} title="Play / Pause">
+              <div class="nav-icon">${this.playbackState === 'playing' ? '⏸' : '▶'}</div>
+            </button>
+          </div>
+          
+          <!-- Settings Button -->
+          <div class="nav-item">
+            <button class="nav-btn ${this.showSettingsMenu ? 'active' : ''}" @click=${() => { this.toggleSettingsMenu(); }} title="Settings">
+              <div class="nav-icon">⚙</div>
+              <div class="nav-label">Settings</div>
+            </button>
+          </div>
+          
+          <!-- Record Button -->
+          <div class="nav-item">
+            <button class="nav-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecordMenu(); }} title="Record">
+              <div class="nav-icon">⏺</div>
+              <div class="nav-label">Record</div>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Bottom Sheet Menus -->
+        ${this.showEvolveMenu ? html`
+          <div class="bottom-sheet open">
+            <div class="bottom-sheet-handle" @click=${() => { this.showEvolveMenu = false; }}></div>
+            <div class="bottom-sheet-header">
+              <h3>Auto-Evolve</h3>
+              <button class="bottom-sheet-close" @click=${() => { this.showEvolveMenu = false; }}>✕</button>
+            </div>
+            <div class="bottom-sheet-content">
+              <div class="sheet-section">
+                <h4>Controls</h4>
+                <div class="sheet-grid">
+                  <button class="sheet-btn ${this.autoEvolveEnabled ? 'active' : ''}" @click=${() => { this.toggleAutoEvolve(); }}>
+                    <div class="sheet-btn-icon">${this.autoEvolveEnabled ? '🔄' : '⏸'}</div>
+                    <div class="sheet-btn-label">${this.autoEvolveEnabled ? 'ON' : 'OFF'}</div>
+                  </button>
+                </div>
+              </div>
+              <div class="sheet-section">
+                <h4>Settings</h4>
+                <div class="control-row">
+                  <label class="control-label">Rate</label>
+                  <select class="control-input" @change=${(e: Event) => { this.autoEvolveRateSec = Number((e.target as HTMLSelectElement).value); if (this.autoEvolveEnabled) this.startAutoEvolve(); }} .value=${String(this.autoEvolveRateSec)}>
+                    ${[8,16,32,64].map(s => html`<option value=${s}>${s}s</option>`)}
+                  </select>
+                </div>
+                <div class="control-row">
+                  <label class="control-label">Depth</label>
+                  <select class="control-input" @change=${(e: Event) => { this.autoEvolveDepth = Number((e.target as HTMLSelectElement).value); }} .value=${String(this.autoEvolveDepth)}>
+                    <option value="0.1">Subtle</option>
+                    <option value="0.15">Light</option>
+                    <option value="0.25">Medium</option>
+                    <option value="0.4">Bold</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+        
+        ${this.showMobileMenu ? html`
+          <div class="bottom-sheet open">
+            <div class="bottom-sheet-handle" @click=${() => { this.showMobileMenu = false; }}></div>
+            <div class="bottom-sheet-header">
+              <h3>Menu</h3>
+              <button class="bottom-sheet-close" @click=${() => { this.showMobileMenu = false; }}>✕</button>
+            </div>
+            <div class="bottom-sheet-content">
+              <!-- Core Actions -->
+              <div class="sheet-section">
+                <h4>Core Actions</h4>
+                <div class="sheet-grid">
+                  <button class="sheet-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); this.showMobileMenu = false; }}>
+                    <div class="sheet-btn-icon">⏺</div>
+                    <div class="sheet-btn-label">Record</div>
+                  </button>
+                  <button class="sheet-btn" @click=${() => { this.resetAll(); this.showMobileMenu = false; }}>
+                    <div class="sheet-btn-icon">♻</div>
+                    <div class="sheet-btn-label">Reset</div>
+                  </button>
+                  <button class="sheet-btn" @click=${() => { this.goHome(); this.showMobileMenu = false; }}>
+                    <div class="sheet-btn-icon">🏠</div>
+                    <div class="sheet-btn-label">Home</div>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Generation -->
+              <div class="sheet-section">
+                <h4>Generation</h4>
+                <div class="sheet-grid">
+                  <button class="sheet-btn" @click=${() => { this.randomizeGrid(); this.showMobileMenu = false; }}>
+                    <div class="sheet-btn-icon">🎲</div>
+                    <div class="sheet-btn-label">Randomize</div>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Export -->
+              <require-pro .userId=${this.userId} .email=${this.userEmail} inline>
+                <div class="sheet-section">
+                  <h4>Export</h4>
+                  <div class="sheet-grid">
+                    <button class="sheet-btn" @click=${() => { this.exportWavOrMp3('wav'); this.showMobileMenu = false; }}>
+                      <div class="sheet-btn-icon">⬇</div>
+                      <div class="sheet-btn-label">Export WAV</div>
+                    </button>
+                    <button class="sheet-btn" @click=${() => { this.exportWavOrMp3('mp3'); this.showMobileMenu = false; }}>
+                      <div class="sheet-btn-icon">⬇</div>
+                      <div class="sheet-btn-label">Export MP3</div>
+                    </button>
+                  </div>
+                </div>
+              </require-pro>
+              
+              <!-- Scenes -->
+              <div class="sheet-section">
+                <h4>Scenes</h4>
+                <div class="sheet-grid">
+                  <button class="sheet-btn" @click=${() => { this.saveScene(); }}>
+                    <div class="sheet-btn-icon">💾</div>
+                    <div class="sheet-btn-label">Save Scene</div>
+                  </button>
+                </div>
+                <div class="scenes-list">
+                  ${this.scenes.length === 0 ? html`<div class="no-scenes">No scenes yet</div>` : ''}
+                  ${this.scenes.map(scene => html`
+                    <div class="scene-item">
+                      <button class="scene-btn" @click=${() => { this.recallScene(scene.id); this.showMobileMenu = false; }}>${scene.name}</button>
+                      <div class="scene-actions">
+                        <button class="scene-action-btn" @click=${() => { this.renameScene(scene.id); }}>✎</button>
+                        <button class="scene-action-btn" @click=${() => { this.deleteScene(scene.id); }}>🗑</button>
+                      </div>
+                    </div>
+                  `)}
+                </div>
+              </div>
+              
+              <!-- Help -->
+              <div class="sheet-section">
+                <h4>Help</h4>
+                <div class="sheet-grid">
+                  <button class="sheet-btn" @click=${() => { this.toggleHelp(); this.showMobileMenu = false; }}>
+                    <div class="sheet-btn-icon">❓</div>
+                    <div class="sheet-btn-label">Help</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+        
+        ${this.showSettingsMenu ? html`
+          <div class="bottom-sheet open">
+            <div class="bottom-sheet-handle" @click=${() => { this.showSettingsMenu = false; }}></div>
+            <div class="bottom-sheet-header">
+              <h3>Settings</h3>
+              <button class="bottom-sheet-close" @click=${() => { this.showSettingsMenu = false; }}>✕</button>
+            </div>
+            <div class="bottom-sheet-content">
+              <div class="sheet-section">
+                <h4>Generator Settings</h4>
+                <div class="control-row">
+                  <label class="control-label">Loop bars</label>
+                  <input class="control-input" type="number" min="4" max="32" step="4" .value=${String(this.genLoopBars)} @change=${(e: Event) => this.updateGenSetting('loopBars', Number((e.target as HTMLInputElement).value))} />
+                </div>
+                <div class="control-row">
+                  <label class="control-label">Variation</label>
+                  <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                    <input class="control-range" type="range" min="0" max="2" step="0.1" .value=${String(this.genVariation)} @input=${(e: Event) => this.updateGenSetting('variation', Number((e.target as HTMLInputElement).value))} />
+                    <span style="color: #29F2C6; font-size: 12px; font-weight: 600; min-width: 30px; text-align: center;">${this.genVariation.toFixed(1)}</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <label class="control-label">Genre contrast</label>
+                  <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                    <input class="control-range" type="range" min="0" max="2" step="0.1" .value=${String(this.genGenreContrast)} @input=${(e: Event) => this.updateGenSetting('genreContrast', Number((e.target as HTMLInputElement).value))} />
+                    <span style="color: #29F2C6; font-size: 12px; font-weight: 600; min-width: 30px; text-align: center;">${this.genGenreContrast.toFixed(1)}</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <label class="control-label">Mix</label>
+                  <select class="control-input" .value=${this.genMix} @change=${(e: Event) => this.updateGenSetting('mix', (e.target as HTMLSelectElement).value)}>
+                    <option value="background">Background</option>
+                    <option value="balanced">Balanced</option>
+                    <option value="energetic">Energetic</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+        
+        ${this.showRecordMenu ? html`
+          <div class="bottom-sheet open">
+            <div class="bottom-sheet-handle" @click=${() => { this.showRecordMenu = false; }}></div>
+            <div class="bottom-sheet-header">
+              <h3>Record</h3>
+              <button class="bottom-sheet-close" @click=${() => { this.showRecordMenu = false; }}>✕</button>
+            </div>
+            <div class="bottom-sheet-content">
+              <div class="sheet-section">
+                <h4>Recording Controls</h4>
+                <div class="sheet-grid">
+                  <button class="sheet-btn ${this.isRecording ? 'active' : ''}" @click=${() => { this.toggleRecording(); this.showRecordMenu = false; }}>
+                    <div class="sheet-btn-icon">${this.isRecording ? '⏸' : '⏺'}</div>
+                    <div class="sheet-btn-label">${this.isRecording ? 'Stop' : 'Start'}</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+      ` : ''}
 
         
       </div>
@@ -1826,7 +3772,18 @@ export class PromptDjMidi extends LitElement {
 
   private renderStyleList() {
     const q = this.styleSearchQuery.trim();
-    const items = [...this.prompts.values()].filter(p => !q || p.text.toLowerCase().includes(q));
+    let items = [...this.prompts.values()];
+    
+    // Filter by search query
+    if (q) {
+      items = items.filter(p => p.text.toLowerCase().includes(q));
+    }
+    
+    // Filter by active only if enabled
+    if (this.showActiveOnly) {
+      items = items.filter(p => this.selectedOrder.includes(p.promptId));
+    }
+    
     return items.map((prompt) => {
       const isFiltered = this.filteredPrompts.has(prompt.text);
       const isActive = this.selectedPromptIds.has(prompt.promptId);
@@ -1846,5 +3803,183 @@ export class PromptDjMidi extends LitElement {
     });
   }
 
+  private renderInstrumentList() {
+    const q = this.styleSearchQuery.trim();
+    let items = [...this.instruments.values()];
+    
+    // Filter by search query
+    if (q) {
+      items = items.filter(i => i.text.toLowerCase().includes(q));
+    }
+    
+    // Filter by active only if enabled
+    if (this.showActiveOnly) {
+      items = items.filter(i => this.selectedOrder.includes(i.promptId));
+    }
+    
+    return items.map((instrument) => {
+      const isFiltered = this.filteredInstruments.has(instrument.text);
+      const isActive = this.selectedInstrumentId === instrument.promptId;
+      const isInGrid = this.selectedOrder.includes(instrument.promptId);
+      
+      return html`<div class="style-item ${isFiltered ? 'filtered' : ''} ${isActive ? 'active' : ''}"
+        role="option"
+        tabindex="0"
+        aria-selected=${isActive}
+        aria-label="${isActive ? 'Deselect' : 'Select'} instrument ${instrument.text}"
+        @click=${() => this.toggleInstrumentSelection(instrument.promptId)}
+        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleInstrumentSelection(instrument.promptId); } }}>
+        <div class="style-color" style="background-color: ${instrument.color}"></div>
+        <div class="style-name">${instrument.text}</div>
+        <button type="button" class="style-mute" @click=${(e: Event) => { e.stopPropagation(); this.toggleInstrumentMute(instrument.promptId); }} aria-label="${isInGrid ? 'Remove from grid' : 'Add to grid'} ${instrument.text}">
+          ${isInGrid ? '✓' : '+'}
+        </button>
+      </div>`;
+    });
+  }
+
+  private toggleInstrumentSelection(instrumentId: string) {
+    if (this.selectedInstrumentId === instrumentId) {
+      this.selectedInstrumentId = '';
+    } else {
+      this.selectedInstrumentId = instrumentId;
+    }
+    // Clear search after selection
+    this.styleSearchQuery = '';
+  }
+
+  private getActiveInstrumentsCount(): number {
+    return [...this.instruments.values()].filter(instrument => 
+      this.selectedOrder.includes(instrument.promptId)
+    ).length;
+  }
+
+  private getActiveStylesCount(): number {
+    return [...this.prompts.values()].filter(prompt => 
+      this.selectedOrder.includes(prompt.promptId)
+    ).length;
+  }
+
+  private toggleShowActiveOnly() {
+    this.showActiveOnly = !this.showActiveOnly;
+  }
+
+  private toggleEvolveMenu() {
+    this.showEvolveMenu = !this.showEvolveMenu;
+    if (this.showEvolveMenu) {
+      this.showMobileMenu = false;
+      this.showSettingsMenu = false;
+      this.showRecordMenu = false;
+    }
+  }
+
+  private toggleMobileMenu() {
+    this.showMobileMenu = !this.showMobileMenu;
+    if (this.showMobileMenu) {
+      this.showEvolveMenu = false;
+      this.showSettingsMenu = false;
+      this.showRecordMenu = false;
+    }
+  }
+
+  private toggleSettingsMenu() {
+    this.showSettingsMenu = !this.showSettingsMenu;
+    if (this.showSettingsMenu) {
+      this.showEvolveMenu = false;
+      this.showMobileMenu = false;
+      this.showRecordMenu = false;
+    }
+  }
+
+  private toggleRecordMenu() {
+    this.showRecordMenu = !this.showRecordMenu;
+    if (this.showRecordMenu) {
+      this.showEvolveMenu = false;
+      this.showMobileMenu = false;
+      this.showSettingsMenu = false;
+    }
+  }
+
+  private toggleInstrumentMute(instrumentId: string) {
+    const instrument = this.instruments.get(instrumentId);
+    if (!instrument) return;
+
+    if (this.selectedOrder.includes(instrumentId)) {
+      // Remove from grid
+      this.selectedOrder = this.selectedOrder.filter(id => id !== instrumentId);
+      instrument.weight = 0;
+    } else {
+      // Add to grid if there's space
+      if (this.selectedOrder.length < this.maxSelectedPrompts) {
+        this.selectedOrder.push(instrumentId);
+        instrument.weight = 0.5; // Default weight
+      }
+    }
+    
+    // Clear search after selection
+    this.styleSearchQuery = '';
+    this.selectedPromptIds = new Set(this.selectedOrder);
+    this.saveSelectedOrder();
+    this.requestUpdate();
+    this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
+  }
+
   private renderMixerTracks() { return null; }
+
+  private updateGenSetting(key: 'loopBars' | 'variation' | 'genreContrast' | 'mix', value: any) {
+    if (key === 'loopBars') this.genLoopBars = value;
+    if (key === 'variation') this.genVariation = value;
+    if (key === 'genreContrast') this.genGenreContrast = value;
+    if (key === 'mix') this.genMix = value;
+    this.dispatchEvent(new CustomEvent('generator-settings-changed', { detail: {
+      loopBars: this.genLoopBars,
+      variation: this.genVariation,
+      genreContrast: this.genGenreContrast,
+      mix: this.genMix,
+    }}));
+  }
+
+
+
+  private handleApplySuggestedStyles = (e: CustomEvent) => {
+    const { styles } = e.detail;
+    console.log('Applying suggested styles:', styles);
+    
+    // Find matching styles in our prompts and add them to the grid
+    const updated = new Map(this.prompts);
+    const newSelectedOrder = [...this.selectedOrder];
+    
+    styles.forEach((styleName: string) => {
+      // Find the prompt that matches this style name
+      const matchingPrompt = Array.from(this.prompts.values()).find(p => 
+        p.text.toLowerCase().includes(styleName.toLowerCase()) ||
+        styleName.toLowerCase().includes(p.text.toLowerCase())
+      );
+      
+      if (matchingPrompt && !this.selectedPromptIds.has(matchingPrompt.promptId)) {
+        // Add to selection if not already selected and we have room
+        if (newSelectedOrder.length < this.maxSelectedPrompts) {
+          newSelectedOrder.push(matchingPrompt.promptId);
+          // Set a moderate weight for the new style
+          matchingPrompt.weight = Math.random() * 1.5 + 0.5;
+          updated.set(matchingPrompt.promptId, matchingPrompt);
+        }
+      }
+    });
+    
+    if (newSelectedOrder.length > this.selectedOrder.length) {
+      this.selectedOrder = newSelectedOrder;
+      this.selectedPromptIds = new Set(this.selectedOrder);
+      this.prompts = updated;
+      this.saveSelectedOrder();
+      this.savePromptWeights();
+      this.requestUpdate();
+      this.dispatchEvent(new CustomEvent('prompts-changed', { detail: this.prompts }));
+      
+      // Show success message
+      this.dispatchEvent(new CustomEvent('error', { 
+        detail: `Added ${styles.length} suggested styles to your grid!` 
+      }));
+    }
+  };
 }

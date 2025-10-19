@@ -4,37 +4,39 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { PlaybackState, Prompt } from './types';
+import type { PlaybackState, Prompt, GeneratorSettings } from './types';
 import { GoogleGenAI, LiveMusicFilteredPrompt } from '@google/genai';
 import { PromptDjMidi } from './components/PromptDjMidi';
 import { ToastMessage } from './components/ToastMessage';
-import './components/SubscriptionGate';
 import { LiveMusicHelper } from './utils/LiveMusicHelper';
 import { AudioAnalyser } from './utils/AudioAnalyser';
 import { SessionRecorder, exportMp3, exportWav } from './utils/SessionRecorder';
 import { createClient } from '@supabase/supabase-js';
 // Subscription gating removed
 
-// Read API key from either process.env (via Vite define) or Vite client env (VITE_*)
-// This makes local dev and deployment resilient to different env setups.
-const GEMINI_API_KEY = (typeof process !== 'undefined' && (process as any).env?.GEMINI_API_KEY)
-  || ((import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined);
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY, apiVersion: 'v1alpha' });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
 const model = 'lyria-realtime-exp';
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!
-);
+const VITE_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const VITE_SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = (VITE_SUPABASE_URL && VITE_SUPABASE_ANON_KEY)
+  ? createClient(VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
+  : null as any;
 
 function main() {
-  // Check subscription status first; gate if not Pro
-  initializeAppWithGate();
+  // Start directly in the core app
+  initializeMainApp();
 }
 
 async function initializeMainApp() {
-  const { data: { user } } = await supabase.auth.getUser();
-  const userId = user?.id ?? '';
-  const userEmail = user?.email ?? '';
+  let userId = '';
+  let userEmail = '';
+  try {
+    if (supabase) {
+      const { data: { user } } = await supabase.auth.getUser();
+      userId = user?.id ?? '';
+      userEmail = user?.email ?? '';
+    }
+  } catch {}
   const initialPrompts = buildInitialPrompts();
 
   const pdjMidi = new PromptDjMidi(initialPrompts);
@@ -47,6 +49,14 @@ async function initializeMainApp() {
 
   const liveMusicHelper = new LiveMusicHelper(ai, model);
   liveMusicHelper.setWeightedPrompts(initialPrompts);
+  // Default generator tuning to reduce repetitiveness and improve loops
+  const defaultSettings: GeneratorSettings = {
+    loopBars: 8,
+    variation: 1.2,
+    genreContrast: 1.2,
+    mix: 'balanced',
+  };
+  liveMusicHelper.setGeneratorSettings(defaultSettings);
   let recorder: SessionRecorder | null = null;
   let lastRecordingBlob: Blob | null = null;
 
@@ -60,6 +70,7 @@ async function initializeMainApp() {
     liveMusicHelper.setWeightedPrompts(prompts);
   }));
 
+
   pdjMidi.addEventListener('play-pause', () => {
     liveMusicHelper.playPause();
   });
@@ -68,7 +79,7 @@ async function initializeMainApp() {
     try {
       if (!recorder) {
         recorder = new SessionRecorder(liveMusicHelper.audioContext, liveMusicHelper.recordTap, 'audio/webm;codecs=opus', true);
-        recorder.start();
+        await recorder.start();
         (pdjMidi as any).isRecording = true;
       } else {
         const blob = await recorder.stop();
@@ -116,7 +127,7 @@ async function initializeMainApp() {
 
       // Fallback: capture a short live segment
       const tempRecorder = new SessionRecorder(liveMusicHelper.audioContext, liveMusicHelper.recordTap, 'audio/webm;codecs=opus', true);
-      tempRecorder.start();
+      await tempRecorder.start();
       await new Promise(r => setTimeout(r, 1500));
       const mp3Blob = await tempRecorder.stop();
       if (detail.kind === 'mp3') {
@@ -145,6 +156,11 @@ async function initializeMainApp() {
     playbackState === 'playing' ? audioAnalyser.start() : audioAnalyser.stop();
   }));
 
+  pdjMidi.addEventListener('generator-settings-changed', ((e: Event) => {
+    const settings = (e as CustomEvent<GeneratorSettings>).detail;
+    liveMusicHelper.setGeneratorSettings(settings);
+  }));
+
   liveMusicHelper.addEventListener('filtered-prompt', ((e: Event) => {
     const customEvent = e as CustomEvent<LiveMusicFilteredPrompt>;
     const filteredPrompt = customEvent.detail;
@@ -166,76 +182,6 @@ async function initializeMainApp() {
     const level = customEvent.detail;
     pdjMidi.audioLevel = level;
   }));
-}
-
-async function initializeAppWithGate() {
-  // Try to detect Pro plan via our API using any available user id
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    const userId = user?.id ?? '';
-    const userEmail = user?.email ?? '';
-    if (!userId) {
-      // No auth – show gate requiring sign-in/upgrade
-      renderGate(userId, userEmail);
-      return;
-    }
-    const r = await fetch(`/api/plan?userId=${encodeURIComponent(userId)}`);
-    const plan = await r.json();
-    if (plan?.plan === 'pro') {
-      initializeMainApp();
-    } else {
-      renderGate(userId, userEmail);
-    }
-  } catch {
-    // On failure, be safe and gate
-    renderGate('', '');
-  }
-}
-
-function renderGate(userId: string, email: string) {
-  const gate = document.createElement('subscription-gate') as any;
-  gate.userId = userId;
-  gate.email = email;
-  gate.addEventListener('refresh-plan', async () => {
-    // Re-check and start app if Pro now
-    try {
-      if (!userId) {
-        const toast = new ToastMessage();
-        document.body.appendChild(toast);
-        toast.show('Sign in required before refreshing plan.');
-        return;
-      }
-      const r = await fetch(`/api/plan?userId=${encodeURIComponent(userId)}`);
-      if (!r.ok) {
-        const msg = await r.text();
-        const toast = new ToastMessage();
-        document.body.appendChild(toast);
-        toast.show(msg || 'Plan check failed');
-        return;
-      }
-      const plan = await r.json();
-      if (plan?.plan === 'pro') {
-        gate.remove();
-        initializeMainApp();
-      }
-    } catch {}
-  });
-  // Surface gate errors via toast
-  gate.addEventListener('notify', (e: Event) => {
-    const m = (e as CustomEvent<string>).detail;
-    const toast = new ToastMessage();
-    document.body.appendChild(toast);
-    toast.show(m);
-  });
-  // Dev bypass: allow skipping the gate locally
-  gate.addEventListener('dev-bypass', () => {
-    const host = (window?.location?.hostname || '').toLowerCase();
-    if (host === 'localhost' || host === '127.0.0.1') {
-      gate.remove();
-      initializeMainApp();
-    }
-  });
-  document.body.appendChild(gate);
 }
 
 function buildInitialPrompts() {
@@ -266,7 +212,6 @@ const DEFAULT_PROMPTS = [
   { color: '#ffdd28', text: 'Shoegaze' },
   { color: '#2af6de', text: 'Funk' },
   { color: '#9900ff', text: 'Chiptune' },
-  { color: '#3dffab', text: 'Lush Strings' },
   { color: '#d8ff3e', text: 'Sparkling Arpeggios' },
   { color: '#d9b2ff', text: 'Staccato Rhythms' },
   { color: '#3dffab', text: 'Punchy Kick' },
@@ -276,6 +221,15 @@ const DEFAULT_PROMPTS = [
   { color: '#5200ff', text: 'Trip Hop' },
   { color: '#d9b2ff', text: 'Thrash' },
 
+  // Rock & Organic Styles
+  { color: '#ff6b6b', text: 'Rock' },
+  { color: '#4ecdc4', text: 'Classic Rock' },
+  { color: '#45b7d1', text: 'Alternative Rock' },
+  { color: '#96ceb4', text: 'Indie Rock' },
+  { color: '#ffeaa7', text: 'Blues Rock' },
+  { color: '#dda0dd', text: 'Folk Rock' },
+  { color: '#ffb347', text: 'Acoustic Rock' },
+  
   // New style prompts
   { color: '#ff6b6b', text: 'Jazz' },
   { color: '#4ecdc4', text: 'R&B' },
@@ -413,8 +367,32 @@ const DEFAULT_PROMPTS = [
   { color: '#c19a6b', text: 'Neoclassical' },
   { color: '#ff6b6b', text: 'Dark Trap' },
   { color: '#4ecdc4', text: 'Afro Trap' },
+  { color: '#DC143C', text: 'Crack Music' },
+  { color: '#FFD700', text: 'Quacking Synth Stabs' },
   { color: '#45b7d1', text: 'Dungeon Synth' },
-  { color: '#ffd166', text: 'Gospel' },
+  
+  // Horror & Halloween
+  { color: '#8B0000', text: 'Horror Score' },
+  { color: '#4A0E4E', text: 'Gothic Horror' },
+  { color: '#2F1B14', text: 'Haunted House' },
+  { color: '#8B4513', text: 'Witchcraft' },
+  { color: '#2F4F4F', text: 'Zombie Apocalypse' },
+  { color: '#800080', text: 'Vampire Ball' },
+  { color: '#556B2F', text: 'Werewolf Howl' },
+  { color: '#DC143C', text: 'Slasher Film' },
+  { color: '#483D8B', text: 'Ghostly Whispers' },
+  { color: '#8B008B', text: 'Dark Ritual' },
+  { color: '#B22222', text: 'Demonic Chant' },
+  { color: '#2E8B57', text: 'Cursed Forest' },
+  { color: '#FF6347', text: 'Pumpkin Patch' },
+  { color: '#FF8C00', text: 'Halloween Party' },
+  { color: '#9932CC', text: 'Witch\'s Brew' },
+  { color: '#8B0000', text: 'Blood Moon' },
+  { color: '#696969', text: 'Graveyard Shift' },
+  { color: '#FFD700', text: 'Spooky Jazz' },
+  
+  // Seasonal
+  { color: '#e84a5f', text: 'Christmas' },
 ];
 
 main();
