@@ -1,82 +1,205 @@
-# DeepRabbit
+# 🎵 DeepRabbit.net - AI Music Performance Tool
 
-**Fresh tracks. Forged by AI.**
+**Create professional music in real-time with AI. No experience required.**
 
-DeepRabbit is a real‑time AI music performance tool. Use natural language styles and your MIDI controller to sculpt evolving tracks on stage.
+DeepRabbit.net is an AI-powered music creation tool that lets you generate professional-quality music instantly. Blend 190+ music styles, control with MIDI hardware, and record your performances - all in your browser.
 
-## Features
+---
 
-- **Real‑time AI performance** – generate and blend musical ideas with zero latency
-- **Curate & toggle styles** – load up to eight styles, switch them on and off, and map controls for instant changes
-- **MIDI first** – connect your hardware to shape dynamics, effects, and transitions
-- **Mobile-friendly** – responsive design with touch-optimized controls
-- **Live recording** – capture your performances with high-quality audio
-- **190+ genre styles** – from electronic to organic, covering all musical tastes
+## ✨ **Features**
 
-## Quick Start
+### 🎛️ **Live Music Generation**
+- **Real-time AI** - Generate music as you perform
+- **190+ Styles** - Electronic, Jazz, Rock, World, Experimental
+- **Style Blending** - Mix multiple genres with weight controls
+- **Zero Latency** - Professional-grade audio processing
 
-Prerequisites: Node.js 18+
+### 🎹 **MIDI Integration**
+- **Any Controller** - Works with all MIDI hardware
+- **Real-time Control** - Map knobs and faders to styles
+- **Live Performance** - Perfect for DJ sets and live shows
+- **No Setup** - Plug and play with Web MIDI
 
-1. **Install dependencies:** `npm install`
-2. **Set API key:** Create `.env.local` with `GEMINI_API_KEY=your_key_here`
-3. **Run locally:** `npm run dev`
-4. **Open:** http://localhost:5173
+### 📱 **Mobile-Friendly**
+- **Touch Controls** - Optimized for phones and tablets
+- **Responsive Design** - Works on any screen size
+- **Same Features** - Full functionality on mobile
+- **Offline Ready** - Basic functions work without internet
 
-## User Guide
+### 🎵 **Professional Recording**
+- **High Quality** - Studio-grade MP3 export
+- **Real-time Capture** - Record your live performances
+- **Easy Sharing** - Upload to SoundCloud, YouTube, etc.
+- **No Limits** - Record as long as you want
 
-### Getting Started
-1. **Start a session** – open the app; no subscription required
-2. **Connect MIDI** – click **MIDI** in the header and choose your controller
-3. **Curate styles** – browse Tracks, add as many styles as you like, then drag up to eight onto the grid
-4. **Perform live** – press **Play**. Move sliders or mapped knobs to blend styles in real time
-5. **Toggle on the fly** – enable or disable styles during your set for dynamic transitions
-6. **Map controls** – select "Click to learn" on a slot, turn a knob, and repeat for instruments or effects
+---
 
-### Mobile Usage
-- **Bottom sheet menus** – swipe up from bottom for Evolve, Menu, Settings, and Record
-- **Touch controls** – optimized sliders with visual feedback and value displays
-- **Responsive design** – works seamlessly on phones and tablets
+## 🚀 **Quick Start**
 
-### Advanced Features
-- **Scene management** – save and recall different style combinations
-- **Audio recording** – capture your live performances
-- **Weight controls** – fine-tune style influence with precision sliders
-- **Genre contrast** – control how different styles blend together
+### 1. **Open DeepRabbit.net**
+- Visit the DeepRabbit.net website
+- No downloads or installations needed
+- Works in any modern web browser
 
-## Troubleshooting
+### 2. **Choose Your Styles**
+- Browse 190+ music genres
+- Drag styles to the performance grid
+- Mix and match different genres
 
-- **No sound?** Ensure your browser tab has audio permission and your speakers are selected
-- **MIDI device missing?** Verify Web MIDI is supported and that you've granted access. Reconnect the controller and refresh the page
-- **API key errors?** Confirm `GEMINI_API_KEY` is set in `.env.local` and restart the dev server
-- **Audio decoding issues?** The app now handles raw PCM audio data automatically with fallback to silent buffers
+### 3. **Start Creating**
+- Click play to begin generation
+- Adjust style weights in real-time
+- Record when you're ready
 
-For additional questions see the [FAQ](docs/FAQ.md).
+### 4. **Connect MIDI (Optional)**
+- Plug in your MIDI controller
+- Map controls to style weights
+- Perform live with hardware
 
-## Tech Stack
+---
 
-- **Frontend:** TypeScript + Lit + Vite
-- **Audio:** Web MIDI + Web Audio API + AudioWorklet
-- **AI:** Google Gemini Live Music API
-- **Recording:** LAME.js MP3 encoding
-- **Mobile:** Responsive CSS with touch optimizations
+## 🎛️ **How It Works**
 
-## Development
+### **Style Selection**
+1. **Browse** - Explore 190+ professional music styles
+2. **Search** - Find specific genres quickly
+3. **Drag & Drop** - Add styles to your performance grid
+4. **Mix** - Combine up to 8 styles simultaneously
 
-### Build Commands
-- `npm run dev` – Start development server
-- `npm run build` – Build for production
-- `npm run preview` – Preview production build
+### **Weight Control**
+- **0.0** = Style muted (no influence)
+- **1.0** = Normal influence
+- **2.0** = Double influence (style dominates)
+- **Real-time** = Adjust while music plays
 
-### Project Structure
-```
-├── components/          # Lit web components
-├── utils/              # Audio processing and utilities
-├── docs/               # Documentation
-├── dist/               # Production build output
-└── public/             # Static assets
-```
+### **Live Performance**
+- **Toggle Styles** - Enable/disable during performance
+- **MIDI Control** - Map hardware to style weights
+- **Scene Management** - Save and recall style combinations
+- **Recording** - Capture your performances
 
-## License
+---
 
-MIT License - see LICENSE file for details.
+## 📱 **Mobile Usage**
 
+### **Touch Interface**
+- **Swipe Up** - Access menus from bottom
+- **Drag Sliders** - Precise weight control
+- **Tap Buttons** - Quick style toggles
+- **Pinch Zoom** - Better visibility
+
+### **Mobile Features**
+- **Same Functionality** - All desktop features available
+- **Touch Optimized** - Designed for finger control
+- **Responsive** - Adapts to any screen size
+- **Fast Loading** - Optimized for mobile networks
+
+---
+
+## 🎹 **MIDI Controller Setup**
+
+### **Supported Controllers**
+- **Novation Launchkey** - Great for beginners
+- **Akai MPK Mini** - Compact and portable
+- **Arturia KeyLab** - Professional quality
+- **Native Instruments** - DJ-style controllers
+- **Any MIDI Device** - Works with all controllers
+
+### **Setup Process**
+1. **Connect** - Plug controller via USB
+2. **Allow** - Grant MIDI permissions
+3. **Map** - Assign controls to styles
+4. **Perform** - Start creating with hardware
+
+---
+
+## 🔧 **Troubleshooting**
+
+### **No Sound**
+- ✅ Check speaker/headphone connection
+- ✅ Allow audio permissions in browser
+- ✅ Check volume levels
+- ✅ Try different browser
+
+### **MIDI Issues**
+- ✅ Check USB connection
+- ✅ Allow MIDI permissions
+- ✅ Try Chrome browser
+- ✅ Restart browser
+
+### **Performance**
+- ✅ Close other browser tabs
+- ✅ Check internet connection
+- ✅ Use Chrome for best performance
+- ✅ Restart browser if needed
+
+---
+
+## 🌐 **Browser Support**
+
+| Browser | Version | Audio | MIDI | Performance |
+|---------|--------|-------|------|-------------|
+| **Chrome** | 66+ | ✅ Full | ✅ Full | ⭐⭐⭐⭐⭐ |
+| **Firefox** | 76+ | ✅ Full | ✅ Full | ⭐⭐⭐⭐ |
+| **Safari** | 14.1+ | ✅ Full | ✅ Full | ⭐⭐⭐⭐ |
+| **Edge** | 79+ | ✅ Full | ✅ Full | ⭐⭐⭐⭐ |
+
+**Chrome recommended** for the best experience.
+
+---
+
+## 💡 **Tips & Tricks**
+
+### **Getting Started**
+- **Start Simple** - Begin with 2-3 styles
+- **Use MIDI** - Much more intuitive than mouse
+- **Experiment** - Try unexpected style combinations
+- **Record Everything** - You never know when magic happens
+
+### **Advanced Techniques**
+- **Build Gradually** - Add styles one at a time
+- **Use EVOLVE** - Let AI surprise you
+- **Save Scenes** - Don't lose your best combinations
+- **Practice** - Learn your controller mappings
+
+### **Performance Tips**
+- **Stable Internet** - AI processing needs good connection
+- **Good Speakers** - Hear the full quality
+- **Close Other Apps** - Free up system resources
+- **Regular Breaks** - Avoid ear fatigue
+
+---
+
+## 🆘 **Support**
+
+### **Getting Help**
+- **FAQ** - Most questions answered in our FAQ
+- **User Guide** - Step-by-step tutorials
+- **Community** - Join our Discord for tips
+- **Email** - support@deeprabbit.net
+
+### **Reporting Issues**
+- **Include Details** - Browser, device, what you were doing
+- **Screenshots** - Help us understand the issue
+- **Be Specific** - The more details, the better
+- **Response Time** - We reply within 24 hours
+
+---
+
+## 🎵 **What's Next?**
+
+### **Explore More**
+- Try genres you've never heard
+- Mix unexpected combinations
+- Discover your unique sound
+- Share your creations
+
+### **Join the Community**
+- Connect with other musicians
+- Share tips and techniques
+- Collaborate on projects
+- Get feedback on your music
+
+---
+
+**Ready to create?** [Start making music now!](http://localhost:5173) 🎵✨

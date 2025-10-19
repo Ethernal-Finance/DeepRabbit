@@ -1,36 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DeepRabbit – Fresh tracks. Forged by AI.</title>
-  <style>
-    body {font-family: Arial, sans-serif; margin: 0; padding: 0; background:#000; color:#fff;}
-    header {text-align: center; padding: 4rem 1rem;}
-    h1 {font-size: 3rem; margin-bottom: 0.5rem;}
-    section {padding: 2rem 1rem; max-width: 800px; margin: 0 auto;}
-    .cta {text-align: center; padding: 3rem 1rem;}
-    a.button {background:#ff3366; color:#fff; padding:1rem 2rem; text-decoration:none; border-radius:4px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepRabbit.net - AI Music Performance</title>
+    <meta name="description" content="Fresh tracks. Forged by AI. Real-time music performance with MIDI control.">
+    <meta property="og:title" content="DeepRabbit.net - AI Music Performance Tool">
+    <meta property="og:description" content="Fresh tracks. Forged by AI. Real-time music performance with MIDI control, 190+ styles, and live recording.">
+    <meta property="og:image" content="https://deeprabbit.net/og-image.png">
+    <meta property="og:url" content="https://deeprabbit.net">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DeepRabbit.net - AI Music Performance">
+    <meta name="twitter:description" content="Fresh tracks. Forged by AI. Real-time music performance with MIDI control.">
+    <meta name="twitter:image" content="https://deeprabbit.net/og-image.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #29F2C6;
+            --secondary: #1A1A2E;
+            --accent: #16213E;
+            --text: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --gradient: linear-gradient(135deg, #29F2C6 0%, #1A1A2E 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            padding: 2rem 0;
+            text-align: center;
+            background: var(--gradient);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            opacity: 0.9;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 4rem 0;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #FFFFFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--gradient);
+            color: var(--secondary);
+            padding: 1.2rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature {
+            background: rgba(26, 26, 46, 0.5);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .feature p {
+            color: var(--text-muted);
+        }
+
+        .stats {
+            background: var(--accent);
+            padding: 3rem 0;
+            margin: 4rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+        }
+
+        .footer {
+            background: var(--accent);
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(41, 242, 198, 0.2);
+        }
+
+        .footer p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Fresh tracks. Forged by AI.</h1>
-    <p>DeepRabbit turns your prompts and MIDI moves into live, evolving music.</p>
-  </header>
+    <header class="header">
+        <div class="container">
+            <div class="logo">DeepRabbit.net</div>
+            <div class="tagline">Fresh tracks. Forged by AI.</div>
+        </div>
+    </header>
 
-  <section>
-    <h2>Real-time AI music performance</h2>
-    <p>Generate and blend musical ideas on stage with zero latency. DeepRabbit listens to your MIDI controller and responds instantly.</p>
-  </section>
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h1>AI Music Performance<br>You Can Play Like an Instrument</h1>
+                <p>Real-time AI music generation with MIDI control, 190+ styles, and live recording. Experience the future of music performance.</p>
+                <a href="http://localhost:5173" class="cta-button">🚀 Launch DeepRabbit.net</a>
+                <a href="landing.html" class="cta-button">📖 Learn More</a>
+            </section>
 
-  <section>
-    <h2>Curate and toggle styles</h2>
-    <p>Browse an ever-growing library of AI-driven styles. Load up to eight at a time and switch them on or off as your set evolves.</p>
-  </section>
+            <section class="features">
+                <div class="feature">
+                    <div class="feature-icon">🎹</div>
+                    <h3>MIDI Control</h3>
+                    <p>Connect your hardware to shape dynamics, effects, and transitions in real-time.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎵</div>
+                    <h3>190+ Styles</h3>
+                    <p>From House to Jazz, Ambient to Techno - all musical genres at your fingertips.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Ready</h3>
+                    <p>Touch-optimized controls work seamlessly on phones and tablets.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Zero Latency</h3>
+                    <p>Real-time AI performance with instant response to your controls.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎛️</div>
+                    <h3>Live Recording</h3>
+                    <p>Capture your performances with high-quality audio recording.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Scene Management</h3>
+                    <p>Save and recall different style combinations for live sets.</p>
+                </div>
+            </section>
 
-  <div class="cta">
-    <a class="button" href="https://deeprabbit.net">Start your free trial</a>
-  </div>
+            <section class="stats">
+                <div class="container">
+                    <div class="stats-grid">
+                        <div class="stat">
+                            <div class="stat-number">190+</div>
+                            <div class="stat-label">Genre Styles</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">0ms</div>
+                            <div class="stat-label">Latency</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Active Slots</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Possibilities</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Built with ❤️ for musicians</p>
+            <div class="social-links">
+                <a href="https://github.com/deeprabbit">GitHub</a>
+                <a href="https://twitter.com/deeprabbit">Twitter</a>
+                <a href="mailto:support@deeprabbit.net">Contact</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

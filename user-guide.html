@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepRabbit.net User Guide - Complete Tutorial</title>
+    <meta name="description" content="Complete user guide for DeepRabbit - learn how to create professional music with AI. Step-by-step tutorials, tips, and advanced techniques.">
+    <style>
+        :root {
+            --primary: #29F2C6;
+            --secondary: #1A1A2E;
+            --accent: #16213E;
+            --text: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --gradient: linear-gradient(135deg, #29F2C6 0%, #4ECDC4 100%);
+            --shadow: 0 10px 30px rgba(41, 242, 198, 0.3);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --info: #2196F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--accent);
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--accent);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(41, 242, 198, 0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--gradient);
+            color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 4rem 0;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 100px;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--primary);
+        }
+
+        .section h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .section ul {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .section li {
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .section strong {
+            color: var(--primary);
+        }
+
+        /* Step Cards */
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(41, 242, 198, 0.2);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 2rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .step-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            margin-top: 1rem;
+        }
+
+        .step-card p {
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(41, 242, 198, 0.2);
+        }
+
+        .feature-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+
+        /* Tips and Warnings */
+        .tip-box {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid var(--info);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .tip-box::before {
+            content: '💡';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .tip-box h4 {
+            color: var(--info);
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .tip-box p {
+            margin-left: 2rem;
+            margin-bottom: 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .warning-box h4 {
+            color: var(--warning);
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .warning-box p {
+            margin-left: 2rem;
+            margin-bottom: 0;
+        }
+
+        .success-box {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .success-box::before {
+            content: '✅';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .success-box h4 {
+            color: var(--success);
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-box p {
+            margin-left: 2rem;
+            margin-bottom: 0;
+        }
+
+        /* Interface Mockup */
+        .interface-mockup {
+            background: var(--accent);
+            border: 1px solid var(--code-border);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .mockup-element {
+            display: inline-block;
+            background: var(--gradient);
+            color: var(--secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 10px;
+            border: 1px solid rgba(41, 242, 198, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--accent);
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(41, 242, 198, 0.1);
+            color: var(--text-muted);
+        }
+
+        tr:hover {
+            background: rgba(41, 242, 198, 0.05);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--accent);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            border-radius: 20px;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .contact-section p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .nav-content {
+                gap: 1rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+
+            .section h3 {
+                font-size: 1.5rem;
+            }
+
+            .step-grid,
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-link {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🎵 DeepRabbit.net User Guide</h1>
+            <p>Complete tutorial for creating professional music with AI. From beginner to advanced techniques.</p>
+            <a href="landing.html" class="back-link">← Back to DeepRabbit.net</a>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#welcome" class="nav-link">Welcome</a>
+                <a href="#quick-start" class="nav-link">Quick Start</a>
+                <a href="#interface" class="nav-link">Interface</a>
+                <a href="#first-track" class="nav-link">First Track</a>
+                <a href="#advanced" class="nav-link">Advanced</a>
+                <a href="#mobile" class="nav-link">Mobile</a>
+                <a href="#midi" class="nav-link">MIDI</a>
+                <a href="#troubleshooting" class="nav-link">Troubleshooting</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Welcome -->
+            <section id="welcome" class="section">
+                <h2>🎵 Welcome to DeepRabbit.net</h2>
+                <p>DeepRabbit.net is your AI-powered music creation companion. Create professional-quality music in real-time with just a few clicks. No musical experience required - just your creativity!</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎛️ Live Music Generation</h4>
+                        <p>Generate music as you perform with real-time AI processing and zero latency.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎹 MIDI Integration</h4>
+                        <p>Connect any MIDI controller for hands-on control and live performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📱 Mobile-Friendly</h4>
+                        <p>Full functionality on phones and tablets with touch-optimized controls.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎵 Professional Recording</h4>
+                        <p>High-quality MP3 export for sharing your creations with the world.</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h4>What You'll Learn</h4>
+                    <p>By the end of this guide, you'll know how to create professional music, use MIDI controllers, record your performances, and master advanced techniques for live performance.</p>
+                </div>
+            </section>
+
+            <!-- Quick Start -->
+            <section id="quick-start" class="section">
+                <h2>🚀 Quick Start Guide</h2>
+                <p>Get up and running with DeepRabbit.net in just a few minutes. Follow these simple steps to create your first track.</p>
+                
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Open DeepRabbit.net</h4>
+                        <p>Visit the DeepRabbit.net website. No downloads or installations needed - it works in any modern web browser.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Choose Your Styles</h4>
+                        <p>Browse 190+ music genres in the Styles panel. Drag your favorite styles to the performance grid.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Start Creating</h4>
+                        <p>Click the play button to begin generation. Adjust style weights in real-time to blend different genres.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Record Your Music</h4>
+                        <p>Click the record button when you're ready. Your performance will be saved as an MP3 file.</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>Pro Tip</h4>
+                    <p>Start with 2-3 styles maximum for your first track. You can always add more styles later as you get comfortable with the interface.</p>
+                </div>
+            </section>
+
+            <!-- Interface -->
+            <section id="interface" class="section">
+                <h2>🎛️ Interface Overview</h2>
+                <p>Understanding the DeepRabbit.net interface is key to creating great music. Here's a complete breakdown of all the controls and features.</p>
+                
+                <h3>Header Toolbar</h3>
+                <div class="interface-mockup">
+                    <div class="mockup-element">DeepRabbit.net Logo</div>
+                    <div class="mockup-element">Play/Pause</div>
+                    <div class="mockup-element">Record</div>
+                    <div class="mockup-element">Reset</div>
+                    <div class="mockup-element">Randomize</div>
+                    <div class="mockup-element">Settings</div>
+                    <div class="mockup-element">EVOLVE</div>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>DeepRabbit.net Logo</h4>
+                        <p>Click to return to home or access main menu options.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Play/Pause</h4>
+                        <p>Start and stop music generation. The main control for your performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Record</h4>
+                        <p>Capture your performance as a high-quality MP3 file.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Reset</h4>
+                        <p>Clear all styles and start fresh with a clean slate.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Randomize</h4>
+                        <p>Fill the grid with random styles for instant inspiration.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Settings</h4>
+                        <p>Adjust generation parameters and app configuration.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>EVOLVE</h4>
+                        <p>Enable auto-evolution for dynamic, changing music.</p>
+                    </div>
+                </div>
+
+                <h3>Left Panel: Styles & Instruments</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Styles Tab</h4>
+                        <p>Browse 190+ music genres including Electronic, Jazz, Rock, World, and Experimental styles.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Instruments Tab</h4>
+                        <p>Choose specific instruments to add to your performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Search Bar</h4>
+                        <p>Find styles quickly by typing genre names or keywords.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Active Filter</h4>
+                        <p>Show only styles you're currently using for easy management.</p>
+                    </div>
+                </div>
+
+                <h3>Main Workspace</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Performance Grid</h4>
+                        <p>Up to 8 style slots where you can place your chosen genres for live performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Weight Sliders</h4>
+                        <p>Control style influence from 0.0 (muted) to 2.0 (dominant) with real-time adjustment.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Style Names</h4>
+                        <p>See what styles are active and their current influence levels.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Value Display</h4>
+                        <p>Current slider positions shown as numeric values for precision control.</p>
+                    </div>
+                </div>
+
+                <h3>Mobile Navigation (Bottom)</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Evolve</h4>
+                        <p>Auto-evolution controls for dynamic music changes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Menu</h4>
+                        <p>Access all features and settings in mobile-friendly format.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Play</h4>
+                        <p>Main play/pause button optimized for touch control.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Settings</h4>
+                        <p>App configuration and generation parameters.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Record</h4>
+                        <p>Start/stop recording with touch-optimized controls.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- First Track -->
+            <section id="first-track" class="section">
+                <h2>🎵 Creating Your First Track</h2>
+                <p>Follow this step-by-step guide to create your first professional track with DeepRabbit.net.</p>
+                
+                <h3>1. Choose Your Foundation</h3>
+                <p>Start with 2-3 styles that work well together. Here are some great combinations:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Style Combination</th>
+                                <th>Primary Style</th>
+                                <th>Secondary Style</th>
+                                <th>Accent Style</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Electronic</strong></td>
+                                <td>House</td>
+                                <td>Ambient</td>
+                                <td>Synthwave</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Organic</strong></td>
+                                <td>Jazz</td>
+                                <td>Blues</td>
+                                <td>Folk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Experimental</strong></td>
+                                <td>Techno</td>
+                                <td>Lo-Fi</td>
+                                <td>Trap</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>2. Set Initial Weights</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Primary Style</h4>
+                        <p>Set weight to 1.5-2.0 for the main genre that will drive your track.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Secondary Style</h4>
+                        <p>Set weight to 0.5-1.0 for supporting elements and texture.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Accent Style</h4>
+                        <p>Set weight to 0.2-0.5 for subtle flavor and unique character.</p>
+                    </div>
+                </div>
+
+                <h3>3. Hit Play and Listen</h3>
+                <p>Click the play button and let the AI generate the foundation. Listen for 30-60 seconds to hear the direction and feel of your track.</p>
+
+                <div class="tip-box">
+                    <h4>Listening Tips</h4>
+                    <p>Pay attention to the rhythm, melody, and overall mood. This will help you decide what adjustments to make next.</p>
+                </div>
+
+                <h3>4. Adjust in Real-Time</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Increase Weights</h4>
+                        <p>Move sliders up for more influence from that style.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Decrease Weights</h4>
+                        <p>Move sliders down for subtlety and background presence.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Toggle Styles</h4>
+                        <p>Turn styles on/off for dramatic changes and transitions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Add More Styles</h4>
+                        <p>Introduce additional genres gradually for complexity.</p>
+                    </div>
+                </div>
+
+                <h3>5. Record When Ready</h3>
+                <p>Click record when you like what you hear. Perform live adjustments while recording to capture the evolution of your track.</p>
+
+                <div class="success-box">
+                    <h4>Congratulations!</h4>
+                    <p>You've created your first track with DeepRabbit.net! Experiment with different style combinations and weight settings to develop your unique sound.</p>
+                </div>
+            </section>
+
+            <!-- Advanced -->
+            <section id="advanced" class="section">
+                <h2>🎛️ Advanced Techniques</h2>
+                <p>Master these advanced techniques to take your music creation to the next level.</p>
+                
+                <h3>Style Blending</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Complementary Styles</h4>
+                        <p>House + Deep House, Jazz + Blues, Rock + Alternative for smooth blending.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Contrasting Styles</h4>
+                        <p>Jazz + Electronic, Classical + Trap, Ambient + Drum & Bass for unique combinations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Layered Approach</h4>
+                        <p>Drums + Bass + Melody styles for structured, professional-sounding tracks.</p>
+                    </div>
+                </div>
+
+                <h3>Weight Control Mastery</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Weight Range</th>
+                                <th>Effect</th>
+                                <th>Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>0.0-0.3</strong></td>
+                                <td>Subtle background influence</td>
+                                <td>Atmospheric elements, texture</td>
+                            </tr>
+                            <tr>
+                                <td><strong>0.4-0.7</strong></td>
+                                <td>Noticeable but not dominant</td>
+                                <td>Supporting elements, harmony</td>
+                            </tr>
+                            <tr>
+                                <td><strong>0.8-1.2</strong></td>
+                                <td>Strong presence</td>
+                                <td>Main elements, lead instruments</td>
+                            </tr>
+                            <tr>
+                                <td><strong>1.3-2.0</strong></td>
+                                <td>Dominant style</td>
+                                <td>Primary genre, main focus</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Live Performance Techniques</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Start Simple</h4>
+                        <p>Begin with 2-3 styles maximum for clean, focused performance.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Build Gradually</h4>
+                        <p>Add styles one at a time to maintain control and avoid chaos.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Use EVOLVE</h4>
+                        <p>Let the AI surprise you with new ideas and unexpected changes.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Record Everything</h4>
+                        <p>Capture spontaneous moments - you never know when magic happens.</p>
+                    </div>
+                </div>
+
+                <h3>Scene Management</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Save Scenes</h4>
+                        <p>Store your favorite style setups for quick recall during performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Quick Switching</h4>
+                        <p>Change between different songs or sections instantly for live sets.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Live Performance</h4>
+                        <p>Perfect for DJ sets, live shows, and multi-song performances.</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>Pro Performance Tip</h4>
+                    <p>Practice your style combinations beforehand. Know which styles work well together and how to transition between them smoothly.</p>
+                </div>
+            </section>
+
+            <!-- Mobile -->
+            <section id="mobile" class="section">
+                <h2>📱 Mobile Usage</h2>
+                <p>DeepRabbit.net is fully optimized for mobile devices. Here's how to get the best experience on your phone or tablet.</p>
+                
+                <h3>Touch Controls</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Swipe Up</h4>
+                        <p>Access menus from the bottom of the screen for easy thumb navigation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Drag Sliders</h4>
+                        <p>Precise weight control with touch-optimized sliders and visual feedback.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Tap Buttons</h4>
+                        <p>Quick style toggles and control access with large, touch-friendly buttons.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Pinch Zoom</h4>
+                        <p>Better visibility and control precision with zoom gestures.</p>
+                    </div>
+                </div>
+
+                <h3>Mobile Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Same Functionality</h4>
+                        <p>All desktop features available on mobile with no limitations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Touch Optimized</h4>
+                        <p>Designed specifically for finger control and touch interactions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Responsive</h4>
+                        <p>Adapts to any screen size from phones to tablets.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Fast Loading</h4>
+                        <p>Optimized for mobile networks with efficient resource usage.</p>
+                    </div>
+                </div>
+
+                <h3>Mobile Tips</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Use Landscape Mode</h4>
+                        <p>Rotate your device for better control and visibility of all elements.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Close Other Apps</h4>
+                        <p>Free up memory and processing power for smooth performance.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Use Headphones</h4>
+                        <p>Get the best audio quality and avoid disturbing others.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Keep Device Charged</h4>
+                        <p>Ensure your device has enough battery for long creative sessions.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>Mobile Performance</h4>
+                    <p>For best performance on mobile, use Chrome browser and ensure you have a stable internet connection. AI processing requires good connectivity.</p>
+                </div>
+            </section>
+
+            <!-- MIDI -->
+            <section id="midi" class="section">
+                <h2>🎹 MIDI Controller Setup</h2>
+                <p>Connect your MIDI controller for hands-on control and professional live performance capabilities.</p>
+                
+                <h3>Supported Controllers</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Controller</th>
+                                <th>Type</th>
+                                <th>Best For</th>
+                                <th>Price Range</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Novation Launchkey</strong></td>
+                                <td>Keyboard + Pads</td>
+                                <td>Beginners</td>
+                                <td>$100-300</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Akai MPK Mini</strong></td>
+                                <td>Compact</td>
+                                <td>Portable</td>
+                                <td>$100-150</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Arturia KeyLab</strong></td>
+                                <td>Professional</td>
+                                <td>Advanced Users</td>
+                                <td>$300-600</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Native Instruments</strong></td>
+                                <td>DJ Style</td>
+                                <td>Live Performance</td>
+                                <td>$200-800</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Setup Process</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Connect</h4>
+                        <p>Plug your MIDI controller into your computer via USB cable.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Allow</h4>
+                        <p>Grant MIDI permissions when your browser prompts you.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Map</h4>
+                        <p>Assign controls to styles by clicking "Click to learn" and moving knobs/faders.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Perform</h4>
+                        <p>Start creating with hardware control for intuitive, hands-on music making.</p>
+                    </div>
+                </div>
+
+                <h3>Mapping Strategies</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Map Important Styles</h4>
+                        <p>Assign your most-used styles to easily accessible controls for quick access.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use Faders</h4>
+                        <p>Map weight controls to faders for smooth, continuous adjustment.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use Buttons</h4>
+                        <p>Map style toggles to buttons for instant on/off control.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Practice Mappings</h4>
+                        <p>Learn your controller layout to perform without looking at the screen.</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>MIDI Pro Tip</h4>
+                    <p>Start with mapping 2-3 key styles to your most comfortable controls. You can always add more mappings as you get comfortable.</p>
+                </div>
+
+                <h3>Troubleshooting MIDI</h3>
+                <div class="warning-box">
+                    <h4>Common Issues</h4>
+                    <p>If your MIDI controller isn't working: check USB connection, allow browser permissions, try Chrome browser, and restart your browser if needed.</p>
+                </div>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section id="troubleshooting" class="section">
+                <h2>🔧 Troubleshooting</h2>
+                <p>Having issues? Here are solutions to the most common problems users encounter.</p>
+                
+                <h3>No Sound</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Check Speakers</h4>
+                        <p>Make sure your speakers or headphones are connected and turned on.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Browser Permissions</h4>
+                        <p>Allow audio permissions in your browser settings.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Volume Levels</h4>
+                        <p>Check both browser volume and system volume levels.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Try Different Browser</h4>
+                        <p>Some browsers have audio issues - Chrome works best.</p>
+                    </div>
+                </div>
+
+                <h3>MIDI Issues</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Check Connection</h4>
+                        <p>Make sure USB cable is secure and controller is powered on.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Allow Permissions</h4>
+                        <p>Grant MIDI access when your browser prompts you.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Try Chrome</h4>
+                        <p>Chrome has the best MIDI support and compatibility.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Restart Browser</h4>
+                        <p>Sometimes a fresh start resolves MIDI detection issues.</p>
+                    </div>
+                </div>
+
+                <h3>Performance Issues</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Close Other Tabs</h4>
+                        <p>Free up browser memory by closing unnecessary tabs.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Check Internet</h4>
+                        <p>AI processing requires stable internet connection.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Use Chrome</h4>
+                        <p>Chrome provides the best performance and compatibility.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Restart Browser</h4>
+                        <p>Clear memory and cache by restarting your browser.</p>
+                    </div>
+                </div>
+
+                <h3>Recording Problems</h3>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>Allow Permissions</h4>
+                        <p>Grant microphone permissions for recording functionality.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>Check Storage</h4>
+                        <p>Ensure you have enough storage space for recordings.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>Stable Connection</h4>
+                        <p>Recording requires stable internet connection.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>Try Different Browser</h4>
+                        <p>Some browsers have recording limitations.</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h4>Still Need Help?</h4>
+                    <p>If you're still experiencing issues, contact our support team at support@deeprabbit.net. We're here to help!</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <h2>Ready to Create Music?</h2>
+            <p>You now have everything you need to start creating professional music with DeepRabbit.net!</p>
+            <div class="contact-links">
+                <a href="http://localhost:5173" class="contact-link">🎵 Start Creating</a>
+                <a href="faq.html" class="contact-link">❓ FAQ</a>
+                <a href="tech-docs.html" class="contact-link">🔧 Technical Docs</a>
+                <a href="mailto:support@deeprabbit.net" class="contact-link">📧 Support</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update active navigation link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.step-card, .feature-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click effects to mockup elements
+        document.querySelectorAll('.mockup-element').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

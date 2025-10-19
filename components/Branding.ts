@@ -13,7 +13,7 @@ export class Branding extends LitElement {
     .name { color: #29F2C6; font-weight: 900; letter-spacing: 1px; }
   `;
 
-  @property({ type: String }) name = 'deeprabbit';
+  @property({ type: String }) name = 'deeprabbit.net';
 
   private logo() {
     return html`
