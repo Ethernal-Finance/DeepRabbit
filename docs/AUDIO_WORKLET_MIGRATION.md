@@ -1,14 +1,43 @@
-# AudioWorklet Migration
+# Audio Processing & Worklet Migration
 
-This document describes the migration from the deprecated `ScriptProcessorNode` to the modern `AudioWorkletNode` API in the SessionRecorder.
+This document describes the audio processing architecture in DeepRabbit, including the migration from deprecated `ScriptProcessorNode` to modern `AudioWorkletNode` API and the handling of raw PCM audio data from Google Gemini.
 
 ## Overview
 
+DeepRabbit uses a modern audio processing architecture that includes:
+
+1. **AudioWorklet Migration** - Migrated from deprecated `ScriptProcessorNode` to modern `AudioWorkletNode` for recording
+2. **Raw PCM Audio Handling** - Processes raw PCM audio data from Google Gemini API
+3. **Graceful Fallbacks** - Automatic fallbacks for older browsers and audio processing failures
+4. **Real-time Performance** - Optimized for live performance with minimal latency
+
 The `ScriptProcessorNode` has been deprecated by the Web Audio API in favor of `AudioWorkletNode` for better performance, lower latency, and improved stability. This migration ensures compatibility with modern browsers and future-proofs the audio recording functionality.
 
-## Changes Made
+## Audio Processing Architecture
 
-### 1. AudioWorklet Processor (`public/audio-recorder-processor.js`)
+### 1. Raw PCM Audio Handling (`utils/audio.ts`)
+
+**Problem Solved:** Google Gemini API sends raw PCM audio data, not encoded audio files. The original code tried to decode this as WAV/MP3, causing `EncodingError: Unable to decode audio data`.
+
+**Solution Implemented:**
+- **Automatic Detection:** Detects raw PCM data vs. encoded audio files
+- **Direct AudioBuffer Creation:** Creates Web Audio API buffers directly from raw PCM samples
+- **Format Support:** Handles 16-bit little-endian PCM at 48kHz stereo
+- **Graceful Fallback:** Falls back to silent buffers if processing fails
+
+**Key Features:**
+```typescript
+// Detects raw PCM data (no audio file headers)
+const isLikelyAudio = firstBytes[0] === 0x52 && firstBytes[1] === 0x49 && // RIFF
+                     firstBytes[0] === 0xFF && (firstBytes[1] === 0xFB || firstBytes[1] === 0xFA) || // MP3
+                     firstBytes[0] === 0x4F && firstBytes[1] === 0x67 && firstBytes[2] === 0x67 && firstBytes[3] === 0x53; // OggS
+
+// Creates AudioBuffer directly from raw PCM
+const samplesPerChannel = audioData.length / (channels * 2); // 16-bit samples
+const buffer = audioContext.createBuffer(channels, samplesPerChannel, sampleRate);
+```
+
+### 2. AudioWorklet Processor (`public/audio-recorder-processor.js`)
 
 Created a new AudioWorklet processor that:
 - Runs in a separate thread for better performance
