@@ -15,7 +15,24 @@ import { authService, type User } from './utils/AuthService.js';
 import './components/AuthModal.js';
 import './components/UserProfile.js';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
+const resolvedGeminiKey =
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY?.trim()) ||
+  (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY?.trim()) ||
+  '';
+
+let ai: GoogleGenAI | null = null;
+let aiInitError: Error | null = null;
+
+try {
+  if (!resolvedGeminiKey) {
+    throw new Error('Missing GEMINI_API_KEY environment variable');
+  }
+  ai = new GoogleGenAI({ apiKey: resolvedGeminiKey, apiVersion: 'v1alpha' });
+} catch (error) {
+  aiInitError = error instanceof Error ? error : new Error(String(error));
+  console.error('Failed to initialise Google GenAI client', aiInitError);
+}
+
 const model = 'lyria-realtime-exp';
 
 // Early error handling for localStorage issues
@@ -100,11 +117,16 @@ function main() {
     }
   });
 
+  if (!ai) {
+    renderCriticalError(aiInitError);
+    return;
+  }
+
   // Start directly in the core app
-  initializeMainApp();
+  initializeMainApp(ai);
 }
 
-async function initializeMainApp() {
+async function initializeMainApp(ai: GoogleGenAI) {
   let userId = '';
   let userEmail = '';
   let currentUser: User | null = null;
@@ -280,6 +302,73 @@ async function initializeMainApp() {
     const level = customEvent.detail;
     pdjMidi.audioLevel = level;
   }));
+}
+
+function renderCriticalError(error: Error | null) {
+  const supportMessage = 'DeepRabbit is tuning up. Please reload in a moment or reach out to support@deeprabbit.net.';
+  const detailMessage = error?.message && !/Missing GEMINI_API_KEY/.test(error.message)
+    ? `${supportMessage} (${error.message})`
+    : supportMessage;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .app-initialization-error {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: radial-gradient(circle at top, rgba(41, 242, 198, 0.12), rgba(17, 24, 39, 0.92));
+      color: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      gap: 1.5rem;
+    }
+
+    .app-initialization-error h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin: 0;
+    }
+
+    .app-initialization-error p {
+      max-width: 32rem;
+      line-height: 1.6;
+      margin: 0;
+      color: rgba(248, 250, 252, 0.85);
+    }
+
+    .app-initialization-error code {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+      color: #38bdf8;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const container = document.createElement('section');
+  container.className = 'app-initialization-error';
+
+  const heading = document.createElement('h1');
+  heading.textContent = 'DeepRabbit is warming up';
+  container.appendChild(heading);
+
+  const message = document.createElement('p');
+  message.textContent = detailMessage;
+  container.appendChild(message);
+
+  const code = document.createElement('code');
+  code.textContent = error?.message ?? 'Missing GEMINI_API_KEY';
+  container.appendChild(code);
+
+  document.body.appendChild(container);
+
+  const toast = new ToastMessage();
+  document.body.appendChild(toast);
+  toast.show('DeepRabbit could not reach the live band yet. Try again shortly.');
 }
 
 function buildInitialPrompts() {
