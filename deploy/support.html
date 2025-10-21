@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepRabbit.net Support - Get Help & Contact Us</title>
+    <meta name="description" content="Get help with DeepRabbit. Contact support, browse resources, join the community, and find solutions to common issues.">
+    <style>
+        :root {
+            --primary: #29F2C6;
+            --secondary: #1A1A2E;
+            --accent: #16213E;
+            --text: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --gradient: linear-gradient(135deg, #29F2C6 0%, #4ECDC4 100%);
+            --shadow: 0 10px 30px rgba(41, 242, 198, 0.3);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --info: #2196F3;
+            --error: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--accent);
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 4rem 0;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--primary);
+        }
+
+        .section h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .section ul {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .section li {
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .section strong {
+            color: var(--primary);
+        }
+
+        /* Support Grid */
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .support-card {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .support-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(41, 242, 198, 0.2);
+        }
+
+        .support-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .support-card p {
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .support-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .support-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .support-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Contact Form */
+        .contact-form {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary);
+            border: 1px solid rgba(41, 242, 198, 0.3);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(41, 242, 198, 0.3);
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Status Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .status-card {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+        }
+
+        .status-indicator.operational {
+            background: var(--success);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-indicator.maintenance {
+            background: var(--warning);
+            box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+        }
+
+        .status-indicator.outage {
+            background: var(--error);
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.5);
+        }
+
+        .status-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* FAQ Quick Links */
+        .faq-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .faq-link {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .faq-link:hover {
+            border-color: var(--primary);
+            background: rgba(41, 242, 198, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .faq-link h5 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .faq-link p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Community Section */
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .community-card {
+            background: var(--accent);
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .community-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(41, 242, 198, 0.2);
+        }
+
+        .community-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .community-card p {
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .community-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Response Time */
+        .response-time {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .response-time h4 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .response-time p {
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Emergency Contact */
+        .emergency-contact {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .emergency-contact h4 {
+            color: var(--warning);
+            margin-bottom: 1rem;
+        }
+
+        .emergency-contact p {
+            margin-bottom: 1rem;
+        }
+
+        .emergency-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--warning);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+
+            .section h3 {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .community-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🆘 DeepRabbit.net Support</h1>
+            <p>Get help with DeepRabbit. We're here to support your music creation journey.</p>
+            <a href="landing.html" class="back-link">← Back to DeepRabbit.net</a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Quick Help -->
+            <section class="section">
+                <h2>🚀 Quick Help</h2>
+                <p>Get instant help with these quick resources and common solutions.</p>
+                
+                <div class="support-grid">
+                    <div class="support-card">
+                        <span class="icon">❓</span>
+                        <h4>FAQ</h4>
+                        <p>Find answers to the most common questions about DeepRabbit.net features and troubleshooting.</p>
+                        <a href="faq.html" class="support-btn">Browse FAQ</a>
+                    </div>
+                    <div class="support-card">
+                        <span class="icon">📖</span>
+                        <h4>User Guide</h4>
+                        <p>Complete step-by-step tutorials from beginner basics to advanced techniques.</p>
+                        <a href="user-guide.html" class="support-btn">Read Guide</a>
+                    </div>
+                    <div class="support-card">
+                        <span class="icon">🔧</span>
+                        <h4>Technical Docs</h4>
+                        <p>Detailed technical documentation for developers and advanced users.</p>
+                        <a href="tech-docs.html" class="support-btn">View Docs</a>
+                    </div>
+                </div>
+
+                <div class="faq-links">
+                    <a href="faq.html#getting-started" class="faq-link">
+                        <h5>Getting Started</h5>
+                        <p>How to begin with DeepRabbit.net</p>
+                    </a>
+                    <a href="faq.html#troubleshooting" class="faq-link">
+                        <h5>Troubleshooting</h5>
+                        <p>Common issues and solutions</p>
+                    </a>
+                    <a href="faq.html#mobile-devices" class="faq-link">
+                        <h5>Mobile & Devices</h5>
+                        <p>Phone and tablet support</p>
+                    </a>
+                    <a href="faq.html#midi-setup" class="faq-link">
+                        <h5>MIDI Setup</h5>
+                        <p>Controller configuration</p>
+                    </a>
+                    <a href="faq.html#audio-issues" class="faq-link">
+                        <h5>Audio Issues</h5>
+                        <p>Sound and recording problems</p>
+                    </a>
+                    <a href="faq.html#performance" class="faq-link">
+                        <h5>Performance</h5>
+                        <p>Speed and optimization</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Contact Support -->
+            <section class="section">
+                <h2>📧 Contact Support</h2>
+                <p>Can't find what you're looking for? Our support team is here to help you succeed.</p>
+                
+                <div class="response-time">
+                    <h4>⚡ Quick Response</h4>
+                    <p>We typically respond to support requests within 24 hours. Most issues are resolved within 48 hours.</p>
+                </div>
+
+                <div class="support-grid">
+                    <div class="support-card">
+                        <span class="icon">📧</span>
+                        <h4>Email Support</h4>
+                        <p>Send us a detailed message about your issue. Include screenshots and steps to reproduce the problem.</p>
+                        <a href="mailto:support@deeprabbit.net?subject=DeepRabbit.net Support Request" class="support-btn">Send Email</a>
+                    </div>
+                    <div class="support-card">
+                        <span class="icon">💬</span>
+                        <h4>Live Chat</h4>
+                        <p>Get instant help with our live chat support. Available Monday-Friday, 9 AM - 6 PM EST.</p>
+                        <a href="#" class="support-btn" onclick="alert('Live chat coming soon! Please use email support for now.')">Start Chat</a>
+                    </div>
+                    <div class="support-card">
+                        <span class="icon">📞</span>
+                        <h4>Phone Support</h4>
+                        <p>Speak directly with our support team for urgent issues. Available for premium users.</p>
+                        <a href="#" class="support-btn" onclick="alert('Phone support available for premium users. Contact us via email for upgrade options.')">Call Now</a>
+                    </div>
+                </div>
+
+                <div class="emergency-contact">
+                    <h4>🚨 Urgent Issues</h4>
+                    <p>For critical problems affecting your ability to use DeepRabbit.net, use our emergency contact.</p>
+                    <a href="mailto:emergency@deeprabbit.net?subject=URGENT: DeepRabbit.net Critical Issue" class="emergency-btn">Emergency Contact</a>
+                </div>
+            </section>
+
+            <!-- Support Form -->
+            <section class="section">
+                <h2>📝 Support Request Form</h2>
+                <p>Fill out this form for detailed support. The more information you provide, the better we can help you.</p>
+                
+                <div class="contact-form">
+                    <form id="supportForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Your Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="browser">Browser</label>
+                                <select id="browser" name="browser">
+                                    <option value="">Select your browser</option>
+                                    <option value="chrome">Chrome</option>
+                                    <option value="firefox">Firefox</option>
+                                    <option value="safari">Safari</option>
+                                    <option value="edge">Edge</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="device">Device Type</label>
+                                <select id="device" name="device">
+                                    <option value="">Select your device</option>
+                                    <option value="desktop">Desktop Computer</option>
+                                    <option value="laptop">Laptop</option>
+                                    <option value="tablet">Tablet</option>
+                                    <option value="phone">Mobile Phone</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="issue-type">Issue Type *</label>
+                            <select id="issue-type" name="issue-type" required>
+                                <option value="">Select issue type</option>
+                                <option value="audio">Audio/Sound Issues</option>
+                                <option value="midi">MIDI Controller Problems</option>
+                                <option value="performance">Performance/Speed Issues</option>
+                                <option value="recording">Recording Problems</option>
+                                <option value="mobile">Mobile App Issues</option>
+                                <option value="account">Account/Login Issues</option>
+                                <option value="feature">Feature Request</option>
+                                <option value="bug">Bug Report</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <input type="text" id="subject" name="subject" required placeholder="Brief description of your issue">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" required placeholder="Please describe your issue in detail. Include steps to reproduce the problem, what you expected to happen, and what actually happened."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Send Support Request</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- System Status -->
+            <section class="section">
+                <h2>📊 System Status</h2>
+                <p>Check the current status of DeepRabbit.net services and components.</p>
+                
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-indicator operational"></div>
+                        <h4>Music Generation</h4>
+                        <p>All systems operational</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator operational"></div>
+                        <h4>Recording Service</h4>
+                        <p>All systems operational</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator operational"></div>
+                        <h4>MIDI Support</h4>
+                        <p>All systems operational</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator operational"></div>
+                        <h4>Mobile App</h4>
+                        <p>All systems operational</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator operational"></div>
+                        <h4>User Accounts</h4>
+                        <p>All systems operational</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-indicator operational"></div>
+                        <h4>Support System</h4>
+                        <p>All systems operational</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community -->
+            <section class="section">
+                <h2>👥 Community Support</h2>
+                <p>Connect with other DeepRabbit.net users, share your music, and get help from the community.</p>
+                
+                <div class="community-grid">
+                    <div class="community-card">
+                        <h4>💬 Discord Community</h4>
+                        <p>Join our Discord server for real-time chat, music sharing, and community support.</p>
+                        <div class="community-stats">
+                            <div class="stat">
+                                <div class="stat-number">2,500+</div>
+                                <div class="stat-label">Members</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Active</div>
+                            </div>
+                        </div>
+                        <a href="#" class="support-btn" onclick="alert('Discord invite coming soon! Join our email list for updates.')">Join Discord</a>
+                    </div>
+                    <div class="community-card">
+                        <h4>📱 Social Media</h4>
+                        <p>Follow us on social media for updates, tips, and community highlights.</p>
+                        <div class="community-stats">
+                            <div class="stat">
+                                <div class="stat-number">10K+</div>
+                                <div class="stat-label">Followers</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">Daily</div>
+                                <div class="stat-label">Updates</div>
+                            </div>
+                        </div>
+                        <a href="#" class="support-btn" onclick="alert('Social media links coming soon! Follow our updates via email.')">Follow Us</a>
+                    </div>
+                    <div class="community-card">
+                        <h4>🎵 Music Sharing</h4>
+                        <p>Share your DeepRabbit.net creations and discover music from other users.</p>
+                        <div class="community-stats">
+                            <div class="stat">
+                                <div class="stat-number">5K+</div>
+                                <div class="stat-label">Tracks</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">50K+</div>
+                                <div class="stat-label">Plays</div>
+                            </div>
+                        </div>
+                        <a href="#" class="support-btn" onclick="alert('Music sharing platform coming soon! Upload to SoundCloud and tag us.')">Share Music</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resources -->
+            <section class="section">
+                <h2>📚 Additional Resources</h2>
+                <p>Explore these additional resources to get the most out of DeepRabbit.net.</p>
+                
+                <div class="support-grid">
+                    <div class="support-card">
+                        <span class="icon">🎥</span>
+                        <h4>Video Tutorials</h4>
+                        <p>Watch step-by-step video guides for all DeepRabbit.net features and techniques.</p>
+                        <a href="#" class="support-btn" onclick="alert('Video tutorials coming soon! Check our User Guide for now.')">Watch Videos</a>
+                    </div>
+                    <div class="support-card">
+                        <span class="icon">📰</span>
+                        <h4>Blog & News</h4>
+                        <p>Stay updated with the latest DeepRabbit.net features, tips, and community news.</p>
+                        <a href="#" class="support-btn" onclick="alert('Blog coming soon! Follow our updates via email.')">Read Blog</a>
+                    </div>
+                    <div class="support-card">
+                        <span class="icon">🎓</span>
+                        <h4>Learning Center</h4>
+                        <p>Comprehensive learning resources for music production and AI-assisted creation.</p>
+                        <a href="#" class="support-btn" onclick="alert('Learning center coming soon! Check our User Guide for tutorials.')">Learn More</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Support form handling
+        document.getElementById('supportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Create email body
+            const emailBody = `
+Support Request Details:
+Name: ${data.name}
+Email: ${data.email}
+Browser: ${data.browser || 'Not specified'}
+Device: ${data.device || 'Not specified'}
+Issue Type: ${data['issue-type']}
+Subject: ${data.subject}
+
+Description:
+${data.description}
+
+---
+This message was sent from the DeepRabbit.net Support page.
+            `;
+            
+            // Create mailto link
+            const mailtoLink = `mailto:support@deeprabbit.net?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Show confirmation
+            alert('Your email client should open with a pre-filled support request. If it doesn\'t open, please email us directly at support@deeprabbit.net');
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.support-card, .community-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click effects to buttons
+        document.querySelectorAll('.support-btn, .emergency-btn, .submit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Status indicator animation
+        document.querySelectorAll('.status-indicator').forEach(indicator => {
+            setInterval(() => {
+                indicator.style.opacity = '0.5';
+                setTimeout(() => {
+                    indicator.style.opacity = '1';
+                }, 500);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

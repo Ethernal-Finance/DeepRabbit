@@ -11,18 +11,95 @@ import { ToastMessage } from './components/ToastMessage';
 import { LiveMusicHelper } from './utils/LiveMusicHelper';
 import { AudioAnalyser } from './utils/AudioAnalyser';
 import { SessionRecorder, exportMp3, exportWav } from './utils/SessionRecorder';
-import { createClient } from '@supabase/supabase-js';
-// Subscription gating removed
+import { authService, type User } from './utils/AuthService.js';
+import './components/AuthModal.js';
+import './components/UserProfile.js';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, apiVersion: 'v1alpha' });
 const model = 'lyria-realtime-exp';
-const VITE_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const VITE_SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = (VITE_SUPABASE_URL && VITE_SUPABASE_ANON_KEY)
-  ? createClient(VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
-  : null as any;
+
+// Early error handling for localStorage issues
+(function() {
+  // Override localStorage to handle access denied errors
+  const originalLocalStorage = window.localStorage;
+  
+  if (originalLocalStorage) {
+    const safeLocalStorage = {
+      getItem: function(key: string) {
+        try {
+          return originalLocalStorage.getItem(key);
+        } catch (error) {
+          console.warn('localStorage.getItem blocked:', error);
+          return null;
+        }
+      },
+      setItem: function(key: string, value: string) {
+        try {
+          originalLocalStorage.setItem(key, value);
+        } catch (error) {
+          console.warn('localStorage.setItem blocked:', error);
+        }
+      },
+      removeItem: function(key: string) {
+        try {
+          originalLocalStorage.removeItem(key);
+        } catch (error) {
+          console.warn('localStorage.removeItem blocked:', error);
+        }
+      },
+      clear: function() {
+        try {
+          originalLocalStorage.clear();
+        } catch (error) {
+          console.warn('localStorage.clear blocked:', error);
+        }
+      },
+      get length() {
+        try {
+          return originalLocalStorage.length;
+        } catch (error) {
+          console.warn('localStorage.length blocked:', error);
+          return 0;
+        }
+      },
+      key: function(index: number) {
+        try {
+          return originalLocalStorage.key(index);
+        } catch (error) {
+          console.warn('localStorage.key blocked:', error);
+          return null;
+        }
+      }
+    };
+    
+    // Replace localStorage with safe version
+    Object.defineProperty(window, 'localStorage', {
+      value: safeLocalStorage,
+      writable: false,
+      configurable: false
+    });
+  }
+})();
 
 function main() {
+  // Add global error handler for localStorage issues
+  window.addEventListener('error', (event) => {
+    if (event.message && event.message.includes('localStorage')) {
+      console.warn('localStorage access blocked:', event.message);
+      event.preventDefault();
+      return false;
+    }
+  });
+
+  // Add unhandled promise rejection handler
+  window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason && event.reason.message && event.reason.message.includes('localStorage')) {
+      console.warn('localStorage promise rejection:', event.reason.message);
+      event.preventDefault();
+      return false;
+    }
+  });
+
   // Start directly in the core app
   initializeMainApp();
 }
@@ -30,18 +107,39 @@ function main() {
 async function initializeMainApp() {
   let userId = '';
   let userEmail = '';
+  let currentUser: User | null = null;
+  let showAuthOnLoad = false;
+  
+  // Check URL parameters for auth trigger
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('auth') === 'true' || urlParams.get('login') === 'true') {
+    showAuthOnLoad = true;
+  }
+  
   try {
-    if (supabase) {
-      const { data: { user } } = await supabase.auth.getUser();
-      userId = user?.id ?? '';
-      userEmail = user?.email ?? '';
+    // Check if user is authenticated
+    const isAuth = await authService.isAuthenticated();
+    if (isAuth) {
+      const userResponse = await authService.getCurrentUser();
+      currentUser = userResponse.user;
+      userId = currentUser.id.toString();
+      userEmail = currentUser.email;
     }
-  } catch {}
+  } catch (error) {
+    console.log('User not authenticated:', error);
+  }
   const initialPrompts = buildInitialPrompts();
 
   const pdjMidi = new PromptDjMidi(initialPrompts);
   pdjMidi.userId = userId;
   pdjMidi.userEmail = userEmail;
+  pdjMidi.currentUser = currentUser;
+  
+  // Show auth modal if requested via URL parameter
+  if (showAuthOnLoad && !currentUser) {
+    pdjMidi.showAuthModal = true;
+  }
+  
   document.body.appendChild(pdjMidi);
 
   const toastMessage = new ToastMessage();

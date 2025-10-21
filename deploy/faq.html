@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepRabbit.net FAQ - Frequently Asked Questions</title>
+    <meta name="description" content="Get answers to common questions about DeepRabbit - the AI music creation tool. Learn about features, setup, troubleshooting, and more.">
+    <style>
+        :root {
+            --primary: #29F2C6;
+            --secondary: #1A1A2E;
+            --accent: #16213E;
+            --text: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --gradient: linear-gradient(135deg, #29F2C6 0%, #4ECDC4 100%);
+            --shadow: 0 10px 30px rgba(41, 242, 198, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--accent);
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* FAQ Content */
+        .faq-content {
+            padding: 4rem 0;
+        }
+
+        .faq-section {
+            margin-bottom: 3rem;
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--accent);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(41, 242, 198, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(41, 242, 198, 0.1);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(41, 242, 198, 0.1);
+        }
+
+        .faq-question.active {
+            background: rgba(41, 242, 198, 0.2);
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .faq-answer.active {
+            padding: 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-answer ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .faq-answer strong {
+            color: var(--primary);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--accent);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            border-radius: 20px;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .contact-section p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .faq-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .faq-question {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .faq-answer.active {
+                padding: 1rem;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-link {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Search */
+        .search-section {
+            margin-bottom: 3rem;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--accent);
+            border: 2px solid rgba(41, 242, 198, 0.3);
+            border-radius: 25px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(41, 242, 198, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🎵 DeepRabbit.net FAQ</h1>
+            <p>Get answers to common questions about DeepRabbit - the AI music creation tool</p>
+            <a href="landing.html" class="back-link">← Back to DeepRabbit.net</a>
+        </div>
+    </header>
+
+    <main class="faq-content">
+        <div class="container">
+            <!-- Search -->
+            <div class="search-section">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search FAQ..." id="searchInput">
+                </div>
+                <div class="no-results" id="noResults">
+                    No results found. Try different keywords.
+                </div>
+            </div>
+
+            <!-- Getting Started -->
+            <section class="faq-section">
+                <h2>🚀 Getting Started</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is DeepRabbit.net?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>DeepRabbit.net is an AI-powered music creation tool that lets you generate professional-quality music in real-time. Think of it as having a virtual band that responds to your creative input instantly.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I get started?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Getting started is easy:</p>
+                        <ul>
+                            <li><strong>Visit the app</strong> - No downloads required, works in your browser</li>
+                            <li><strong>Connect a MIDI controller</strong> (optional but recommended)</li>
+                            <li><strong>Choose your styles</strong> - Browse 190+ genres and pick your favorites</li>
+                            <li><strong>Start creating</strong> - Hit play and watch the magic happen!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need any special equipment?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You only need basic equipment:</p>
+                        <ul>
+                            <li><strong>Computer/Phone/Tablet</strong> - Works on any device with a modern browser</li>
+                            <li><strong>MIDI Controller</strong> (optional) - For hands-on control, but not required</li>
+                            <li><strong>Speakers/Headphones</strong> - To hear your music</li>
+                            <li><strong>Internet Connection</strong> - For AI processing</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Using DeepRabbit -->
+            <section class="faq-section">
+                <h2>🎛️ Using DeepRabbit.net</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I choose music styles?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Choosing styles is simple:</p>
+                        <ul>
+                            <li><strong>Browse the Styles panel</strong> - Click through different genres</li>
+                            <li><strong>Search for specific styles</strong> - Use the search bar to find what you want</li>
+                            <li><strong>Drag styles to slots</strong> - Add up to 8 styles to your performance grid</li>
+                            <li><strong>Adjust weights</strong> - Use sliders to control how much each style influences the music</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What are "weight sliders"?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Weight sliders control how much influence each style has:</p>
+                        <ul>
+                            <li><strong>0.0</strong> = Style is muted (no influence)</li>
+                            <li><strong>1.0</strong> = Normal influence</li>
+                            <li><strong>2.0</strong> = Double influence (style dominates)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I control the music live?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can control the music in several ways:</p>
+                        <ul>
+                            <li><strong>Adjust sliders</strong> - Change style weights in real-time</li>
+                            <li><strong>Toggle styles on/off</strong> - Enable or disable styles during performance</li>
+                            <li><strong>Use MIDI controllers</strong> - Map knobs and faders to control styles</li>
+                            <li><strong>Record your performance</strong> - Capture your live sessions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is the EVOLVE feature?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>EVOLVE automatically changes your music over time:</p>
+                        <ul>
+                            <li><strong>ON/OFF toggle</strong> - Enable or disable auto-evolution</li>
+                            <li><strong>Rate control</strong> - How often changes happen (8s, 16s, 32s, 64s)</li>
+                            <li><strong>Depth control</strong> - How dramatic the changes are (Subtle to Bold)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mobile & Devices -->
+            <section class="faq-section">
+                <h2>📱 Mobile & Devices</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Does it work on my phone?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! DeepRabbit.net is fully optimized for mobile devices:</p>
+                        <ul>
+                            <li><strong>Touch controls</strong> - Swipe up from bottom for menus</li>
+                            <li><strong>Responsive design</strong> - Works on phones and tablets</li>
+                            <li><strong>Same features</strong> - Full functionality on mobile</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What browsers work best?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>DeepRabbit.net works on all modern browsers:</p>
+                        <ul>
+                            <li><strong>Chrome</strong> (recommended) - Best performance and MIDI support</li>
+                            <li><strong>Safari</strong> - Great on Mac and iOS</li>
+                            <li><strong>Firefox</strong> - Good performance</li>
+                            <li><strong>Edge</strong> - Works well on Windows</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I use my MIDI controller?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Connect any MIDI controller:</p>
+                        <ul>
+                            <li><strong>USB connection</strong> - Plug directly into your computer</li>
+                            <li><strong>Web MIDI support</strong> - Works with most modern controllers</li>
+                            <li><strong>Map controls</strong> - Assign knobs and faders to style controls</li>
+                            <li><strong>Real-time control</strong> - Adjust music as you play</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Music & Styles -->
+            <section class="faq-section">
+                <h2>🎵 Music & Styles</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How many music styles are available?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>DeepRabbit.net includes <strong>190+ professional music styles</strong>:</p>
+                        <ul>
+                            <li><strong>Electronic</strong>: House, Techno, Trance, Future Bass, Synthwave</li>
+                            <li><strong>Organic</strong>: Jazz, Blues, Rock, Folk, Classical, Country</li>
+                            <li><strong>World</strong>: Afrobeat, Latin Pop, Salsa, Reggae</li>
+                            <li><strong>Experimental</strong>: Ambient, Lo-Fi, Trap, Drill</li>
+                            <li><strong>And many more!</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I create my own styles?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Currently, DeepRabbit.net uses pre-trained AI models with 190+ professional styles. Custom style creation is not available yet, but we're working on it!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How long can I create music?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>There are no time limits:</p>
+                        <ul>
+                            <li><strong>Unlimited length</strong> - Create music as long as you want</li>
+                            <li><strong>Real-time generation</strong> - Music continues as long as you keep it playing</li>
+                            <li><strong>No time limits</strong> - Your creativity is the only limit</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What quality is the generated music?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>DeepRabbit.net generates professional-quality music:</p>
+                        <ul>
+                            <li><strong>Professional quality</strong> - Studio-grade audio output</li>
+                            <li><strong>High resolution</strong> - 48kHz sample rate</li>
+                            <li><strong>Multiple stems</strong> - Separate tracks for drums, bass, chords, lead, effects</li>
+                            <li><strong>Loop-friendly</strong> - Seamless transitions and natural phrasing</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced Features -->
+            <section class="faq-section">
+                <h2>🎛️ Advanced Features</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is scene management?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Scenes let you save and recall different style combinations:</p>
+                        <ul>
+                            <li><strong>Save scenes</strong> - Store your favorite style setups</li>
+                            <li><strong>Quick switching</strong> - Change between different songs/sections instantly</li>
+                            <li><strong>Live performance</strong> - Perfect for DJ sets or live shows</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does recording work?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Recording is simple and high-quality:</p>
+                        <ul>
+                            <li><strong>High-quality recording</strong> - Professional audio capture</li>
+                            <li><strong>MP3 export</strong> - Easy sharing and playback</li>
+                            <li><strong>Real-time capture</strong> - Record your live performances</li>
+                            <li><strong>No setup required</strong> - Just hit the record button</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I export my music?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! DeepRabbit.net includes built-in recording:</p>
+                        <ul>
+                            <li><strong>MP3 format</strong> - Compatible with all devices</li>
+                            <li><strong>High quality</strong> - Professional audio standards</li>
+                            <li><strong>Easy sharing</strong> - Upload to SoundCloud, YouTube, etc.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section class="faq-section">
+                <h2>🔧 Troubleshooting</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>I don't hear any sound</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Try these solutions:</p>
+                        <ul>
+                            <li><strong>Check your speakers</strong> - Make sure they're connected and turned on</li>
+                            <li><strong>Browser permissions</strong> - Allow audio in your browser</li>
+                            <li><strong>Volume levels</strong> - Check both browser and system volume</li>
+                            <li><strong>Try different browser</strong> - Some browsers have audio issues</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>My MIDI controller isn't working</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Check these common issues:</p>
+                        <ul>
+                            <li><strong>Check connection</strong> - Make sure USB cable is secure</li>
+                            <li><strong>Browser permissions</strong> - Allow MIDI access when prompted</li>
+                            <li><strong>Refresh the page</strong> - Sometimes a refresh helps</li>
+                            <li><strong>Try different browser</strong> - Chrome has the best MIDI support</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>The app is running slowly</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Improve performance with these tips:</p>
+                        <ul>
+                            <li><strong>Close other tabs</strong> - Free up browser memory</li>
+                            <li><strong>Check internet connection</strong> - AI processing requires good connection</li>
+                            <li><strong>Try different browser</strong> - Some browsers perform better</li>
+                            <li><strong>Restart browser</strong> - Clear memory and cache</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>I'm getting error messages</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Most errors are temporary:</p>
+                        <ul>
+                            <li><strong>Refresh the page</strong> - Most errors are temporary</li>
+                            <li><strong>Check internet connection</strong> - AI requires stable connection</li>
+                            <li><strong>Try different browser</strong> - Some browsers have compatibility issues</li>
+                            <li><strong>Contact support</strong> - If problems persist</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips & Tricks -->
+            <section class="faq-section">
+                <h2>💡 Tips & Tricks</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Getting the best results</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Follow these tips for great music:</p>
+                        <ul>
+                            <li><strong>Start simple</strong> - Begin with 2-3 styles, then add more</li>
+                            <li><strong>Use MIDI controllers</strong> - Much more intuitive than mouse/touch</li>
+                            <li><strong>Experiment with weights</strong> - Small changes make big differences</li>
+                            <li><strong>Record everything</strong> - You never know when magic happens</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Performance tips</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Optimize your experience:</p>
+                        <ul>
+                            <li><strong>Use Chrome</strong> - Best performance and compatibility</li>
+                            <li><strong>Close other apps</strong> - Free up system resources</li>
+                            <li><strong>Stable internet</strong> - AI processing needs good connection</li>
+                            <li><strong>Good speakers</strong> - Hear the full quality of your music</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Creative workflow</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Develop your creative process:</p>
+                        <ul>
+                            <li><strong>Build gradually</strong> - Start with drums and bass, add melodies</li>
+                            <li><strong>Use EVOLVE</strong> - Let the AI surprise you with new ideas</li>
+                            <li><strong>Save scenes</strong> - Don't lose your best combinations</li>
+                            <li><strong>Record sessions</strong> - Capture spontaneous moments</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Support -->
+            <section class="faq-section">
+                <h2>🆘 Support</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Where can I get help?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Multiple ways to get support:</p>
+                        <ul>
+                            <li><strong>This FAQ</strong> - Most questions answered here</li>
+                            <li><strong>In-app help</strong> - Click the help button in the app</li>
+                            <li><strong>Community</strong> - Join our Discord for tips and sharing</li>
+                            <li><strong>Email support</strong> - support@deeprabbit.net</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I report bugs?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Help us fix issues:</p>
+                        <ul>
+                            <li><strong>Email us</strong> - support@deeprabbit.net with details</li>
+                            <li><strong>Include info</strong> - Browser, device, what you were doing</li>
+                            <li><strong>Screenshots</strong> - Help us understand the issue</li>
+                            <li><strong>Be specific</strong> - The more details, the better</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I suggest new features?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! We love feedback:</p>
+                        <ul>
+                            <li><strong>Email suggestions</strong> - support@deeprabbit.net</li>
+                            <li><strong>Community input</strong> - Join our Discord</li>
+                            <li><strong>Feature requests</strong> - Tell us what you need</li>
+                            <li><strong>User feedback</strong> - Help us improve DeepRabbit.net</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <h2>Still Need Help?</h2>
+            <p>Can't find what you're looking for? We're here to help!</p>
+            <div class="contact-links">
+                <a href="mailto:support@deeprabbit.net" class="contact-link">📧 Email Support</a>
+                <a href="landing.html" class="contact-link">🏠 Back to DeepRabbit.net</a>
+                <a href="docs/USER_GUIDE.md" class="contact-link">📖 User Guide</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // FAQ Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('.faq-icon');
+                    
+                    // Close all other FAQs
+                    faqQuestions.forEach(otherQuestion => {
+                        if (otherQuestion !== this) {
+                            otherQuestion.classList.remove('active');
+                            otherQuestion.nextElementSibling.classList.remove('active');
+                            otherQuestion.querySelector('.faq-icon').textContent = '+';
+                        }
+                    });
+                    
+                    // Toggle current FAQ
+                    this.classList.toggle('active');
+                    answer.classList.toggle('active');
+                    
+                    if (this.classList.contains('active')) {
+                        icon.textContent = '−';
+                    } else {
+                        icon.textContent = '+';
+                    }
+                });
+            });
+
+            // Search Functionality
+            const searchInput = document.getElementById('searchInput');
+            const noResults = document.getElementById('noResults');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const faqItems = document.querySelectorAll('.faq-item');
+                let hasResults = false;
+                
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                    
+                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasResults = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Show/hide no results message
+                if (searchTerm && !hasResults) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+                
+                // Show/hide section headers
+                const sections = document.querySelectorAll('.faq-section');
+                sections.forEach(section => {
+                    const visibleItems = section.querySelectorAll('.faq-item[style*="block"], .faq-item:not([style*="none"])');
+                    if (searchTerm && visibleItems.length === 0) {
+                        section.style.display = 'none';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

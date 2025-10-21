@@ -1,0 +1,35 @@
+# Ensure index.html is served as the default page
+DirectoryIndex index.html
+
+# Force index.html for root directory
+RewriteEngine On
+
+# Redirect root to index.html
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^$ index.html [L]
+
+# Redirect app.html to app.html (explicit)
+RewriteRule ^app$ app.html [L]
+
+# Handle SPA routing for the React app
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/app
+RewriteRule ^app.*$ app.html [L]
+
+# Fallback to index.html for any other requests
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/app
+RewriteRule ^.*$ index.html [L]
+
+# Cache static assets
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$">
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+</FilesMatch>
+
+# Security headers
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"

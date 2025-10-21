@@ -1,0 +1,10 @@
+# Frontend Environment Configuration
+# Add this to your .env file
+
+# Replace YOUR_DOMAIN with your actual domain
+VITE_API_URL=https://YOUR_DOMAIN.com/api
+
+# Example:
+# VITE_API_URL=https://deeprabbit.net/api
+# VITE_API_URL=https://mydomain.com/api
+

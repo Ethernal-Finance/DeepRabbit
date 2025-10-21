@@ -17,6 +17,9 @@ import './OnboardingTutorial';
 import { MidiDispatcher } from '../utils/MidiDispatcher';
 import { SessionRecorder } from '../utils/SessionRecorder';
 import './RequirePro';
+import './AuthModal';
+import './UserProfile';
+import { authService, type User } from '../utils/AuthService.js';
 
 /** The grid of prompt inputs. */
 @customElement('prompt-dj-midi')
@@ -2242,6 +2245,8 @@ export class PromptDjMidi extends LitElement {
   @state() private showExportMenu = false;
   @property({ type: String }) userId = '';
   @property({ type: String }) userEmail = '';
+  @property({ type: Object }) currentUser: User | null = null;
+  @state() private showAuthModal = false;
   @state() private showTutorial = false;
   @state() private isRecording = false;
   @state() private autoEvolveEnabled = false;
@@ -2576,6 +2581,9 @@ export class PromptDjMidi extends LitElement {
     const handleMql = () => { this.isMobile = !!this.mql?.matches; if (!this.isMobile) this.showMobileMenu = false; this.requestUpdate(); };
     this.mql.addEventListener ? this.mql.addEventListener('change', handleMql) : this.mql.addListener(handleMql);
     handleMql();
+    
+    // Check authentication status
+    this.checkAuthStatus();
   }
 
   override disconnectedCallback() {
@@ -3209,6 +3217,46 @@ export class PromptDjMidi extends LitElement {
     this.requestUpdate();
   }
 
+  // Authentication methods
+  private async checkAuthStatus() {
+    try {
+      const isAuth = await authService.isAuthenticated();
+      if (isAuth) {
+        const userResponse = await authService.getCurrentUser();
+        this.currentUser = userResponse.user;
+        this.userId = this.currentUser.id.toString();
+        this.userEmail = this.currentUser.email;
+      } else {
+        this.currentUser = null;
+        this.userId = '';
+        this.userEmail = '';
+      }
+    } catch (error) {
+      console.log('Auth check failed:', error);
+      this.currentUser = null;
+      this.userId = '';
+      this.userEmail = '';
+    }
+  }
+
+  private openAuthModal() {
+    this.showAuthModal = true;
+  }
+
+  private handleAuthSuccess(event: CustomEvent) {
+    const { user } = event.detail;
+    this.currentUser = user;
+    this.userId = user.id.toString();
+    this.userEmail = user.email;
+    this.showAuthModal = false;
+  }
+
+  private handleAuthLogout() {
+    this.currentUser = null;
+    this.userId = '';
+    this.userEmail = '';
+  }
+
   override render() {
     return html`
       <!-- DAW Header -->
@@ -3258,6 +3306,12 @@ export class PromptDjMidi extends LitElement {
               
               <!-- Help -->
               <button class="toolbar-btn" @click=${this.toggleHelp} title="How to use">❓</button>
+              
+              <!-- Authentication -->
+              ${this.currentUser 
+                ? html`<user-profile .user=${this.currentUser} @auth-logout=${this.handleAuthLogout}></user-profile>`
+                : html`<button class="toolbar-btn" @click=${this.openAuthModal} title="Sign In">👤</button>`
+              }
             ` : ''}
             
           ${this.isMobile ? '' : html`
@@ -3620,6 +3674,12 @@ export class PromptDjMidi extends LitElement {
       </div>
       ${this.showHelp ? html`<help-panel open @close=${this.toggleHelp}></help-panel>` : ''}
       ${this.showTutorial ? html`<onboarding-tutorial @finish=${this.handleTutorialFinish}></onboarding-tutorial>` : ''}
+      
+      <!-- Authentication Modal -->
+      <auth-modal 
+        ?isOpen=${this.showAuthModal} 
+        @auth-success=${this.handleAuthSuccess}
+      ></auth-modal>
     `;
   }
 
