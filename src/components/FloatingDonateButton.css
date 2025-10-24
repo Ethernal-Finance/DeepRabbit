@@ -1,0 +1,94 @@
+.floating-donate-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+  z-index: 9999;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(100px);
+  pointer-events: none;
+}
+
+.floating-donate-btn.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.floating-donate-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(255, 107, 107, 0.7);
+  background: linear-gradient(135deg, #FF5252 0%, #FF3838 100%);
+}
+
+.floating-donate-btn:active {
+  transform: translateY(-2px);
+}
+
+.donate-icon {
+  font-size: 1.5rem;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  10%, 30% {
+    transform: scale(1.1);
+  }
+  20%, 40% {
+    transform: scale(1);
+  }
+}
+
+.donate-text {
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .floating-donate-btn {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .donate-icon {
+    font-size: 1.3rem;
+  }
+
+  .donate-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-donate-btn {
+    padding: 0.8rem 1rem;
+  }
+
+  .donate-text {
+    display: none;
+  }
+
+  .donate-icon {
+    font-size: 1.5rem;
+  }
+}
+
+
+

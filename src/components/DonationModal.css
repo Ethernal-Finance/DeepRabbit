@@ -1,0 +1,251 @@
+.donation-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.donation-modal {
+  background: var(--secondary);
+  border: 2px solid var(--primary);
+  border-radius: 20px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(41, 242, 198, 0.3);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 3rem;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: rgba(41, 242, 198, 0.1);
+  color: var(--primary);
+  transform: rotate(90deg);
+}
+
+.modal-header {
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  border-bottom: 1px solid rgba(41, 242, 198, 0.2);
+}
+
+.modal-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.modal-header p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.donation-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.donation-card {
+  background: var(--accent);
+  border: 1px solid rgba(41, 242, 198, 0.2);
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.donation-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(41, 242, 198, 0.2);
+}
+
+.donation-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.donation-card h3 {
+  color: var(--primary);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.donation-card p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.donation-handle {
+  background: rgba(41, 242, 198, 0.1);
+  border: 1px solid rgba(41, 242, 198, 0.3);
+  border-radius: 10px;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 1.1rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.donation-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--gradient);
+  color: var(--secondary);
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.donation-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.donation-btn.cash-app {
+  background: linear-gradient(135deg, #00D54B 0%, #00C853 100%);
+  color: white;
+}
+
+.donation-btn.paypal {
+  background: linear-gradient(135deg, #0070BA 0%, #003087 100%);
+  color: white;
+}
+
+.donation-btn.merch {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
+  color: white;
+}
+
+.modal-footer {
+  padding: 2rem;
+  border-top: 1px solid rgba(41, 242, 198, 0.2);
+}
+
+.thank-you-message {
+  text-align: center;
+  background: rgba(41, 242, 198, 0.05);
+  border-radius: 15px;
+  padding: 2rem;
+  border: 1px solid rgba(41, 242, 198, 0.2);
+}
+
+.thank-you-message h4 {
+  color: var(--primary);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.thank-you-message p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .donation-modal {
+    margin: 0;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 2.5rem 1.5rem 1.5rem;
+  }
+
+  .modal-header h2 {
+    font-size: 2rem;
+  }
+
+  .modal-header p {
+    font-size: 1rem;
+  }
+
+  .donation-options {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .modal-footer {
+    padding: 1.5rem;
+  }
+
+  .thank-you-message {
+    padding: 1.5rem;
+  }
+
+  .thank-you-message h4 {
+    font-size: 1.3rem;
+  }
+
+  .thank-you-message p {
+    font-size: 0.95rem;
+  }
+}
+
+
+

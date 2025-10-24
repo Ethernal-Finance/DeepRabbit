@@ -133,3 +133,5 @@ curl -X POST http://localhost:5000/api/auth/register \
 
 The authentication system is now complete and ready for production deployment!
 
+
+
